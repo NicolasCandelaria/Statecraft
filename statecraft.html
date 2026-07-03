@@ -50,30 +50,35 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ---------- title ---------- */
 #title-screen{justify-content:flex-end;padding-bottom:9vh;text-align:center}
+#title-screen::before{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(880px,96vw);height:62vh;background:radial-gradient(ellipse 60% 55% at 50% 72%,rgba(6,11,20,.92),rgba(6,11,20,.7) 42%,transparent 72%);pointer-events:none;z-index:-1}
+#title-screen>*{position:relative}
 #title-screen .eyebrow{margin-bottom:18px}
-#title-screen h1{font-family:var(--f-display);font-weight:300;font-size:clamp(52px,8.5vw,110px);letter-spacing:.045em;line-height:1;color:var(--ink)}
+#title-screen h1{font-family:var(--f-display);font-weight:300;font-size:clamp(52px,8.5vw,110px);letter-spacing:.045em;line-height:1;color:var(--ink);text-shadow:0 4px 40px rgba(6,11,20,.85)}
 #title-screen h1 em{font-style:italic;font-weight:600;color:var(--brass-lite)}
-#title-sub{margin:20px 0 34px;font-size:13px;color:var(--muted);letter-spacing:.06em;max-width:460px;line-height:1.7}
+#title-sub{margin:20px 0 34px;font-size:13px;color:#AEBBCE;letter-spacing:.06em;max-width:460px;line-height:1.7}
 
 /* ---------- country select ---------- */
 #select-screen{justify-content:flex-end;padding-bottom:5vh}
-#select-head{text-align:center;margin-bottom:26px;text-shadow:0 2px 18px rgba(4,8,15,.9),0 0 42px rgba(4,8,15,.75)}
-#select-head h2{font-family:var(--f-display);font-weight:400;font-size:30px;letter-spacing:.03em;margin-top:10px}
-#dossiers{display:flex;align-items:stretch;gap:18px;padding:0 24px;max-width:1150px;width:100%}
-.dossier{flex:1;display:flex;flex-direction:column;background:var(--glass);border:1px solid var(--line-dim);backdrop-filter:blur(14px);padding:22px 22px 18px;text-align:left;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
-.dossier .d-diff{margin-top:auto;padding-top:12px;border-top:1px solid var(--line-dim);font-family:var(--f-mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase}
+#select-screen::before{content:'';position:absolute;left:0;right:0;bottom:0;height:74vh;background:linear-gradient(to top,rgba(6,11,20,.94) 40%,rgba(6,11,20,.55) 72%,transparent);pointer-events:none;z-index:-1}
+#select-screen>*{position:relative}
+#select-head{text-align:center;margin-bottom:26px}
+#select-head .eyebrow{color:var(--brass-lite)}
+#select-head h2{font-family:var(--f-display);font-weight:400;font-size:30px;letter-spacing:.03em;margin-top:10px;color:var(--ink);text-shadow:0 2px 24px rgba(6,11,20,.9)}
+#dossiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:18px;padding:0 24px;max-width:1150px;width:100%}
+.dossier{min-height:295px;display:flex;flex-direction:column;background:var(--glass);border:1px solid var(--line-dim);backdrop-filter:blur(14px);padding:22px 22px 20px;text-align:left;transition:border-color .3s,transform .3s;position:relative;overflow:hidden}
 .dossier::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--line);opacity:0;transition:opacity .3s}
 .dossier:hover,.dossier:focus-visible{border-color:var(--line);transform:translateY(-4px);outline:none}
 .dossier:hover::before,.dossier:focus-visible::before{opacity:1}
 .dossier .d-class{font-family:var(--f-mono);font-size:9px;letter-spacing:.26em;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:14px}
 .dossier h3{font-family:var(--f-display);font-weight:600;font-size:24px;letter-spacing:.02em;margin-bottom:4px}
 .dossier .d-role{font-size:11.5px;color:var(--brass-lite);letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:12px}
-.dossier p{font-size:12.5px;line-height:1.65;color:var(--muted);margin-bottom:16px;min-height:82px}
-.dossier .d-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.dossier p{font-size:12.5px;line-height:1.65;color:#96A3B7;margin-bottom:18px;min-height:82px}
+.dossier .d-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;font-family:var(--f-mono);font-size:10.5px;color:var(--muted);margin-bottom:20px}
 .dossier .d-stats b{color:var(--ink);font-weight:500;float:right}
+.dossier .d-diff{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-dim);font-family:var(--f-mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase}
 
 /* ---------- HUD ---------- */
-#hud{position:fixed;top:0;left:0;right:0;z-index:20;display:none;padding:14px 22px 0;pointer-events:none}
+#hud{position:fixed;top:0;left:0;right:0;z-index:20;display:none;padding:14px 76px 0 22px;pointer-events:none}
 #hud-bar{display:flex;align-items:stretch;gap:14px;background:var(--glass);border:1px solid var(--line-dim);backdrop-filter:blur(14px);padding:12px 20px;pointer-events:auto}
 #hud-nation{display:flex;flex-direction:column;justify-content:center;padding-right:16px;border-right:1px solid var(--line-dim);min-width:150px}
 #hud-nation .n-name{font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:.02em}
@@ -114,6 +119,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .speaker .sp-seal{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:13px;color:var(--brass-lite);flex-shrink:0}
 .speaker .sp-name{font-size:12.5px;font-weight:600}
 .speaker .sp-role{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:1px}
+.sp-standing{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;margin-left:auto;padding:3px 8px;border:1px solid var(--line-dim);flex-shrink:0}
+.sp-standing.pos{color:var(--pos);border-color:rgba(76,175,122,.35)}
+.sp-standing.neu{color:var(--muted)}
+.sp-standing.neg{color:var(--neg);border-color:rgba(194,80,63,.35)}
+.sp-memory{font-family:var(--f-mono);font-size:10px;letter-spacing:.05em;line-height:1.6;color:var(--muted);border-left:2px solid var(--line-dim);padding:6px 0 6px 12px;margin-bottom:12px;font-style:italic}
+.sp-memory.pos{border-left-color:rgba(76,175,122,.5)}
+.sp-memory.neg{border-left-color:rgba(194,80,63,.5)}
 .cable-body .dialogue{font-size:13.5px;line-height:1.75;color:#C9D3E0;margin-bottom:8px}
 .cable-body .dialogue em{color:var(--ink);font-style:italic}
 .options{padding:6px 22px 22px;display:flex;flex-direction:column;gap:10px}
@@ -132,14 +144,71 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 /* ---------- toast + overlay screens ---------- */
 #toasts{position:fixed;bottom:26px;left:22px;z-index:30;display:flex;flex-direction:column;gap:8px}
 .toast{background:var(--glass);border:1px solid var(--line-dim);border-left:2px solid var(--brass);padding:10px 16px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);max-width:320px}
+.toast.sys{border-left-color:#5FA8D3;color:#9FB6CB}
 #verdict{background:rgba(4,8,15,.55);backdrop-filter:blur(3px);display:none}
-#verdict-card{max-width:560px;width:92%;background:var(--glass);border:1px solid var(--line);padding:44px 48px;text-align:center}
+#verdict-card{max-width:620px;width:92%;max-height:88vh;overflow-y:auto;background:var(--glass);border:1px solid var(--line);padding:44px 48px;text-align:center;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+#verdict-card::-webkit-scrollbar{width:4px}
+#verdict-card::-webkit-scrollbar-thumb{background:var(--line)}
 #verdict-card .eyebrow{margin-bottom:16px}
 #verdict-card h2{font-family:var(--f-display);font-weight:400;font-size:38px;letter-spacing:.02em;margin-bottom:18px}
 #verdict-card h2 em{font-style:italic;color:var(--brass-lite)}
 #verdict-card p{font-size:13.5px;line-height:1.75;color:var(--muted);margin-bottom:14px}
-#verdict-tally{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.1em;margin:20px 0 26px;line-height:2.1}
+#verdict-tally{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.1em;margin:20px 0 22px;line-height:2.1}
 #verdict-tally b{color:var(--ink);font-weight:500}
+/* ---------- report card ---------- */
+.report{margin:8px 0 26px;text-align:left;border-top:1px solid var(--line-dim);padding-top:22px}
+.report h4{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--brass);margin-bottom:16px}
+.report h4.sub{margin-top:24px;color:var(--muted)}
+.rc-cab .rc-name{margin-bottom:4px}
+.rc-cab .rc-who{font-size:10.5px;color:var(--ink);font-family:var(--f-mono);margin-bottom:3px}
+.rc-journey{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px}
+.rc-stat{text-align:center}
+.rc-stat .rc-name{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.rc-stat .rc-nums{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.rc-stat .rc-end{color:var(--ink);font-weight:600;font-size:15px}
+.rc-stat .rc-swing{font-family:var(--f-mono);font-size:9.5px;margin-top:3px}
+.rc-swing.up{color:var(--pos)}.rc-swing.down{color:var(--neg)}.rc-swing.flat{color:var(--muted)}
+.rc-log{display:flex;flex-direction:column;gap:0}
+.rc-turn{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(125,140,163,.1)}
+.rc-turn:last-child{border-bottom:none}
+.rc-turn .rc-t{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.rc-turn .rc-choice{font-size:12px;color:#C9D3E0;line-height:1.4}
+.rc-turn .rc-choice span{display:block;font-family:var(--f-mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.rc-turn .rc-swing-chips{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:150px}
+.rc-mini{font-family:var(--f-mono);font-size:9px;padding:2px 6px;border:1px solid var(--line-dim);white-space:nowrap}
+.rc-mini.up{color:var(--pos);border-color:rgba(76,175,122,.35)}
+.rc-mini.down{color:var(--neg);border-color:rgba(194,80,63,.35)}
+.rc-verdict-note{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:22px;line-height:1.9}
+.rc-verdict-note b{color:var(--ink)}
+/* ---------- settings gear + panel ---------- */
+#gear{position:fixed;top:18px;right:22px;z-index:35;width:38px;height:38px;border:1px solid var(--line-dim);background:var(--glass);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;color:var(--muted);transition:color .25s,border-color .25s}
+#gear:hover{color:var(--brass-lite);border-color:var(--line)}
+#gear svg{width:19px;height:19px}
+#settings{position:fixed;inset:0;z-index:40;background:rgba(4,8,15,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center}
+#settings-card{width:380px;max-width:92%;background:var(--glass);border:1px solid var(--line);padding:30px 32px}
+#settings-card h3{font-family:var(--f-display);font-weight:600;font-size:22px;letter-spacing:.02em;margin-bottom:4px}
+#settings-card .set-sub{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);margin-bottom:22px}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--line-dim)}
+.set-row .set-label{font-size:13px;color:var(--ink)}
+.set-row .set-desc{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;color:var(--muted);margin-top:3px;text-transform:uppercase}
+.set-actions{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.toggle{width:46px;height:24px;border:1px solid var(--line);border-radius:12px;position:relative;background:rgba(125,140,163,.12);transition:background .25s,border-color .25s;flex-shrink:0}
+.toggle.on{background:rgba(201,162,39,.22);border-color:var(--brass)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:transform .25s,background .25s}
+.toggle.on::after{transform:translateX(22px);background:var(--brass-lite)}
+.set-tip{margin-top:20px;padding:12px 14px;border:1px solid var(--line-dim);background:rgba(201,162,39,.05);font-family:var(--f-mono);font-size:10px;line-height:1.7;letter-spacing:.04em;color:var(--muted)}
+.set-tip b{color:var(--brass-lite);font-weight:500}
+/* ---------- resume banner on select ---------- */
+#resume-banner{display:none;margin:0 auto 22px;max-width:560px;width:calc(100% - 48px);background:rgba(201,162,39,.08);border:1px solid var(--line);backdrop-filter:blur(12px);padding:16px 20px;align-items:center;justify-content:space-between;gap:16px;text-align:left}
+#resume-banner .rb-text{font-size:12.5px;color:var(--ink);line-height:1.5}
+#resume-banner .rb-text span{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);display:block;margin-bottom:3px}
+#resume-banner .rb-actions{display:flex;gap:8px;flex-shrink:0}
+.btn-sm{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 16px;border:1px solid var(--line);color:var(--brass-lite);background:rgba(201,162,39,.06);transition:background .2s}
+.btn-sm:hover{background:rgba(201,162,39,.16)}
+.btn-sm.ghost{border-color:var(--line-dim);color:var(--muted)}
+.btn-sm.ghost:hover{color:var(--ink);background:rgba(125,140,163,.08)}
+#audio-credit{position:fixed;bottom:8px;left:22px;z-index:14;font-family:var(--f-mono);font-size:8px;letter-spacing:.1em;color:rgba(125,140,163,.4);display:none}
+#audio-credit a{color:inherit;text-decoration:underline}
 #loading{position:fixed;inset:0;z-index:50;background:var(--void);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
 #loading .eyebrow{animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
@@ -148,12 +217,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 #hint{position:fixed;bottom:26px;right:22px;z-index:15;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;color:rgba(125,140,163,.55);text-transform:uppercase;display:none}
 
 @media(max-width:900px){
-  #dossiers{flex-direction:column;overflow-y:auto;max-height:62vh}
+  #dossiers{display:flex;flex-direction:column;overflow-y:auto;max-height:62vh}
+  .dossier{min-height:0}
   .dossier p{min-height:0}
   #hud-stats{grid-template-columns:repeat(3,1fr);gap:10px}
   #relations{display:none!important}
   #cable-wrap{left:12px;right:12px;width:auto;top:auto;max-height:62vh;bottom:12px}
   #hud{padding:10px 12px 0}
+  #gear{top:auto;bottom:14px;right:14px}
+  #verdict-card{padding:32px 24px}
+  .rc-journey{grid-template-columns:repeat(5,1fr);gap:5px}
+  .rc-stat .rc-nums{font-size:9px}
+  .rc-turn{grid-template-columns:22px 1fr;gap:8px}
+  .rc-turn .rc-swing-chips{grid-column:2;justify-content:flex-start;max-width:none;margin-top:4px}
+  #resume-banner{flex-direction:column;align-items:stretch}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
@@ -178,6 +255,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 <!-- COUNTRY SELECT -->
 <div class="screen" id="select-screen" style="display:none">
+  <div id="resume-banner">
+    <div class="rb-text"><span>Term in progress</span><div id="rb-detail">A saved term is waiting.</div></div>
+    <div class="rb-actions">
+      <button class="btn-sm" id="btn-resume">Resume</button>
+      <button class="btn-sm ghost" id="btn-discard">Discard</button>
+    </div>
+  </div>
   <div id="select-head">
     <div class="eyebrow">Directorate of Appointments</div>
     <h2>Choose your portfolio</h2>
@@ -196,6 +280,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   </div>
 </div>
 
+<!-- SETTINGS GEAR -->
+<button id="gear" aria-label="Settings" title="Settings">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+</button>
+
+<!-- SETTINGS PANEL -->
+<div id="settings">
+  <div id="settings-card">
+    <h3>Settings</h3>
+    <div class="set-sub">Cabinet Office</div>
+    <div class="set-row">
+      <div><div class="set-label">Ambient sound</div><div class="set-desc">Situation room atmosphere</div></div>
+      <div class="toggle on" id="sound-toggle" role="switch" aria-checked="true"></div>
+    </div>
+    <div class="set-actions">
+      <button class="btn" id="btn-resume-settings">Resume term</button>
+      <button class="btn btn-ghost" id="btn-quit">Quit to appointments</button>
+    </div>
+    <div class="set-tip"><b>Your term saves automatically.</b> Progress is written after every turn, so you can close this at any point and pick up the same term later from the appointments screen.</div>
+  </div>
+</div>
+
 <!-- RELATIONS -->
 <div id="relations">
   <h4>Foreign Relations</h4>
@@ -207,6 +313,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 <div id="toasts"></div>
 <div id="hint">Drag to rotate · Scroll to zoom</div>
+<div id="audio-credit">Ambiment by Kevin MacLeod · CC BY 4.0</div>
 
 <!-- VERDICT -->
 <div class="screen" id="verdict">
@@ -215,9 +322,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <h2 id="verdict-title">The <em>Verdict</em></h2>
     <p id="verdict-text"></p>
     <div id="verdict-tally"></div>
+    <div class="report" id="report"></div>
     <button class="btn" id="btn-restart">Return to Appointments</button>
   </div>
 </div>
+
+<audio id="ambient" loop preload="none" crossorigin="anonymous"></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -226,55 +336,56 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
    STATECRAFT · data
    stats: t treasury · a approval · s stability · m military · st standing
    ===================================================== */
+/* off:[dLat,dLng] nudges the label off the marker so tight clusters (UK/EU, SGP/MYS/IDN) don't collide */
 const CAPS = {
-  CAN:{name:"Canada",lat:45.42,lng:-75.70},
-  SGP:{name:"Singapore",lat:1.35,lng:103.82},
-  KAZ:{name:"Kazakhstan",lat:51.17,lng:71.43},
-  USA:{name:"United States",lat:38.90,lng:-77.04},
-  CHN:{name:"China",lat:39.90,lng:116.40},
-  EU:{name:"European Union",lat:50.85,lng:4.35},
-  UK:{name:"United Kingdom",lat:51.51,lng:-0.13},
-  IND:{name:"India",lat:28.61,lng:77.21},
-  MYS:{name:"Malaysia",lat:3.14,lng:101.69},
-  IDN:{name:"Indonesia",lat:-6.21,lng:106.85},
-  JPN:{name:"Japan",lat:35.68,lng:139.69},
-  RUS:{name:"Russia",lat:55.76,lng:37.62},
-  TUR:{name:"Türkiye",lat:39.93,lng:32.86}
+  CAN:{name:"Canada",lat:45.42,lng:-75.70,off:[10,-6]},
+  SGP:{name:"Singapore",lat:1.35,lng:103.82,off:[-9,-2]},
+  KAZ:{name:"Kazakhstan",lat:51.17,lng:71.43,off:[9,0]},
+  USA:{name:"United States",lat:38.90,lng:-77.04,off:[-9,-6]},
+  CHN:{name:"China",lat:39.90,lng:116.40,off:[8,6]},
+  EU:{name:"European Union",lat:50.85,lng:4.35,off:[-7,10]},
+  UK:{name:"United Kingdom",lat:51.51,lng:-0.13,off:[9,-14]},
+  IND:{name:"India",lat:28.61,lng:77.21,off:[-8,4]},
+  MYS:{name:"Malaysia",lat:3.14,lng:101.69,off:[10,-6]},
+  IDN:{name:"Indonesia",lat:-6.21,lng:106.85,off:[-8,8]},
+  JPN:{name:"Japan",lat:35.68,lng:139.69,off:[7,10]},
+  RUS:{name:"Russia",lat:55.76,lng:37.62,off:[9,8]},
+  TUR:{name:"Türkiye",lat:39.93,lng:32.86,off:[-9,-2]}
 };
 
 const NATIONS = {
   CAN:{
     key:"CAN", name:"Canada", title:"Prime Minister", demonym:"Canadians",
     view:{lat:56,lng:-96,dist:2.6},
-    blurb:"A G7 economy stretched across a continent. Wealthy, watched by its only neighbour, and expected to be reasonable by everyone. The full curriculum at medium difficulty.",
+    blurb:"A G7 economy stretched across a continent. Wealthy, closely watched by its only neighbour, and expected to stay calm under pressure. Medium difficulty.",
     difficulty:"Difficulty · Balanced",
     stats:{t:62,a:54,s:72,m:38,st:70},
     relations:{USA:74,CHN:38,EU:68,UK:76,IND:52},
     ally:"USA", rival:"CHN",
     advisors:{fin:{n:"Mireille Chao",r:"Minister of Finance"},for:{n:"Owen Odiase",r:"Minister of Foreign Affairs"},def:{n:"Ruth Calloway",r:"Minister of National Defence"},cos:{n:"Daniel Roy",r:"Chief of Staff"},int:{n:"Farah Denne",r:"Director, Intelligence Service"}},
-    review:{name:"General Election",fail:"The country returned its verdict at the ballot box. Your government did not survive it.",win:"The count ran past midnight, but the map held. You are returned with a mandate."}
+    review:{name:"General Election",fail:"Voters rejected your government at the ballot box.",win:"The count ran past midnight, but your coalition held. You return with a mandate."}
   },
   SGP:{
     key:"SGP", name:"Singapore", title:"Prime Minister", demonym:"Singaporeans",
     view:{lat:8,lng:104,dist:2.35},
-    blurb:"A city-state with no hinterland, no resources, and the busiest strait on Earth at its doorstep. Everything is imported except discipline. Survival is diplomacy.",
+    blurb:"A city-state with no hinterland, few natural resources, and the busiest strait on Earth at its doorstep. It survives through planning, trade, and diplomacy.",
     difficulty:"Difficulty · Demanding",
     stats:{t:70,a:60,s:84,m:46,st:66},
     relations:{CHN:58,USA:66,MYS:60,IDN:58,JPN:70},
     ally:"JPN", rival:"CHN",
     advisors:{fin:{n:"Priya Nair",r:"Minister for Finance"},for:{n:"Marcus Teo",r:"Minister for Foreign Affairs"},def:{n:"David Lim",r:"Minister for Defence"},cos:{n:"Grace Chua",r:"Principal Private Secretary"},int:{n:"Arjun Menon",r:"Director, Security & Intelligence"}},
-    review:{name:"General Election",fail:"The ruling bench lost the confidence of the electorate. A transition committee has been convened.",win:"The mandate is renewed. The island expects you to keep it boring, in the best sense."}
+    review:{name:"General Election",fail:"The ruling party lost public confidence. A transition committee has been convened.",win:"The mandate is renewed. Voters expect steady government and few surprises."}
   },
   KAZ:{
     key:"KAZ", name:"Kazakhstan", title:"President", demonym:"Kazakhstanis",
     view:{lat:48,lng:67,dist:2.5},
-    blurb:"Oil under the steppe, uranium in the ledger, and two enormous neighbours reading your mail. Money is the easy part. Keeping the state steady is not.",
+    blurb:"Oil, uranium, and two enormous neighbours watching every move. Revenue is strong. Keeping the state steady is the hard part.",
     difficulty:"Difficulty · Volatile",
     stats:{t:76,a:48,s:52,m:44,st:46},
     relations:{RUS:66,CHN:62,USA:40,EU:44,TUR:58},
     ally:"RUS", rival:"USA",
     advisors:{fin:{n:"Aigerim Beksultan",r:"Minister of Finance"},for:{n:"Timur Zhaksylyk",r:"Minister of Foreign Affairs"},def:{n:"Yerlan Sadyk",r:"Minister of Defence"},cos:{n:"Dana Omarova",r:"Head of Presidential Administration"},int:{n:"Bolat Serik",r:"Chair, National Security Committee"}},
-    review:{name:"Council Review",fail:"The council met without you. By morning the portraits in the ministries had changed.",win:"The council reads the numbers and nods. The steppe stays quiet, and you stay in the palace."}
+    review:{name:"Council Review",fail:"The council met without you. By morning, ministries were preparing for a new leader.",win:"The council accepts the results. The government stays stable, and you remain president."}
   }
 };
 
@@ -285,193 +396,268 @@ const EVENTS = [
  text:"Commerce has set combined softwood duties at 26.4 percent following its seventh administrative review. Interior mills are announcing curtailments within the month; roughly nine thousand jobs sit in affected ridings. We have a CUSMA Chapter 10 panel and a WTO challenge available. We have won both before. Both take two years. <em>The legal win is certain and slow. The layoffs are certain and fast.</em>",
  opts:[
   {label:"Retaliate with duties on U.S. agricultural imports.",hint:"Approval up · Washington down · consumer prices",out:"The counter-list targets dairy, corn and appliances from swing states. Talk radio approves. The U.S. Trade Representative calls it escalation and suspends two unrelated working groups.",fx:{a:7,t:-4},rel:{USA:-9}},
-  {label:"File the CUSMA panel and negotiate a quota deal.",hint:"Standing up · reads as weak at home",out:"The panel is filed and quota talks open in Geneva. Orderly, defensible, and invisible to a millworker holding a curtailment notice.",fx:{a:-5,st:6},rel:{USA:3}},
-  {label:"Fund a transition package for the mill towns.",hint:"Treasury down · communities held",out:"A $1.2B CAD package covers wage top-ups, retraining and stumpage relief. Expensive, and the towns hold together while the lawyers work.",fx:{t:-8,s:5,a:3}}
+  {label:"File the CUSMA panel and negotiate a quota deal.",hint:"Standing up · looks weak at home",out:"The panel is filed and quota talks open in Geneva. The plan is orderly and defensible, but workers facing layoffs will not see help soon.",fx:{a:-5,st:6},rel:{USA:3}},
+  {label:"Fund a transition package for the mill towns.",hint:"Treasury down · communities supported",out:"A $1.2B CAD package covers wage top-ups, retraining and stumpage relief. It is expensive, but it keeps the towns stable while the legal case moves forward.",fx:{t:-8,s:5,a:3}}
  ]},
 {id:"can_pipeline",nation:"CAN",from:"PRIVY COUNCIL OFFICE",cls:"CONFIDENTIAL",spk:"fin",title:"Pipeline West",
- text:"The regulator has cleared the western corridor project subject to 209 conditions. Cabinet sign-off is the last step. It carries $14B CAD in private capital and 34,000 construction jobs, and it crosses 120 kilometres of territory where the consultation record will not survive judicial review. Two nations along the route say they will physically block construction. <em>The courts will decide the duty-to-consult question either way. You decide who is standing where when they do.</em>",
+ text:"The regulator has cleared the western corridor project subject to 209 conditions. Cabinet sign-off is the last step. It carries $14B CAD in private capital and 34,000 construction jobs, and it crosses 120 kilometres of territory where the consultation record may not survive a court review. Two nations along the route say they will physically block construction. <em>The courts will decide if the consultation was legal. Cabinet has to decide whether to approve the project before that ruling comes.</em>",
  opts:[
   {label:"Approve the project with all 209 conditions.",hint:"Treasury up · unrest risk later",out:"Certificates issue and pre-construction begins in spring. Counsel puts the approval's odds of surviving review at sixty percent. Camps are already forming at two crossings.",fx:{t:10,a:-4},delay:{turns:3,title:"The Blockades",text:"Rail traffic is stopped at four points in sympathy with the corridor camps. CN estimates $205M CAD a week in stalled freight. Enforcement is a provincial call, and the provinces are calling you.",fx:{s:-9,a:-4}}},
-  {label:"Deny the certificate.",hint:"Approval up with some · investment chills",out:"The denial is issued with reasons. Institutional investors reprice Canadian regulatory risk within the week, and two unrelated mining projects pause their financing.",fx:{t:-7,a:5},rel:{USA:-3}},
-  {label:"Order a supplementary consultation round.",hint:"Buys time · pleases no one",out:"Twelve to eighteen more months of process. The proponent threatens to walk, the camps stand down, and the same decision waits on the far side of it.",fx:{a:-3,s:2}}
+  {label:"Deny the certificate.",hint:"Approval up with some · investment risk",out:"The denial is issued with reasons. Within a week, investors see Canada as a harder place to build major projects, and two unrelated mining projects pause financing.",fx:{t:-7,a:5},rel:{USA:-3}},
+  {label:"Order a supplementary consultation round.",hint:"Buys time · pleases no one",out:"The process extends another twelve to eighteen months. The company threatens to walk away, the camps stand down, and cabinet will still face the same decision later.",fx:{a:-3,s:2}}
  ]},
 {id:"can_arctic",nation:"CAN",from:"NORAD LIAISON",cls:"TOP SECRET",spk:"def",title:"Arctic Wake",
- text:"A foreign research vessel has spent eleven days running seabed surveys inside the archipelago without seeking clearance. Under our position these are internal waters. Under theirs it is an international strait, and every unanswered transit builds their case file. NORAD tracked the entire run. The question is whether we say so. <em>Sovereignty up there is maintained by response times, not by maps.</em>",
+ text:"A foreign research vessel has spent eleven days running seabed surveys inside the archipelago without seeking clearance. Under our position these are internal waters. Under theirs it is an international strait, and every unanswered transit strengthens their legal argument. NORAD tracked the entire run. The question is whether we say so. <em>Our claim is stronger if we respond quickly and consistently.</em>",
  opts:[
-  {label:"Sail a frigate north and escort them out, publicly.",hint:"Military posture · costs fuel and ships",out:"HMCS Montréal closes to visual range and the imagery is released the same day. It reads as resolve. The survey data, presumably complete, sails home anyway.",fx:{m:6,t:-6,st:7},rel:{USA:4}},
-  {label:"Deliver a démarche and log the incursion.",hint:"Cheap · easily ignored",out:"The note is delivered with appropriate frost and the incident is entered into the record for any future arbitration. Correct, quiet, invisible.",fx:{st:2}},
+  {label:"Sail a frigate north and escort them out, publicly.",hint:"Military response · costs fuel and ships",out:"HMCS Montréal closes to visual range and the imagery is released the same day. The response looks firm, but the vessel likely finished collecting the survey data before leaving.",fx:{m:6,t:-6,st:7},rel:{USA:4}},
+  {label:"Deliver a formal protest and log the incursion.",hint:"Cheap · easily ignored",out:"The protest note is delivered and the incident is entered into the record for any future arbitration. It is legally useful, but the public may not notice.",fx:{st:2}},
   {label:"No response. The Arctic is big.",hint:"Free now · precedent later",out:"Nothing is issued. The vessel's home ministry publishes the survey as open science eight months later, coordinates included.",fx:{},delay:{turns:4,title:"The Precedent",text:"A filing at a maritime tribunal cites three years of 'unchallenged scientific transit' through the archipelago. Our own tracking logs, unanswered at the time, are their Exhibit A.",fx:{st:-8,a:-4}}}
  ]},
 {id:"can_housing",nation:"CAN",from:"PMO INTERNAL",cls:"CONFIDENTIAL",spk:"cos",title:"Housing Fever",
- text:"Rent inflation is running eleven percent nationally and vacancy is under two percent in every major city. CMHC says the gap is 3.5 million units by 2030; completions run about 220,000 a year. Population growth added 800,000 people last year against those completions. Caucus is split between a federal build program and a levels cut. <em>Both will be called doing something. Only one of them builds anything.</em>",
+ text:"Rent inflation is running eleven percent nationally and vacancy is under two percent in every major city. CMHC says the gap is 3.5 million units by 2030; completions run about 220,000 a year. Population growth added 800,000 people last year against those completions. Caucus is split between a federal build program and a levels cut. <em>Both choices look active. Only building homes adds supply.</em>",
  opts:[
-  {label:"Launch a $12B CAD build program with zoning strings attached.",hint:"Treasury down hard · approval recovers",out:"Federal money now requires fourplex zoning and permit timelines from any city that takes it. Completions will not move for two years. The announcement moves polling in two weeks.",fx:{t:-10,a:8,s:3}},
+  {label:"Launch a $12B CAD build program with zoning rules attached.",hint:"Treasury down hard · approval recovers",out:"Federal money now requires fourplex zoning and permit timelines from any city that takes it. New completions will not rise for two years, but voters respond to the announcement now.",fx:{t:-10,a:8,s:3}},
   {label:"Cut permanent and temporary resident targets by a third.",hint:"Popular now · labour gap later",out:"The levels plan is revised down. Rent growth cools in the spring data. Hospitals and framing crews begin posting the vacancies that used to fill themselves.",fx:{a:6,st:-4},delay:{turns:3,title:"The Labour Gap",text:"Construction posted 82,000 unfilled positions this quarter, health care 96,000. The units you promised now compete for the workers you cut.",fx:{t:-6,a:-5}}},
-  {label:"Hold course and let interest rates do the work.",hint:"Free · cold",out:"The line is fiscal discipline. The next quarterly release shows rents up another three percent, and the clip of you saying 'markets will adjust' runs everywhere.",fx:{a:-7}}
+  {label:"Hold course and let interest rates do the work.",hint:"Free · cold",out:"The government argues for fiscal discipline. The next quarterly release shows rents up another three percent, and the clip of you saying 'markets will adjust' runs everywhere.",fx:{a:-7}}
  ]},
 {id:"can_minerals",nation:"CAN",from:"EMBASSY BRUSSELS",cls:"SECRET",spk:"for",title:"The Grid Deal",
- text:"Brussels has tabled a critical raw materials partnership: guaranteed offtake for nickel, lithium and rare earths at a floor price, plus $2.8B CAD in processing investment, conditional on excluding processors controlled by non-market economies from the chain. Beijing's embassy has already asked, informally, whether we intend to sign. <em>They are not asking about minerals. They are asking whose supply chain we are in.</em>",
+ text:"Brussels has tabled a critical raw materials partnership: guaranteed offtake for nickel, lithium and rare earths at a floor price, plus $2.8B CAD in processing investment, conditional on excluding processors controlled by non-market economies from the chain. Beijing's embassy has already asked, informally, whether we intend to sign. <em>They want to know whether Canada is choosing Europe's supply chain over China's.</em>",
  opts:[
-  {label:"Sign the partnership.",hint:"Europe up · Beijing down · long money",out:"The pact signs in Brussels with the processing money attached. Beijing expresses regret, and an unannounced customs slowdown hits two Canadian agricultural exporters the same week.",fx:{st:4},rel:{EU:10,CHN:-10},delay:{turns:3,title:"First Offtake",text:"The first floor-priced shipments clear Rotterdam and the processing facility breaks ground near Sudbury. The pact is now a revenue line, not a communiqué.",fx:{t:9}}},
+  {label:"Sign the partnership.",hint:"Europe up · Beijing down · long-term revenue",out:"The pact signs in Brussels with the processing money attached. Beijing expresses regret, and an unannounced customs slowdown hits two Canadian agricultural exporters the same week.",fx:{st:4},rel:{EU:10,CHN:-10},delay:{turns:3,title:"First Offtake",text:"The first floor-priced shipments clear Rotterdam and the processing facility breaks ground near Sudbury. The pact is now producing real revenue.",fx:{t:9}}},
   {label:"Decline. Stay a seller to every buyer.",hint:"Beijing warms · Brussels cools",out:"You call it market neutrality. Brussels moves the processing investment to Australia within the quarter.",fx:{},rel:{CHN:6,EU:-7}},
-  {label:"Counter: processing capacity gets built here first.",hint:"Standing play · tests patience",out:"The counterproposal lands as serious rather than evasive. Negotiators reconvene in six weeks with a revised annex and slightly less patience.",fx:{st:3},rel:{EU:-2}}
+  {label:"Counter: processing capacity gets built here first.",hint:"Standing up · tests patience",out:"The counterproposal is treated as serious. Negotiators reconvene in six weeks with a revised annex, but Europe is less patient.",fx:{st:3},rel:{EU:-2}}
  ]},
 {id:"can_quebec",nation:"CAN",from:"INTERGOVERNMENTAL AFFAIRS",cls:"CONFIDENTIAL",spk:"cos",title:"The Language Bill",
- text:"Quebec's language law now reaches federally regulated workplaces: banks, airlines, telecoms. Three provinces want a federal reference to the Supreme Court, arguing the precedent reaches them next. Quebec invoked the notwithstanding clause preemptively, which narrows what any court can say. Your caucus holds thirty-four seats in the province. <em>There is no option here that is only a legal question.</em>",
+ text:"Quebec's language law now reaches federally regulated workplaces: banks, airlines, telecoms. Three provinces want a federal reference to the Supreme Court, arguing the precedent reaches them next. Quebec invoked the notwithstanding clause preemptively, which narrows what any court can say. Your caucus holds thirty-four seats in the province. <em>Every choice has legal and political costs.</em>",
  opts:[
-  {label:"Refer the law to the Supreme Court.",hint:"Principle · short-term fracture",out:"The reference is filed. Quebec City calls it a declaration of war on the National Assembly, and every federalist in the province spends a year explaining the difference between jurisdiction and hostility.",fx:{s:-8,a:-3},delay:{turns:4,title:"The Ruling",text:"The Court draws the line finely: provincial authority upheld inside provincial jurisdiction, federal undertakings out of reach. Both sides declare victory and the temperature drops.",fx:{s:11,st:3}}},
+  {label:"Refer the law to the Supreme Court.",hint:"Principle · short-term fracture",out:"The reference is filed. Quebec City calls it an attack on the National Assembly, and federal MPs in the province spend months explaining why the case is about jurisdiction.",fx:{s:-8,a:-3},delay:{turns:4,title:"The Ruling",text:"The Court draws a narrow line: provincial authority is upheld inside provincial jurisdiction, but federal undertakings stay outside the law. Both sides claim victory and tensions ease.",fx:{s:11,st:3}}},
   {label:"Negotiate an administrative carve-out for federal undertakings.",hint:"Peace now · grumbling elsewhere",out:"A memorandum spares the banks and airlines the compliance burden without touching the law. Quebec claims the substance, you claim the exemption, Alberta asks where its own is.",fx:{s:4,a:-2}},
-  {label:"Take no federal position.",hint:"Quiet · reads as absent",out:"Ottawa stays silent. Both legislatures fill the vacuum with their own account of what you must be thinking.",fx:{a:-5,s:-2}}
+  {label:"Take no federal position.",hint:"Quiet · looks absent",out:"Ottawa stays silent. Both sides use that silence to claim the federal government agrees with them.",fx:{a:-5,s:-2}}
  ]},
 {id:"can_border",nation:"CAN",from:"EMBASSY WASHINGTON",cls:"SECRET",spk:"int",title:"The Northbound File",
- text:"Washington's new fentanyl strategy names Canada as a precursor transit country and requests a joint enforcement framework with shared targeting and CBSA data access. Our seizure data attributes under one percent of U.S. interceptions to the northern border. The request is not really about chemistry. <em>It is about giving them something to announce.</em>",
+ text:"Washington's new fentanyl strategy names Canada as a precursor transit country and requests a joint enforcement framework with shared targeting and CBSA data access. Our seizure data attributes under one percent of U.S. interceptions to the northern border. The evidence does not show Canada is a major source. <em>The request is mostly about giving Washington a visible win.</em>",
  opts:[
   {label:"Stand up the joint task force.",hint:"Costly · buys goodwill",out:"Integrated targeting cells stand up at Vancouver, Toronto and Montréal. Seizures stay marginal, and the next White House fact sheet lists Canada under partners instead of sources.",fx:{t:-6,m:3},rel:{USA:9}},
-  {label:"Decline the framing and publish the seizure data.",hint:"Honest · expensive honesty",out:"The numbers go out in a deliberately dry technical briefing. At home it reads as evidence. In Washington, where the argument is political, evidence is beside the point.",fx:{a:6,st:2},rel:{USA:-7}}
+  {label:"Decline the framing and publish the seizure data.",hint:"Honest · costs goodwill",out:"The numbers go out in a dry technical briefing. At home, the evidence helps. In Washington, the response looks like a refusal to cooperate.",fx:{a:6,st:2},rel:{USA:-7}}
  ]},
 /* ---------------- SINGAPORE ---------------- */
 {id:"sgp_strait",nation:"SGP",from:"MARITIME AUTHORITY",cls:"FLASH",spk:"cos",title:"The Strait Toll",
- text:"A laden VLCC and a bulk carrier have collided at the eastern approaches to the Traffic Separation Scheme. No casualties, but the tanker is down at the bow and the deep-draft channel is fouled. Two hundred vessels a day use this passage, and every hour of closure moves insurance premiums on the whole strait. Salvage rights are already contested between the owners' clubs. <em>The strait does not care whose fault it is. Neither do the shippers.</em>",
+ text:"A laden VLCC and a bulk carrier have collided at the eastern approaches to the Traffic Separation Scheme. No casualties, but the tanker is down at the bow and the deep-draft channel is fouled. Two hundred vessels a day use this passage, and every hour of closure moves insurance premiums on the whole strait. Salvage rights are already contested between the owners' clubs. <em>Shippers care less about blame than about how fast the channel reopens.</em>",
  opts:[
   {label:"Deploy our salvage assets now, argue cost recovery later.",hint:"Treasury down · reputation up",out:"Our tugs and dive teams clear the deep-draft channel in sixty hours, recovery to be settled in arbitration. The trade press runs the operation photo above the fold, our flag on the salvage master's launch.",fx:{t:-7,st:9},rel:{MYS:5,IDN:5}},
-  {label:"Convene a joint operation under the Cooperative Mechanism.",hint:"Slower · shares the bill",out:"The trilateral operation takes five days and two protocol dinners, and reopens the channel with all three flags in the photo. Slower, and it builds something.",fx:{t:-3,st:3},rel:{MYS:7,IDN:7}},
+  {label:"Convene a joint operation under the Cooperative Mechanism.",hint:"Slower · shares the bill",out:"The trilateral operation takes five days and two protocol dinners, then reopens the channel with all three flags in the photo. It is slower, but it improves regional coordination.",fx:{t:-3,st:3},rel:{MYS:7,IDN:7}},
   {label:"Leave it to the owners' insurers.",hint:"Free · looks passive",out:"The P&I clubs appoint salvors at insurer speed. Nine days of anchored traffic, and a shipping column asks in print who actually runs this strait.",fx:{st:-8,a:-4}}
  ]},
 {id:"sgp_suitors",nation:"SGP",from:"MINDEF SECURE",cls:"TOP SECRET",spk:"def",title:"Two Suitors",
- text:"Washington has requested expanded rotational access at Changi: carrier berthing plus maritime patrol aircraft on a standing schedule. Beijing's ambassador called this morning, ostensibly about the business council, and spoke at length about how much regional trade depends on mutual restraint. The 1990 access memorandum has stretched before. This is a different order of stretch. <em>Both capitals will read the answer as doctrine.</em>",
+ text:"Washington has requested expanded rotational access at Changi: carrier berthing plus maritime patrol aircraft on a standing schedule. Beijing's ambassador called this morning, ostensibly about the business council, and spoke at length about how much regional trade depends on mutual restraint. The 1990 access memorandum has stretched before. This is a much larger request. <em>Both capitals will treat our answer as a signal of who we are closer to.</em>",
  opts:[
   {label:"Sign the expanded access addendum.",hint:"Security up · Beijing down hard",out:"The addendum signs without ceremony and fleet planners get their berthing windows. The next Chinese trade delegation arrives two members short and one week late.",fx:{m:8,st:3},rel:{USA:11,CHN:-12}},
-  {label:"Decline, citing berth capacity.",hint:"Beijing warms · alliance chills",out:"The refusal is wrapped in scheduling language and accepted with flat courtesy. Washington logs it. The logging is the cost.",fx:{},rel:{CHN:8,USA:-8}},
-  {label:"Offer logistics support only. No standing deployments.",hint:"The hedge · thin margins",out:"Fuel, victualling, repair. A formula that annoys both capitals at survivable levels, which is the design specification.",fx:{m:3},rel:{USA:3,CHN:-3}}
+  {label:"Decline, citing berth capacity.",hint:"Beijing warms · alliance cools",out:"The refusal is wrapped in scheduling language and accepted with flat courtesy. Washington records the decision and will remember it.",fx:{},rel:{CHN:8,USA:-8}},
+  {label:"Offer logistics support only. No standing deployments.",hint:"Balanced · limited gains",out:"We offer fuel, supplies, and repairs, but no standing deployments. Both capitals are dissatisfied, but not enough to break with us.",fx:{m:3},rel:{USA:3,CHN:-3}}
  ]},
 {id:"sgp_water",nation:"SGP",from:"PMO SECURE",cls:"SECRET",spk:"fin",title:"The Water Clock",
- text:"Johor has formally requested review of the raw water price under the 1962 Agreement, still 3 sen per thousand gallons, a rate set the year the agreement was signed. Their position is not unreasonable and their timing is not accidental: the request arrives alongside two stalled bilateral files. The agreement runs to 2061. Desalination and recycling cover a little over half of demand. <em>The law is with us. The reservoir levels are the actual negotiation.</em>",
+ text:"Johor has formally requested review of the raw water price under the 1962 Agreement, still 3 sen per thousand gallons, a rate set the year the agreement was signed. Their position is not unreasonable and their timing is not accidental: the request arrives alongside two stalled bilateral files. The agreement runs to 2061. Desalination and recycling cover a little over half of demand. <em>Our legal case is strong, but Malaysia still has leverage because we still need imported water.</em>",
  opts:[
-  {label:"Negotiate a phased price increase, linked to the stalled files.",hint:"Treasury down · neighbour steadied",out:"A stepped schedule signs alongside movement on the other files. Costlier water, warmer Causeway, and a linkage everyone denies that is visible from space.",fx:{t:-6},rel:{MYS:9}},
-  {label:"Accelerate desalination and recycling to full self-sufficiency.",hint:"Expensive now · sovereign later",out:"Two additional plants are fast-tracked at heavy capital cost and higher energy draw. The strategic arithmetic changes permanently, which is the point.",fx:{t:-12},delay:{turns:4,title:"Water Independence",text:"The fifth plant comes online ahead of schedule. Imported water is now optional in the national balance, and files across the Causeway begin unsticking on their own.",fx:{s:8,st:6,t:4}}},
-  {label:"Refuse. The agreement stands to 2061.",hint:"Legally sound · politically flammable",out:"Our legal position is airtight and delivered politely. Correctness, across the Causeway, is currently trading at a discount.",fx:{},rel:{MYS:-9},delay:{turns:2,title:"Causeway Friction",text:"Six weeks of go-slow customs inspections have hit fresh food imports and three hundred thousand daily commuters. Nothing official. Nothing deniable. The legal win is intact and the relationship is paying for it.",fx:{s:-5,a:-4}}}
+  {label:"Negotiate a phased price increase, linked to the stalled files.",hint:"Treasury down · neighbour steadied",out:"A stepped schedule signs alongside movement on the other files. Water costs more, but relations with Malaysia improve.",fx:{t:-6},rel:{MYS:9}},
+  {label:"Accelerate desalination and recycling to full self-sufficiency.",hint:"Expensive now · independence later",out:"Two additional plants are fast-tracked at heavy capital cost and higher energy draw. The investment permanently reduces Malaysia's leverage.",fx:{t:-12},delay:{turns:4,title:"Water Independence",text:"The fifth plant comes online ahead of schedule. Imported water is now optional in the national balance, and Malaysia becomes easier to negotiate with.",fx:{s:8,st:6,t:4}}},
+  {label:"Refuse. The agreement stands to 2061.",hint:"Legally sound · politically risky",out:"Our legal position is strong and delivered politely. Malaysia sees the refusal as disrespect, even if the law is on our side.",fx:{},rel:{MYS:-9},delay:{turns:2,title:"Causeway Friction",text:"Six weeks of slow customs inspections have hit fresh food imports and three hundred thousand daily commuters. Nothing is announced officially, but the link to the water dispute is clear.",fx:{s:-5,a:-4}}}
  ]},
 {id:"sgp_fab",nation:"SGP",from:"EDB PRIORITY",cls:"CONFIDENTIAL",spk:"fin",title:"The Chip Corridor",
- text:"A leading-edge foundry has shortlisted us against Arizona and Kumamoto for its next advanced fab. The ask: co-investment, power and water guarantees, and a twenty-year tax arrangement, roughly nine billion in support against twenty-eight billion of investment. The board models four thousand direct jobs and an ecosystem multiple of three. Our grid margin makes the power guarantee the hard part. <em>Anchor tenants set the street. So does the rent we pay them.</em>",
+ text:"A leading-edge foundry has shortlisted us against Arizona and Kumamoto for its next advanced fab. The ask: co-investment, power and water guarantees, and a twenty-year tax arrangement, roughly nine billion in support against twenty-eight billion of investment. The board models four thousand direct jobs and an ecosystem multiple of three. Our grid margin makes the power guarantee the hard part. <em>A major tenant can build an industry around it, but the public will pay a high price to win it.</em>",
  opts:[
-  {label:"Match the incentive package.",hint:"Treasury down hard · compounding later",out:"The package clears cabinet and the foundry announces for Singapore. The incentive line is the largest in the agency's history. Supplier site inquiries begin the following week.",fx:{t:-11},delay:{turns:4,title:"The Ecosystem Effect",text:"Forty-one supplier, packaging and design firms have followed the fab in. The corridor you subsidized is now a tax base.",fx:{t:13,st:5}}},
-  {label:"Hold discipline and pass.",hint:"Prudent · momentum lost",out:"The fab announces for Kumamoto. The discipline is defensible in every model and painful in every trade journal covering what the ecosystem built there instead.",fx:{a:-4,st:-3}}
+  {label:"Match the incentive package.",hint:"Treasury down hard · payoff later",out:"The package clears cabinet and the foundry announces for Singapore. It is the largest incentive package in the agency's history. Supplier site inquiries begin the following week.",fx:{t:-11},delay:{turns:4,title:"The Ecosystem Effect",text:"Forty-one supplier, packaging and design firms have followed the fab in. The subsidized corridor is now producing tax revenue.",fx:{t:13,st:5}}},
+  {label:"Hold discipline and pass.",hint:"Prudent · momentum lost",out:"The fab announces for Kumamoto. The decision is fiscally defensible, but the industry press focuses on the jobs and suppliers that went elsewhere.",fx:{a:-4,st:-3}}
  ]},
 {id:"sgp_haze",nation:"SGP",from:"NEA SITUATION ROOM",cls:"CONFIDENTIAL",spk:"for",title:"Haze Season",
- text:"Plantation fires across the strait have held the pollution index in the hazardous band for six days. Schools are closed, mask stocks are rationed, and satellite hotspot data ties the burns to concessions held by three groups with local listings. The Transboundary Haze Pollution Act gives us extraterritorial reach we have never fully used. <em>We can prosecute them or help put the fires out. The public wants both. Jakarta will tolerate one.</em>",
+ text:"Plantation fires across the strait have held the pollution index in the hazardous band for six days. Schools are closed, mask stocks are rationed, and satellite hotspot data ties the burns to concessions held by three groups with local listings. The Transboundary Haze Pollution Act gives us extraterritorial reach we have never fully used. <em>We can prosecute them or help put the fires out. The public wants both, but Indonesia is likely to accept only one.</em>",
  opts:[
   {label:"Serve notices on the three groups under the Haze Act.",hint:"Approval up · Jakarta bristles",out:"Notices are served under the Act's extraterritorial provisions. Domestic approval is immediate. Jakarta calls the reach a concerning precedent and postpones the annual leaders' retreat.",fx:{a:7},rel:{IDN:-8}},
   {label:"Fund joint firefighting quietly.",hint:"Treasury down · neighbour up",out:"Water bombers and cloud-seeding support fly under their coordination, no flags in the frame. The index clears a week early. Jakarta remembers who did not hold a press conference.",fx:{t:-5,a:2},rel:{IDN:9}}
  ]},
 {id:"sgp_press",nation:"SGP",from:"MHA ASSESSMENT",cls:"SECRET",spk:"int",title:"The Correspondent",
- text:"A wire-service feature has described our public order framework as managed democracy, and it is being read into the record in two parliaments ahead of trade ratification votes. Our falsehoods legislation applies to false statements of fact; this is characterization, which is harder. The correspondents' association is watching what we do next. <em>The story is the trial, whatever any court says.</em>",
+ text:"A wire-service feature has described our public order framework as managed democracy, and it is being read into the record in two parliaments ahead of trade ratification votes. Our falsehoods legislation applies to false statements of fact; this is characterization, which is harder. The correspondents' association is watching what we do next. <em>If we take this to court, the court case may become a bigger story than the article.</em>",
  opts:[
-  {label:"Run a month of open ministerial access for foreign press.",hint:"Standing up · a little chaos",out:"Forty briefings, no minders in the room. Coverage splits two flattering, one hostile, and both ratification votes proceed. Not being afraid turns out to be a message.",fx:{st:7,s:-3}},
-  {label:"Pursue correction through legal channels.",hint:"Order upheld · optics abroad",out:"The correction runs on page fourteen. The original feature enters every journalism syllabus in the region. Order is maintained at list price.",fx:{s:4,st:-6}}
+  {label:"Run a month of open ministerial access for foreign press.",hint:"Standing up · some risk",out:"Forty briefings run with no minders in the room. Coverage is mixed, but both ratification votes proceed. The openness helps more than it hurts.",fx:{st:7,s:-3}},
+  {label:"Pursue correction through legal channels.",hint:"Order upheld · optics abroad",out:"The correction runs on page fourteen. The original article gets more attention because of the case. Order is maintained, but the international cost is real.",fx:{s:4,st:-6}}
  ]},
 {id:"sgp_reserve",nation:"SGP",from:"MINDEF REVIEW",cls:"CONFIDENTIAL",spk:"def",title:"The Reservist Question",
- text:"The defence review recommends cutting full-time service from twenty-four months to twenty-two and standing up a digital and autonomous systems service with the savings. Service leadership is split by generation. Every household in the country has a stake in the number, and online sentiment is not subtle about which way. <em>Two months is nothing operationally and everything politically.</em>",
+ text:"The defence review recommends cutting full-time service from twenty-four months to twenty-two and standing up a digital and autonomous systems service with the savings. Service leadership is split by generation. Every household in the country has a stake in the number, and online sentiment is not subtle about which way. <em>Two months may not change readiness much, but it matters a lot to families.</em>",
  opts:[
-  {label:"Adopt the review in full.",hint:"Modernize · transition wobble",out:"The reduction and the new service are announced together. Enlistment cohorts cheer, two retired generals write forum letters, and the transition year has gaps the old guard catalogues in public.",fx:{a:6,m:-3},delay:{turns:3,title:"First Exercise",text:"The new service's first full exercise runs a live counter-drone and cyber scenario and quietly outperforms two visiting delegations' expectations. The bet is paying.",fx:{m:9,st:4}}},
-  {label:"Keep service length. Fund the new service on top.",hint:"Strongest force · heaviest bill",out:"Nobody's service is shortened and the new corps is funded anyway. Deterrence undiluted, and the defence budget line does the wincing on everyone's behalf.",fx:{m:7,t:-8,a:-3}}
+  {label:"Adopt the review in full.",hint:"Modernize · transition problems",out:"The reduction and the new service are announced together. Enlistment cohorts cheer, two retired generals criticize the plan, and the transition year exposes some readiness gaps.",fx:{a:6,m:-3},delay:{turns:3,title:"First Exercise",text:"The new service's first full exercise runs a live counter-drone and cyber scenario and outperforms expectations. The reform is starting to show results.",fx:{m:9,st:4}}},
+  {label:"Keep service length. Fund the new service on top.",hint:"Strongest force · heaviest bill",out:"Nobody's service is shortened and the new corps is funded anyway. Readiness improves, but the defence budget rises sharply.",fx:{m:7,t:-8,a:-3}}
  ]},
 /* ---------------- KAZAKHSTAN ---------------- */
 {id:"kaz_pipeline",nation:"KAZ",from:"ENERGY MINISTRY SECURE",cls:"TOP SECRET",spk:"fin",title:"Pipeline North",
- text:"The Black Sea terminal has suspended consortium pipeline loadings again, the third storm-damage finding this year, on the route that carries four fifths of our crude to market. Each stoppage costs roughly $120M a day, and each one lands within days of a decision Moscow disliked. The trans-Caspian corridor moves a tenth of that volume today. <em>The message is the maintenance schedule.</em>",
+ text:"The Black Sea terminal has suspended consortium pipeline loadings again, the third storm-damage finding this year, on the route that carries four fifths of our crude to market. Each stoppage costs roughly $120M a day, and each one lands within days of a decision Moscow disliked. The trans-Caspian corridor moves a tenth of that volume today. <em>Moscow calls it maintenance, but the timing looks political.</em>",
  opts:[
-  {label:"Commit to trans-Caspian expansion: tankers, rail, terminal capacity.",hint:"Costly · sovereignty compounding",out:"Charter contracts and terminal expansion sign within the month. Moscow's press calls the route economically irrational, which is how you know the arithmetic is strategic.",fx:{t:-9},rel:{RUS:-8,TUR:8,CHN:4},delay:{turns:4,title:"First Caspian Cargo",text:"The first full consignment crosses to Baku and rails onward to the Mediterranean. Unit costs run higher, and the route now exists at scale. The northern lever moves less.",fx:{t:11,st:7}}},
-  {label:"Absorb the stoppages and keep the peace.",hint:"Cheap now · dependence deepens",out:"Loadings resume when the repairs conclude, two days after the summit communiqué is agreed. Everyone smiles for the cameras and the dependency compounds another year.",fx:{t:-5,st:-4},rel:{RUS:5}}
+  {label:"Commit to trans-Caspian expansion: tankers, rail, terminal capacity.",hint:"Costly · less dependent",out:"Charter contracts and terminal expansion sign within the month. Moscow's press calls the route economically irrational, but the point is to reduce dependence on the northern route.",fx:{t:-9},rel:{RUS:-8,TUR:8,CHN:4},delay:{turns:4,title:"First Caspian Cargo",text:"The first full consignment crosses to Baku and rails onward to the Mediterranean. Unit costs are higher, but the route now works at scale and Moscow has less leverage.",fx:{t:11,st:7}}},
+  {label:"Absorb the stoppages and keep the peace.",hint:"Cheap now · dependence deepens",out:"Loadings resume when the repairs conclude, two days after the summit communique is agreed. The relationship stays calm, but dependence on the northern route gets worse.",fx:{t:-5,st:-4},rel:{RUS:5}}
  ]},
 {id:"kaz_fuel",nation:"KAZ",from:"NSC FLASH",cls:"TOP SECRET",spk:"int",title:"The January Echo",
- text:"Liquefied gas prices doubled overnight in the western oil towns when the subsidy lapsed, and by evening the squares are filling. Four years ago this exact sequence reached the largest city in five days and ended with foreign troops on our streets. Interior wants a curfew. The oil unions want a phone call. <em>Everyone in this building remembers which decisions aged badly.</em>",
+ text:"Liquefied gas prices doubled overnight in the western oil towns when the subsidy lapsed, and by evening the squares are filling. Four years ago this exact sequence reached the largest city in five days and ended with foreign troops on our streets. Interior wants a curfew. The oil unions want a phone call. <em>Everyone here remembers which choices made things worse last time.</em>",
  opts:[
-  {label:"Restore the price cap tonight. Dismiss the energy board.",hint:"Treasury down · pressure vents",out:"The cap is announced before midnight and the resignations read on morning television. The squares empty into the cold. Everyone files the precedent that pressure works.",fx:{t:-8,s:7,a:5}},
-  {label:"Clear the squares by force.",hint:"Order tonight · a debt that collects",out:"The squares are cleared in four hours with mass detentions. State channels show calm streets. Foreign channels show the other footage, and so does every phone in every square.",fx:{s:5,a:-8,st:-9},delay:{turns:3,title:"The Debt Collects",text:"Dispersal footage has resurfaced, organized this time. Rolling strikes at two refineries, sympathy walkouts in the capital, and a diaspora campaign with better production values than state television.",fx:{s:-12,a:-5}}},
-  {label:"Fly west and take the microphone in the square.",hint:"Slow · unheard of · maybe durable",out:"No president has stood in that square. The crowd does not cheer. It hands up a list of names and prices, and it listens.",fx:{a:-2},delay:{turns:2,title:"The Listening",text:"The wage and pricing councils born in the square have produced a fuel formula with union signatures on it. It is holding, and it is being cited in towns you have never visited.",fx:{s:9,a:8}}}
+  {label:"Restore the price cap tonight. Dismiss the energy board.",hint:"Treasury down · pressure eases",out:"The cap is announced before midnight and the resignations are read on morning television. The squares empty, but protesters learn that pressure can force a quick reversal.",fx:{t:-8,s:7,a:5}},
+  {label:"Clear the squares by force.",hint:"Order tonight · backlash later",out:"The squares are cleared in four hours with mass detentions. State channels show calm streets, but foreign outlets and phone videos show the violence.",fx:{s:5,a:-8,st:-9},delay:{turns:3,title:"The Debt Collects",text:"Footage of the crackdown has resurfaced and is being shared widely. Rolling strikes hit two refineries, sympathy walkouts spread in the capital, and diaspora groups are organizing a stronger campaign.",fx:{s:-12,a:-5}}},
+  {label:"Fly west and take the microphone in the square.",hint:"Slow · unusual · maybe durable",out:"No president has stood in that square before. The crowd does not cheer, but it gives you a list of demands and listens to the reply.",fx:{a:-2},delay:{turns:2,title:"The Listening",text:"The wage and pricing councils created after the square meeting have produced a fuel formula with union signatures on it. It is holding, and other towns are asking for the same model.",fx:{s:9,a:8}}}
  ]},
 {id:"kaz_uranium",nation:"KAZ",from:"FOREIGN MINISTRY SECURE",cls:"SECRET",spk:"for",title:"The Uranium Card",
- text:"A Western utilities consortium wants ten-year supply contracts routed outside the Russian conversion chain, at a thirty percent premium, with conversion capacity built here as part of the deal. We produce over forty percent of world supply, and most of it currently rides northern infrastructure to market. Their state atomic corporation has already inquired about schedule harmonization. <em>Cards this strong get noticed when played. Also when not played.</em>",
+ text:"A Western utilities consortium wants ten-year supply contracts routed outside the Russian conversion chain, at a thirty percent premium, with conversion capacity built here as part of the deal. We produce over forty percent of world supply, and most of it currently rides northern infrastructure to market. Their state atomic corporation has already inquired about schedule harmonization. <em>A deal this important will send a message whether we sign it or refuse it.</em>",
  opts:[
-  {label:"Sign the Western contracts, conversion plant included.",hint:"Treasury up · northern frost",out:"The contracts close at premium terms with the conversion facility attached. Brussels and Washington issue warm statements. Moscow issues nothing, which from Moscow is a statement.",fx:{t:9,st:5},rel:{EU:9,USA:7,RUS:-11}},
-  {label:"Split volumes across all buyers. No exclusivity.",hint:"Multi-vector orthodoxy",out:"Every customer gets an allocation and no one gets a lever. Thinner margin, thinner offence. The multi-vector faith holds another season.",fx:{t:4},rel:{EU:3,USA:2,RUS:-2}}
+  {label:"Sign the Western contracts, conversion plant included.",hint:"Treasury up · Moscow colder",out:"The contracts close at premium terms with the conversion facility attached. Brussels and Washington issue warm statements. Moscow says nothing publicly, which signals its displeasure.",fx:{t:9,st:5},rel:{EU:9,USA:7,RUS:-11}},
+  {label:"Split volumes across all buyers. No exclusivity.",hint:"Balanced policy",out:"Every customer gets an allocation and no one gets special control. Margins are lower, but no partner can claim we picked a side.",fx:{t:4},rel:{EU:3,USA:2,RUS:-2}}
  ]},
 {id:"kaz_drought",nation:"KAZ",from:"AGRICULTURE MINISTRY",cls:"CONFIDENTIAL",spk:"fin",title:"Steppe Water",
- text:"The wheat harvest is coming in a third short after the driest summer in four decades, and flour prices are already moving in the bazaars. We hold 1.1 million tonnes in contracts to neighbours who have no alternative supplier this season. An export ban feeds the domestic market and defaults on all of them. <em>Bread prices move faster than any poll we run.</em>",
+ text:"The wheat harvest is coming in a third short after the driest summer in four decades, and flour prices are already moving in the bazaars. We hold 1.1 million tonnes in contracts to neighbours who have no alternative supplier this season. An export ban feeds the domestic market and defaults on all of them. <em>Food prices can cause unrest faster than our polling can measure.</em>",
  opts:[
-  {label:"Ban grain exports for the season.",hint:"Bread stays cheap · word gets around",out:"The ban holds domestic flour flat through winter. Tashkent and Bishkek scramble for Russian grain at markup, and both file the lesson about contracts with us.",fx:{s:6,a:4,st:-7}},
-  {label:"Honour the contracts. Import the shortfall at spot.",hint:"Treasury pays · reputation compounds",out:"The commitments ship in full and the import bill is ugly. On every commodities desk in the region a note is made: they deliver in a drought.",fx:{t:-9,st:8}}
+  {label:"Ban grain exports for the season.",hint:"Bread stays cheap · trust falls",out:"The ban holds domestic flour prices flat through winter. Tashkent and Bishkek scramble for Russian grain at a markup, and both governments trust our contracts less.",fx:{s:6,a:4,st:-7}},
+  {label:"Honour the contracts. Import the shortfall at spot.",hint:"Treasury pays · reputation rises",out:"The commitments ship in full and the import bill is ugly. Regional buyers notice that we delivered even during a drought.",fx:{t:-9,st:8}}
  ]},
 {id:"kaz_vector",nation:"KAZ",from:"PRESIDENTIAL ADMIN",cls:"SECRET",spk:"cos",title:"The Two Invitations",
- text:"The security bloc's annual exercise and the NATO partnership summit are scheduled the same week, which required effort from somebody's protocol office. We are members of one and partners of the other. Attendance lists will be read as alignment in six capitals, and scheduling conflict has been used as an excuse twice already. <em>Multi-vector policy is easy until the vectors are scheduled against each other.</em>",
+ text:"The security bloc's annual exercise and the NATO partnership summit are scheduled the same week, which required effort from somebody's protocol office. We are members of one and partners of the other. Attendance lists will be read as alignment in six capitals, and scheduling conflict has been used as an excuse twice already. <em>It is easy to say we balance powers. It is harder when both sides demand a public choice.</em>",
  opts:[
-  {label:"Attend the bloc exercise personally.",hint:"North reassured · West notes it",out:"The exercise photographs are everything Moscow wanted. The summit proceeds without us, and its Central Asia paragraph is drafted by people we were not in the room to correct.",fx:{m:3},rel:{RUS:8,EU:-5,USA:-5}},
-  {label:"Send deputies to both. Attend neither.",hint:"The classic hedge",out:"Two capable deputies deliver two careful speeches on the same day, three time zones apart. It is a formula, everyone recognizes it, and formulas are what keep middle powers whole.",fx:{st:3},rel:{RUS:-3}},
-  {label:"Attend the NATO summit personally.",hint:"A signal that cannot be unsent",out:"Your entrance in Brussels stops three conversations. The communiqué names us twice as a partner. Within the week, customs processing at the northern crossings develops unexplained delays.",fx:{st:6},rel:{EU:9,USA:8,RUS:-13}}
+  {label:"Attend the bloc exercise personally.",hint:"Moscow reassured · West notes it",out:"The exercise photographs are exactly what Moscow wanted. The NATO summit proceeds without us, and its Central Asia language is drafted without our input.",fx:{m:3},rel:{RUS:8,EU:-5,USA:-5}},
+  {label:"Send deputies to both. Attend neither.",hint:"Balanced but obvious",out:"Two capable deputies deliver two careful speeches on the same day, three time zones apart. Everyone recognizes the balancing act, but it avoids a direct break with either side.",fx:{st:3},rel:{RUS:-3}},
+  {label:"Attend the NATO summit personally.",hint:"Clear signal · Moscow reacts",out:"Your entrance in Brussels gets immediate attention. The communique names us twice as a partner. Within the week, customs processing at the northern crossings develops unexplained delays.",fx:{st:6},rel:{EU:9,USA:8,RUS:-13}}
  ]},
 {id:"kaz_graft",nation:"KAZ",from:"NSC EYES ONLY",cls:"TOP SECRET",spk:"int",title:"The Capital File",
- text:"The audit of the new administrative district found twenty-four percent of the construction budget routed through shell contractors tied to two sitting ministers, one from each of the families the balance depends on. The file on your desk is the only complete copy, and the auditor who compiled it has requested a posting abroad. <em>Prosecuting them destabilizes the balance. Burying it certifies the price of everything.</em>",
+ text:"The audit of the new administrative district found twenty-four percent of the construction budget routed through shell contractors tied to two sitting ministers, one from each of the families the balance depends on. The file on your desk is the only complete copy, and the auditor who compiled it has requested a posting abroad. <em>Prosecuting them could destabilize the government. If we bury it, powerful people learn they can steal and keep their jobs.</em>",
  opts:[
-  {label:"Prosecute both ministers, publicly.",hint:"Short-term shock · long-term signal",out:"Both arrests lead the evening broadcast. Two powerful houses go quiet in a way that is not restful. For once, the foreign investment column believes the anti-corruption line.",fx:{s:-6,st:9,a:6},delay:{turns:3,title:"The Signal Lands",text:"Procurement audits in four other ministries are returning cleaner numbers. The prosecution taught the lesson it was priced to teach.",fx:{s:9,t:5}}},
-  {label:"Bury the file. Retire them quietly.",hint:"Calm now · the rot compounds",out:"Both ministers discover a sudden vocation for academic life abroad. The file goes into the safe. The safe does not make it smaller.",fx:{s:3},delay:{turns:4,title:"The Leak",text:"A foreign outlet has published the audit in full, routing diagrams included. The story is not the theft. The story is the date stamp on your copy.",fx:{a:-11,st:-8,s:-4}}}
+  {label:"Prosecute both ministers, publicly.",hint:"Short-term shock · long-term signal",out:"Both arrests lead the evening broadcast. Two powerful families go quiet, but investors take the anti-corruption pledge more seriously.",fx:{s:-6,st:9,a:6},delay:{turns:3,title:"The Signal Lands",text:"Procurement audits in four other ministries are returning cleaner numbers. The prosecution showed officials that corruption now carries real risk.",fx:{s:9,t:5}}},
+  {label:"Bury the file. Retire them quietly.",hint:"Calm now · corruption worsens",out:"Both ministers are quietly sent abroad for academic posts. The file is locked away, but the corruption problem remains.",fx:{s:3},delay:{turns:4,title:"The Leak",text:"A foreign outlet has published the full audit, including routing diagrams. The scandal is worse because the date stamp shows your office had the file and did not act.",fx:{a:-11,st:-8,s:-4}}}
  ]},
 {id:"kaz_alphabet",nation:"KAZ",from:"CULTURE MINISTRY",cls:"CONFIDENTIAL",spk:"cos",title:"The Alphabet",
- text:"The Latin-script transition needs its final tranche: textbooks, signage, government systems, roughly a third of one percent of the budget. Uptake among the under-thirties is near total. In the northern regions it reads differently, and one northern embassy has twice called it a cultural departure. The deadline is ours to keep or slip. <em>An alphabet is never just an alphabet, which is why both sides care.</em>",
+ text:"The Latin-script transition needs its final tranche: textbooks, signage, government systems, roughly a third of one percent of the budget. Uptake among the under-thirties is near total. In the northern regions it reads differently, and one northern embassy has twice called it a cultural departure. The deadline is ours to keep or slip. <em>This is about language, but it is also about identity and foreign influence.</em>",
  opts:[
-  {label:"Fund the transition in full. Keep the deadline.",hint:"Identity forward · north bristles",out:"The presses run all winter and ministries switch systems on schedule. In the universities it lands as arrival. In one embassy it is filed under the heading you would expect.",fx:{t:-5,a:7},rel:{RUS:-6,TUR:5}},
-  {label:"Slip to phased implementation.",hint:"Cheaper · reads as drift",out:"The deadline becomes a horizon. Nobody is offended. The students who campaigned for it stop mentioning your name in either script.",fx:{a:-4}}
+  {label:"Fund the transition in full. Keep the deadline.",hint:"Identity forward · north bristles",out:"The presses run all winter and ministries switch systems on schedule. Younger voters welcome the move. One northern embassy treats it as a political signal.",fx:{t:-5,a:7},rel:{RUS:-6,TUR:5}},
+  {label:"Slip to phased implementation.",hint:"Cheaper · looks uncertain",out:"The deadline becomes flexible. Nobody is offended, but students who campaigned for the change see the government as unwilling to finish it.",fx:{a:-4}}
  ]},
 /* ---------------- GENERIC ---------------- */
 {id:"gen_leak",nation:"ANY",from:"COUNTER-INTELLIGENCE",cls:"TOP SECRET",spk:"int",title:"The Friendly Ear",
- text:"Forensics are conclusive: the implant on the trade ministry's negotiation server belongs to an allied service, active at least fourteen months, spanning two negotiations we lost on terms. Counter-intelligence has kept it running while you decide. The alliance is worth more than any single file it stole, which is exactly why they assumed we would swallow it. <em>Friends spy on friends. What distinguishes friends is what happens next.</em>",
+ text:"Forensics are conclusive: the implant on the trade ministry's negotiation server belongs to an allied service, active at least fourteen months, spanning two negotiations we lost on terms. Counter-intelligence has kept it running while you decide. The alliance is worth more than any single file it stole, which is exactly why they assumed we would swallow it. <em>Allies spy too. Our response will decide how much respect remains in the relationship.</em>",
  opts:[
-  {label:"Expel their officers and name the service publicly.",hint:"Approval up · alliance shaken",out:"Two officers are expelled and named at noon. Domestic coverage is thunderous applause. Alliance intelligence sharing goes procedurally, expensively quiet for a season.",fx:{a:8,st:3},relKey:{ally:-11}},
-  {label:"Raise it privately. Extract a price for silence.",hint:"Quiet leverage",out:"The meeting is short and one-sided. In exchange for discretion: expanded intelligence sharing and a stalled trade annex that unsticks itself within the month.",fx:{t:4,st:2},relKey:{ally:-3}},
-  {label:"Leave the implant running. Feed it curated material.",hint:"The long game · risky",out:"The device stays warm, now serving our menu. Somewhere an allied analyst is confidently briefing our fiction up their chain.",fx:{},delay:{turns:3,title:"The Curated Harvest",text:"Their negotiators anchored to our fictional bottom line. The agreement signed this week is four points better than our actual mandate allowed.",fx:{t:7,st:5}}}
+  {label:"Expel their officers and name the service publicly.",hint:"Approval up · alliance shaken",out:"Two officers are expelled and named at noon. The public response at home is strong. Intelligence sharing with the ally slows down for months.",fx:{a:8,st:3},relKey:{ally:-11}},
+  {label:"Raise it privately. Extract a price for silence.",hint:"Quiet leverage",out:"The meeting is short and one-sided. In exchange for discretion, we get expanded intelligence sharing and movement on a stalled trade annex.",fx:{t:4,st:2},relKey:{ally:-3}},
+  {label:"Leave the implant running. Feed it curated material.",hint:"Long game · risky",out:"The device stays active, but now it receives selected false material. The allied service believes it is still collecting real negotiating positions.",fx:{},delay:{turns:3,title:"The Curated Harvest",text:"Their negotiators based their offer on our false bottom line. The agreement signed this week is four points better than our actual mandate required.",fx:{t:7,st:5}}}
  ]},
 {id:"gen_rates",nation:"ANY",from:"FINANCE MINISTRY",cls:"CONFIDENTIAL",spk:"fin",title:"The Rate Shock",
- text:"The global tightening cycle has added two hundred basis points and our refinancing window opens next quarter, thirty billion rolling over at the new rates. Debt service is about to pass education in the published budget tables. The rating agencies have us on watch, and the next auction is in five weeks. <em>Arithmetic does not negotiate. Voters expect us to try anyway.</em>",
+ text:"The global tightening cycle has added two hundred basis points and our refinancing window opens next quarter, thirty billion rolling over at the new rates. Debt service is about to pass education in the published budget tables. The rating agencies have us on watch, and the next auction is in five weeks. <em>The math is fixed. The political choice is how much pain we take now or later.</em>",
  opts:[
-  {label:"Pass a consolidation package. Hold the deficit line.",hint:"Markets soothed · streets not",out:"The package passes at two in the morning. Spreads narrow forty points by Friday. So does the government's poll lead.",fx:{t:7,a:-8}},
-  {label:"Borrow through it. No program gets touched.",hint:"Approval held · ledger bleeds",out:"The auction clears at a price and nothing is cut. The debt chart in the budget annex now requires landscape orientation.",fx:{t:-8,a:4}}
+  {label:"Pass a consolidation package. Hold the deficit line.",hint:"Markets reassured · public angry",out:"The package passes at two in the morning. Borrowing costs improve by Friday, but the government's poll lead shrinks.",fx:{t:7,a:-8}},
+  {label:"Borrow through it. No program gets touched.",hint:"Approval held · debt worsens",out:"The auction succeeds, but at a higher cost. Nothing is cut, and the debt chart in the budget annex gets much worse.",fx:{t:-8,a:4}}
  ]},
 {id:"gen_summit",nation:"ANY",from:"FOREIGN MINISTRY",cls:"CONFIDENTIAL",spk:"for",title:"The Summit Seat",
- text:"The convention secretariat is quietly sounding us out to host next year's climate summit after the presumptive host withdrew. Forty thousand delegates, a security operation the size of a small deployment, and our name on whatever gets agreed or fails. Hosts shape the negotiating text. Hosts also own the failure coverage. <em>Hosting is expensive. Mattering usually is.</em>",
+ text:"The convention secretariat is quietly sounding us out to host next year's climate summit after the expected host withdrew. Forty thousand delegates would attend, and the security operation would be huge. Our name would be attached to whatever gets agreed or fails. Hosts can shape the negotiating text, but they also get blamed if talks collapse. <em>Hosting costs a lot, but declining means we have less influence.</em>",
  opts:[
-  {label:"Bid to host.",hint:"Treasury down · standing compounds",out:"The bid is accepted within the week, which tells you how many others wanted the bill. Preparations begin. So does the scrutiny.",fx:{t:-8},delay:{turns:4,title:"The Communiqué",text:"The summit closes with a genuine agreement built on our chair's compromise text, tabled at four in the morning. For one news cycle we are the adult in the room, and everyone watched it happen.",fx:{st:12,a:5}}},
-  {label:"Decline. Attend as a delegation.",hint:"Prudent · anonymous",out:"The summit finds another host. Our delegation gets good seats, two useful bilaterals, and no verbs in any headline.",fx:{}}
+  {label:"Bid to host.",hint:"Treasury down · standing rises",out:"The bid is accepted within the week, which shows how few others wanted the cost. Preparations begin, and so does public scrutiny.",fx:{t:-8},delay:{turns:4,title:"The Communique",text:"The summit closes with a real agreement built on our chair's compromise text, tabled at four in the morning. For one news cycle, we are seen as the government that got a deal done.",fx:{st:12,a:5}}},
+  {label:"Decline. Attend as a delegation.",hint:"Prudent · lower profile",out:"The summit finds another host. Our delegation gets good seats and two useful bilateral meetings, but we do not shape the outcome.",fx:{}}
  ]},
 {id:"gen_cyber",nation:"ANY",from:"SIGNALS DIRECTORATE",cls:"TOP SECRET",spk:"int",title:"The Probe",
- text:"A state actor spent six weeks inside the grid operator's engineering network, mapping breaker configurations and staging tooling consistent with disruptive intent. They exited cleanly and left one artifact our analysts agree was meant to be found. Attribution confidence is high. Publishing it burns the accesses that got us there. <em>They wanted us to know they can. The reply is ours to draft.</em>",
+ text:"A state actor spent six weeks inside the grid operator's engineering network, mapping breaker configurations and staging tooling consistent with disruptive intent. They exited cleanly and left one artifact our analysts agree was meant to be found. Attribution confidence is high. Publishing it burns the accesses that got us there. <em>They left a warning. We need to decide whether to expose it or answer quietly.</em>",
  opts:[
-  {label:"Publish the attribution with the technical annex.",hint:"Standing up · escalation risk",out:"The annex is airtight and the press conference is stark. Four allied agencies echo the attribution within hours. The named service issues a denial nobody transcribes.",fx:{st:7},relKey:{rival:-8}},
-  {label:"Say nothing. Harden the grid.",hint:"Treasury down · resilience up",out:"No statement. Network segmentation, sensor coverage, and two full black-start rehearsals. The next intrusion will find a different building.",fx:{t:-7,m:6,s:3}}
+  {label:"Publish the attribution with the technical annex.",hint:"Standing up · escalation risk",out:"The annex is strong and the press conference is direct. Four allied agencies repeat the attribution within hours. The named service denies it, but few believe the denial.",fx:{st:7},relKey:{rival:-8}},
+  {label:"Say nothing. Harden the grid.",hint:"Treasury down · resilience up",out:"No statement is issued. The grid gets better network segmentation, more sensors, and two full black-start rehearsals. The next intrusion will face a harder target.",fx:{t:-7,m:6,s:3}}
  ]},
 {id:"gen_defector",nation:"ANY",from:"STATION REPORT",cls:"TOP SECRET",spk:"int",title:"The Passenger",
- text:"A senior propulsion engineer from a rival state's missile program walked into our embassy with two suitcases of design documentation and a request for asylum. Verification says the material is genuine and current. Their services will conclude where he is within days, whatever we do. <em>Some gifts arrive with the fuse already lit.</em>",
+ text:"A senior propulsion engineer from a rival state's missile program walked into our embassy with two suitcases of design documentation and a request for asylum. Verification says the material is genuine and current. Their services will conclude where he is within days, whatever we do. <em>This could help us, but it could also create an immediate diplomatic crisis.</em>",
  opts:[
-  {label:"Grant asylum. Begin the debriefing.",hint:"Capability up · rival enraged",out:"The debriefings will run a year and shortcut a decade. The rival's foreign ministry summons our ambassador for a conversation conducted standing up.",fx:{m:9,st:3},relKey:{rival:-12}},
-  {label:"Transfer him quietly to an allied service.",hint:"Value banked · hands clean",out:"The handover happens at a refuelling stop that appears in no log. The ally owes us something unpriceable, and the rival glares at the wrong capital.",fx:{st:5},relKey:{ally:9,rival:-3}},
-  {label:"Return him discreetly, with assurances.",hint:"Safe · until it is not",out:"He is returned through a third country with written assurances about his treatment. The assurances hold for eleven days.",fx:{},relKey:{rival:6},delay:{turns:2,title:"The Eleven Days",text:"His fate leaked, and then the photographs did. The story is that we sent him back knowing. Editorials at home and abroad settle on the same word for it.",fx:{a:-9,st:-8}}}
+  {label:"Grant asylum. Begin the debriefing.",hint:"Capability up · rival enraged",out:"The debriefings will run for a year and could save a decade of research. The rival's foreign ministry summons our ambassador in anger.",fx:{m:9,st:3},relKey:{rival:-12}},
+  {label:"Transfer him quietly to an allied service.",hint:"Value banked · lower exposure",out:"The handover happens at a refuelling stop that appears in no log. The ally owes us a major favour, and the rival focuses its anger elsewhere.",fx:{st:5},relKey:{ally:9,rival:-3}},
+  {label:"Return him discreetly, with assurances.",hint:"Safe now · moral risk",out:"He is returned through a third country with written assurances about his treatment. Those assurances hold for eleven days.",fx:{},relKey:{rival:6},delay:{turns:2,title:"The Eleven Days",text:"His fate leaked, and then photographs did too. The story is that we sent him back despite knowing the risk. Editorials at home and abroad condemn the decision.",fx:{a:-9,st:-8}}}
  ]},
 {id:"gen_strike",nation:"ANY",from:"LABOUR MINISTRY",cls:"CONFIDENTIAL",spk:"cos",title:"The Strike Wave",
- text:"Ports, rail and the capital's transit walk out at midnight Friday, the first coordinated action in a generation. The demand is fourteen percent against nine percent inflation. The offer on the table is four. The employers' association says settle, the finance ministry says hold, and the strike fund is reported good for six weeks. <em>The country stops moving on Saturday either way.</em>",
+ text:"Ports, rail and the capital's transit walk out at midnight Friday, the first coordinated action in a generation. The demand is fourteen percent against nine percent inflation. The offer on the table is four. The employers' association says settle, the finance ministry says hold, and the strike fund is reported good for six weeks. <em>Either way, transport starts shutting down this weekend.</em>",
  opts:[
-  {label:"Settle near their number.",hint:"Treasury down · motion restored",out:"Eleven and a half percent, signed at dawn. The trains run Monday. Every other public-sector union has read the settlement by Tuesday.",fx:{t:-8,s:6}},
-  {label:"Hold at four and wait them out.",hint:"Ledger held · patience tested",out:"Week one is inconvenience. Week two is empty shelves in three cities and a freight backlog with its own news graphic.",fx:{a:-7},delay:{turns:2,title:"The Long Friday",text:"The strike collapsed in week three. So did something quieter: two logistics firms moved their regional hubs abroad, citing predictability.",fx:{t:-5,s:-5}}}
+  {label:"Settle near their number.",hint:"Treasury down · movement restored",out:"Eleven and a half percent, signed at dawn. The trains run Monday. Every other public-sector union studies the settlement by Tuesday.",fx:{t:-8,s:6}},
+  {label:"Hold at four and wait them out.",hint:"Budget held · patience tested",out:"Week one is inconvenience. Week two brings empty shelves in three cities and a freight backlog large enough to dominate the news.",fx:{a:-7},delay:{turns:2,title:"The Long Friday",text:"The strike collapsed in week three. Two logistics firms then moved their regional hubs abroad, citing concerns about predictability.",fx:{t:-5,s:-5}}}
  ]},
 {id:"gen_editorial",nation:"ANY",from:"COMMS DIRECTORATE",cls:"UNCLASSIFIED",spk:"cos",title:"The Editorial",
- text:"The most-quoted financial daily has run a leader titled 'A Government Adrift', and it is precise enough to hurt: three abandoned initiatives, two ministerial contradictions, one chart. The sovereign desk reports three funds forwarded it asking for comment. The next bond auction is in five weeks. <em>It is only words. Capital, unfortunately, reads.</em>",
+ text:"The most-quoted financial daily has run a leader titled 'A Government Adrift', and it is precise enough to hurt: three abandoned initiatives, two ministerial contradictions, one chart. The sovereign desk reports three funds forwarded it asking for comment. The next bond auction is in five weeks. <em>It is only an article, but investors read these signals and may react.</em>",
  opts:[
-  {label:"Run the charm offensive: interviews, investor calls, editorial board lunch.",hint:"Standing patched · time spent",out:"Two weeks of disciplined access and one long lunch. The follow-up piece is titled 'Course Correction'. Grudging is enough.",fx:{st:6,t:-2}},
-  {label:"Dismiss it. Play to the home crowd.",hint:"Base delighted · desks not",out:"The line about foreign newspapers not casting ballots here gets its applause. The sovereign desk quietly widens its bid-ask anyway.",fx:{a:5,st:-6}}
+  {label:"Run the charm offensive: interviews, investor calls, editorial board lunch.",hint:"Standing patched · time spent",out:"Two weeks of disciplined access and one long lunch lead to a follow-up piece titled 'Course Correction'. It is not enthusiastic, but it reduces the damage.",fx:{st:6,t:-2}},
+  {label:"Dismiss it. Play to the home crowd.",hint:"Base delighted · investors not",out:"The line about foreign newspapers not casting ballots here gets applause. Investors still price in more risk.",fx:{a:5,st:-6}}
  ]},
 {id:"gen_flu",nation:"ANY",from:"HEALTH SECURITY CELL",cls:"SECRET",spk:"int",title:"The Cluster",
- text:"A respiratory cluster abroad is behaving wrongly: doubling every four days, a case fatality figure nobody trusts, and a host government publishing sequences late. Our modellers put importation in force at one in four within two quarters. The stockpile gap is antivirals, respirators and surge staffing contracts. <em>Preparedness is a bill you pay hoping to waste the money.</em>",
+ text:"A respiratory cluster abroad is spreading fast: cases are doubling every four days, the fatality rate is unclear, and the host government is slow to publish data. Our modellers put the chance of importation at one in four within two quarters. The stockpile gap is antivirals, respirators and surge staffing contracts. <em>If we prepare and nothing happens, the money may look wasted. If we wait and the outbreak arrives, the cost will be much higher.</em>",
  opts:[
-  {label:"Buy the stockpile now. Sign the surge contracts.",hint:"Treasury down · insurance bought",out:"The procurement raises eyebrows in the finance ministry and nowhere else, yet. The warehouses fill quietly and the contracts are counter-signed.",fx:{t:-7},delay:{turns:3,title:"The Wave Arrives",text:"The strain arrived and met a prepared system. Clinics strained and held, and the comparison footage from less-ready countries did our arguing for us.",fx:{a:9,s:6,st:5}}},
-  {label:"Monitor and wait for confirmed data.",hint:"Free · a coin in the air",out:"Port surveillance is tightened and the modellers keep modelling. The money stays where it is, for now.",fx:{},delay:{turns:3,title:"The Wave Arrives",text:"The strain arrived on nine flights over one weekend. The stockpile conversation from months ago is now a shortage conversation on television.",fx:{a:-8,s:-7,t:-6}}}
+  {label:"Buy the stockpile now. Sign the surge contracts.",hint:"Treasury down · insurance bought",out:"The procurement worries the finance ministry but attracts little public attention. Warehouses fill quietly and surge staffing contracts are signed.",fx:{t:-7},delay:{turns:3,title:"The Wave Arrives",text:"The strain arrived and met a prepared system. Clinics were strained but held. Compared with less-prepared countries, the decision looks justified.",fx:{a:9,s:6,st:5}}},
+  {label:"Monitor and wait for confirmed data.",hint:"Free now · risky later",out:"Port surveillance is tightened and the modellers keep updating the estimates. The money stays where it is, for now.",fx:{},delay:{turns:3,title:"The Wave Arrives",text:"The strain arrived on nine flights over one weekend. The earlier stockpile debate is now a public shortage debate on television.",fx:{a:-8,s:-7,t:-6}}}
  ]}
 ];
+
+/* ---------- reckonings ----------
+   The third-act climax. One fires per term, at turn 10 or later,
+   chosen by how the term actually went. First matching test wins. */
+const RECKONINGS={
+CAN:[
+{when:g=>g.rel.USA<55,ev:{id:"rk_can_usa",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Continental Question",
+ text:"Eleven months in, Washington has consolidated every open dispute into a single document: border, defence spending, digital taxes, and the softwood file, presented as a package with a signing window. Accept and the relationship resets on their terms. Refuse and the retaliation schedule attached as Annex C begins in thirty days. <em>They are using the leverage they gained over the year.</em>",
+ opts:[
+  {label:"Sign the package.",hint:"Peace on their terms",out:"The signing is warm and the coverage at home is not. The relationship resets. So does the precedent about how to move us.",fx:{a:-8,st:-5},rel:{USA:14}},
+  {label:"Refuse and pivot: accelerate the EU and UK tracks.",hint:"New anchors · rough year",out:"Annex C begins on schedule and hits three sectors. The Brussels and London tracks accelerate because we now need alternatives quickly.",fx:{t:-7,st:4},rel:{USA:-8,EU:10,UK:8}},
+  {label:"Refuse and absorb. No pivot, no signature.",hint:"Independent line · pure cost",out:"No signature and no realignment. The retaliation hits each sector as scheduled. The public cost is high, but the government looks more independent.",fx:{t:-6,a:5,s:3,st:5},rel:{USA:-5}}
+ ]}},
+{when:g=>g.stats.t<45,ev:{id:"rk_can_fiscal",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"fin",title:"The Credit Watch",
+ text:"Both major agencies have placed the sovereign rating on negative watch, citing the term's fiscal trajectory. The review concludes in six weeks. A downgrade adds an estimated $3.1B CAD in annual debt service and drags every provincial rating downhill behind it. The deputy minister has two packages drafted and neither is painless. <em>We still have time to act, but we cannot avoid the fiscal problem.</em>",
+ opts:[
+  {label:"Emergency consolidation: cut deep, cut now.",hint:"Rating saved · public pays",out:"The package is the largest single-year consolidation on record. The watch is lifted, but constituency offices fill with angry callers and visitors.",fx:{t:11,a:-9,s:-4}},
+  {label:"Growth defence: one signature national project.",hint:"Grow the economy",out:"The counterargument is a major national project designed to grow the economy faster than the debt. The agencies split: one lifts the watch, one keeps it.",fx:{t:-6,a:6,st:3}},
+  {label:"Defend the record and take the downgrade.",hint:"Cheapest today · annual bill",out:"The downgrade lands on a Thursday. There is no immediate crisis, but the annual interest bill rises and the debate returns every budget cycle.",fx:{t:-8,st:-4,a:2}}
+ ]}},
+{when:()=>true,ev:{id:"rk_can_confidence",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"cos",title:"The Winter Mandate",
+ text:"The opposition has tabled a confidence motion for the last sitting week, betting the year has cost you more than it shows. The math holds only if your own benches hold, and three of them have requested meetings this week, none about legislation. <em>The vote will come down to discipline inside your own caucus.</em>",
+ opts:[
+  {label:"Rally the base: campaign footing, sharp lines.",hint:"Consolidate · polarize",out:"The speeches get shorter and louder. Core supporters rally, but moderate voters become more skeptical.",fx:{a:8,s:-4}},
+  {label:"Govern from the centre: adopt two opposition planks.",hint:"Disarm the motion",out:"Two of their better ideas become yours with full credit given. The motion loses its co-sponsors before it loses the vote.",fx:{s:6,st:4,a:-3}},
+  {label:"Buy the benches: three commitments, three ridings.",hint:"Retail politics · spring invoice",out:"The three meetings end in three announcements. The motion dies quietly. The invoices arrive in the spring estimates.",fx:{t:-7,a:4,s:3}}
+ ]}}
+],
+SGP:[
+{when:g=>g.rel.CHN<45||g.rel.USA<45,ev:{id:"rk_sgp_strait",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"def",title:"The Strait Standoff",
+ text:"Two carrier groups are conducting simultaneous exercises within a day's sail of the strait, and both capitals have requested port access for the same week, in writing, copied to each other. The harbour cannot host both. Whatever refusal we send will be treated as a sign of who we favour. <em>Both powers are testing whether we can still stay useful to everyone.</em>",
+ opts:[
+  {label:"Grant the American request. Decline the other.",hint:"Clear U.S. tilt",out:"The berthing is professional and photographed. China cancels two trade delegations by month's end.",fx:{m:5,st:3},rel:{USA:12,CHN:-12}},
+  {label:"Grant the Chinese request. Decline the other.",hint:"Clear China tilt",out:"The visit proceeds with full honours. The next U.S. freedom of navigation statement names our strait specifically.",fx:{st:-2},rel:{CHN:12,USA:-12}},
+  {label:"Decline both. The harbour is under maintenance.",hint:"Neutral · strains trust",out:"The maintenance is real by Thursday, contractors and all. Both capitals recognize the excuse. The move keeps balance, but trust falls on both sides.",fx:{s:3,st:5},rel:{USA:-4,CHN:-4}}
+ ]}},
+{when:g=>g.stats.t<45,ev:{id:"rk_sgp_reserves",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"fin",title:"The Reserves Question",
+ text:"The term's spending has brought forward a question no government asks casually: a draw on the past reserves, which requires the President's concurrence and a public case. The sum under discussion would stabilize everything. The precedent under discussion would outlive everyone in this room. <em>Using the reserves solves today's problem but weakens a rule future governments depend on.</em>",
+ opts:[
+  {label:"Make the case. Draw the reserves.",hint:"Relief now · precedent forever",out:"The address is sober and the concurrence is granted. The books balance. Somewhere in the future, a finance minister inherits an easier precedent and a harder argument.",fx:{t:12,st:-5,s:-3}},
+  {label:"Refuse the draw. Cut and tax instead.",hint:"Rule held · voters pay",out:"The alternative package is austere and unambiguous. The reserves stay untouched, but voters feel the pain now.",fx:{t:6,a:-8,st:4}},
+  {label:"Split it: a partial draw, matched by cuts.",hint:"Compromise",out:"Half comes from reserves and half from current cuts. The arrangement is defensible, but both sides dislike part of it.",fx:{t:8,a:-4,st:-2}}
+ ]}},
+{when:()=>true,ev:{id:"rk_sgp_succession",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"cos",title:"The Succession Paper",
+ text:"The cabinet secretary has circulated the renewal paper that appears near the end of every strong term. Three names are listed: one to elevate, one to disappoint, and one to keep waiting. The party prizes orderly transition above nearly everything. <em>How you handle succession will shape how your term is remembered.</em>",
+ opts:[
+  {label:"Anoint the establishment favourite.",hint:"Continuity · quiet debts",out:"The elevation is smooth. The disappointed camp accepts it publicly, but will expect compensation later. Continuity is the message and it lands.",fx:{s:6,st:3,a:-2}},
+  {label:"Elevate the reformer.",hint:"Energy · internal tension",out:"The younger name surprises the room and delights many voters. The establishment accepts the decision publicly, but resentment remains.",fx:{a:7,s:-3,st:2}},
+  {label:"Defer the question past the election.",hint:"No answer is an answer",out:"The paper returns to its drawer. The three names return to their offices, and speculation keeps growing.",fx:{s:-4,a:-2}}
+ ]}}
+],
+KAZ:[
+{when:g=>g.rel.RUS<45,ev:{id:"rk_kaz_ultimatum",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Northern Ultimatum",
+ text:"Moscow's ambassador delivered it personally: a draft integration protocol covering transit rights, basing access, and language protections, with a thirty-day response window and a sentence about the security of compatriot populations that our northern governors read as a threat. <em>This is the direct choice our balancing policy was meant to avoid.</em>",
+ opts:[
+  {label:"Refuse publicly. At a podium. In Kazakh.",hint:"Clear public refusal",out:"The refusal is eleven minutes long and quotes the friendship treaty back at its authors. The northern crossings close for inspections the same week. Other neighbours watch with new respect.",fx:{st:9,s:-6,m:4},rel:{RUS:-12,TUR:6}},
+  {label:"Concede transit, refuse basing.",hint:"Partial concession",out:"The partial agreement buys a quieter border, but the larger dispute remains open. Moscow will return to the remaining clauses later.",fx:{s:3,st:-6,a:-4},rel:{RUS:8}},
+  {label:"Internationalize: publish the protocol, invite observers.",hint:"Public pressure",out:"Publishing the document embarrasses Moscow because the pressure was meant to stay private. Observers arrive, but Russia will remember the move.",fx:{st:6,t:-4},rel:{RUS:-9,EU:8,USA:7,CHN:3}}
+ ]}},
+{when:g=>g.stats.s<45,ev:{id:"rk_kaz_january",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"int",title:"The Second January",
+ text:"It is starting again, and this time it is organized: coordinated strike committees in four regions, a unified list of demands, and marshals keeping their own crowds peaceful. The demands are economic on page one and constitutional by page three. <em>Last time, force and promises ended the crisis. This movement appears prepared for both.</em>",
+ opts:[
+  {label:"Negotiate the constitutional package.",hint:"Concede structure · gain legitimacy",out:"The talks run eleven days and produce real amendments: term limits, local elections, and an audited fund. The committees declare victory and disband. The presidency gives up some control but gains legitimacy.",fx:{s:9,a:8,st:5,t:-6}},
+  {label:"Declare emergency and hold the line.",hint:"Order now · crisis delayed",out:"The state of emergency is legal, brief, and complete. The squares empty, but the committees do not disband. They pause and wait.",fx:{s:6,a:-9,st:-9}},
+  {label:"Split the movement: settle economics, refuse the constitution.",hint:"Half now · pressure rewarded",out:"The wage and price demands are met in full by Friday. Half the committees go home satisfied. The other half learns that pressure can win concessions.",fx:{s:4,a:3,t:-8}}
+ ]}},
+{when:()=>true,ev:{id:"rk_kaz_council",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"cos",title:"The Succession Council",
+ text:"The families have requested a council, which is how it is phrased when they intend to hold one regardless. The agenda is the next decade: succession plans, asset guarantees, and the balance your term has disturbed. Refusing the meeting is a statement. Attending it is a negotiation. Chairing it is the job. <em>Presidents here usually fall when the elite bargain around them changes.</em>",
+ opts:[
+  {label:"Chair it and impose a structure.",hint:"Set the decade",out:"The council runs two days. The final structure gives you control over the key decisions and gives the families enough ceremony to accept it. It holds because everyone signs in front of everyone.",fx:{s:7,st:4,a:-2}},
+  {label:"Attend and trade: guarantees for loyalty.",hint:"Old bargain",out:"The guarantees are specific, and the loyalty is conditional. The balance resets to something workable but unpleasant.",fx:{s:4,t:-5}},
+  {label:"Refuse. The presidency is not a chair at their table.",hint:"Defiance · high risk",out:"The refusal is received politely, but the families meet somewhere else without you. That creates a serious stability risk.",fx:{a:5,st:2,s:-7}}
+ ]}}
+]
+};
 </script>
 <script>
 /* =====================================================
@@ -606,14 +792,37 @@ function glowTexture(hex){
   x.fillStyle=g; x.fillRect(0,0,128,128);
   return new THREE.CanvasTexture(c);
 }
-function labelSprite(txt,hex){
-  const c=document.createElement("canvas"); c.width=256; c.height=80;
+function roundRect(x,r,w,h,cx,cy,rad){
+  x.beginPath();
+  x.moveTo(cx-w/2+rad,cy-h/2);
+  x.arcTo(cx+w/2,cy-h/2,cx+w/2,cy+h/2,rad);
+  x.arcTo(cx+w/2,cy+h/2,cx-w/2,cy+h/2,rad);
+  x.arcTo(cx-w/2,cy+h/2,cx-w/2,cy-h/2,rad);
+  x.arcTo(cx-w/2,cy-h/2,cx+w/2,cy-h/2,rad);
+  x.closePath();
+}
+function labelSprite(txt,hex,isHome){
+  const label=txt.toUpperCase();
+  const DPR=2, fs=30*DPR, padX=22*DPR, padY=13*DPR;
+  const meas=document.createElement("canvas").getContext("2d");
+  meas.font=`600 ${fs}px 'IBM Plex Mono', monospace`;
+  const tw=meas.measureText(label).width;
+  const cw=Math.ceil(tw+padX*2), ch=Math.ceil(fs+padY*2);
+  const c=document.createElement("canvas"); c.width=cw; c.height=ch;
   const x=c.getContext("2d");
-  x.font="600 34px 'IBM Plex Mono', monospace"; x.textAlign="center"; x.textBaseline="middle";
-  x.shadowColor="rgba(0,0,0,.9)"; x.shadowBlur=10;
-  x.fillStyle=hex; x.fillText(txt.toUpperCase(),128,40);
-  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
-  s.scale.set(.34,.106,1); return s;
+  /* opaque plate so text never fights the globe underneath */
+  roundRect(x,0,cw-4,ch-4,cw/2,ch/2,ch/2.4);
+  x.fillStyle="rgba(6,11,20,.88)"; x.fill();
+  x.lineWidth=1.5*DPR;
+  x.strokeStyle=isHome?"rgba(227,197,102,.85)":"rgba(201,162,39,.34)"; x.stroke();
+  x.font=`600 ${fs}px 'IBM Plex Mono', monospace`;
+  x.textAlign="center"; x.textBaseline="middle";
+  x.fillStyle=hex; x.fillText(label,cw/2,ch/2+DPR);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false,depthTest:false}));
+  s.renderOrder=10;
+  const worldH=isHome?.058:.05;
+  s.scale.set(worldH*(cw/ch),worldH,1);
+  return s;
 }
 function relColor(v){
   const bad=new THREE.Color(0xC2503F), mid=new THREE.Color(0x8A97AC), good=new THREE.Color(0x4CAF7A);
@@ -630,8 +839,15 @@ function addMarker(key,hex,isHome){
   glow.position.copy(llToV(cap.lat,cap.lng,R*1.012));
   glow.userData={pulse:true,t:Math.random()*6,base:isHome?.085:.06};
   glow.scale.setScalar(glow.userData.base); markerGroup.add(glow);
-  const lab=labelSprite(cap.name,isHome?"#E3C566":"#B9C4D6");
-  lab.position.copy(llToV(cap.lat,cap.lng,R*1.085)); markerGroup.add(lab);
+  const off=cap.off||[8,0];
+  const llat=cap.lat+off[0], llng=cap.lng+off[1];
+  const labPos=llToV(llat,llng,R*1.055);
+  const lab=labelSprite(cap.name,isHome?"#F0DFA6":"#E3EAF4",isHome);
+  lab.position.copy(labPos); markerGroup.add(lab);
+  /* leader line: marker to label anchor */
+  const leadGeo=new THREE.BufferGeometry().setFromPoints([llToV(cap.lat,cap.lng,R*1.01),llToV(llat,llng,R*1.05)]);
+  const lead=new THREE.Line(leadGeo,new THREE.LineBasicMaterial({color:isHome?0xC9A227:0x7D8CA3,transparent:true,opacity:isHome?.6:.32}));
+  lead.renderOrder=9; markerGroup.add(lead);
   return {dot,glow};
 }
 function addArc(fromKey,toKey,relVal){
@@ -651,7 +867,10 @@ function buildBoard(nation){
   clearBoard();
   addMarker(nation.key,"#E3C566",true);
   Object.entries(nation.relations).forEach(([k,v])=>{ addMarker(k,"#"+relColor(v).getHexString()); addArc(nation.key,k,v); });
-  markerGroup.children.forEach((m,i)=>{ const s=m.scale.clone(); m.scale.setScalar(.001);
+  markerGroup.children.forEach((m,i)=>{
+    if(m.type==="Line"){ const o=m.material.opacity; m.material.opacity=0;
+      gsap.to(m.material,{opacity:o,duration:.6,delay:.6+i*.03}); return; }
+    const s=m.scale.clone(); m.scale.setScalar(.001);
     gsap.to(m.scale,{x:s.x,y:s.y,z:s.z,duration:.7,delay:.35+i*.05,ease:"back.out(2)"}); });
 }
 function tintArc(toKey,relVal){
@@ -672,9 +891,223 @@ const STATS=[
 ];
 const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const TERM=12;
-const G={nation:null,stats:{},rel:{},turn:0,deck:[],queue:[],over:false};
+const G={nation:null,stats:{},rel:{},turn:0,deck:[],queue:[],over:false,history:[],startStats:{},adv:{},trend:[],firedP:[],lastPressure:-9,reckoningDone:false,lastAct:1,currentBriefing:null,turnResolved:false};
 const $=id=>document.getElementById(id);
 const el=(t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+
+/* ---------- stat interactions ----------
+   Runs at the top of each turn. Stats now feed each other:
+   neglect compounds, strength pays dividends. Max 2 fire per turn
+   so a bad spiral stays recoverable. */
+const INTERACTIONS=[
+  {id:"unrest_app",  when:s=>s.s<35, fx:{a:-2}, msg:"Unrest in the streets is eroding approval"},
+  {id:"unrest_cap",  when:s=>s.s<25, fx:{t:-2}, msg:"Instability is scaring capital out of the country"},
+  {id:"anger_street",when:s=>s.a<30, fx:{s:-2}, msg:"Collapsing approval is feeding the protests"},
+  {id:"broke_state", when:s=>s.t<25, fx:{s:-1,m:-1}, msg:"The empty treasury is straining services and the forces"},
+  {id:"hollow_force",when:s=>s.m<25, fx:{st:-1}, msg:"A hollowed-out military is being noticed abroad"},
+  {id:"pariah_rates",when:s=>s.st<25, fx:{t:-1}, msg:"Weak standing is raising the cost of borrowing"},
+  {id:"invest_pull", when:s=>s.st>=75, fx:{t:1}, msg:"Strong standing is drawing investment"},
+  {id:"quiet_boom",  when:s=>s.s>=80&&s.a>=60, fx:{t:1}, msg:"Stability dividend: the economy hums"}
+];
+function applyInteractions(){
+  let fired=0;
+  for(const it of INTERACTIONS){
+    if(fired>=2) break;
+    if(it.when(G.stats)){
+      applyFx(it.fx);
+      toast("SYSTEM · "+it.msg,"sys");
+      fired++;
+    }
+  }
+  return fired;
+}
+
+/* ---------- acts ---------- */
+const ROMAN=["","I","II","III"];
+const actOf=t=>t<4?1:t<8?2:3;
+function scaleFxObj(fx,f){ const o={}; Object.entries(fx||{}).forEach(([k,v])=>o[k]=Math.round(v*f)); return o; }
+const monthOf=t=>MONTHS[t%12]+" "+(2027+Math.floor(t/12));
+
+/* ---------- emergent pressure ----------
+   Cables assembled at runtime from the term's actual trajectory.
+   Each fires at most once, minimum three turns apart. */
+function fell(k,n,min){
+  const tr=G.trend; if(tr.length<n+1) return 0;
+  for(let i=tr.length-n;i<tr.length;i++){ if(tr[i][k]>tr[i-1][k]) return 0; }
+  const d=Math.round(tr[tr.length-1-n][k]-tr[tr.length-1][k]);
+  return d>=min?d:0;
+}
+function sustained(k,n,min){
+  const tr=G.trend; if(tr.length<n) return 0;
+  for(let i=tr.length-n;i<tr.length;i++){ if(tr[i][k]<min) return 0; }
+  return Math.round(tr[tr.length-1][k]);
+}
+const PRESSURES=[
+{id:"pr_approval",test:()=>{const d=fell("a",3,6); return d?{d}:null;},build:c=>({
+  id:"pr_approval",from:"PMO POLLING DESK",cls:"PRESSURE",spk:"cos",title:"The Whisper Campaign",
+  text:`Internal polling has approval down ${c.d} points since ${monthOf(Math.max(0,G.turn-3))}, three consecutive months of decline, and this morning a column ran quoting senior government sources on the government's direction. Nobody resigns over one bad poll, but coordinated anonymous leaks are different. <em>Someone inside may be preparing to leave and blame the government on the way out.</em>`,
+  opts:[
+   {label:"Shake up the communications office and reset the message.",hint:"Approval patched · costs focus",out:"Two departures, one hire from the press gallery, and a message calendar that holds for a month. The approval slide slows.",fx:{a:5,s:-2}},
+   {label:"Find the leaker. Quietly.",hint:"Discipline · chilling effect",out:"The search takes nine days and one deputy minister resigns for personal reasons. The leaks stop, but officials become less willing to speak honestly.",fx:{s:3,a:-2,st:-2}},
+   {label:"Ignore it. Trends reverse.",hint:"Free · the slide continues",out:"No response is issued. The next poll prints the same slope with a steeper headline.",fx:{a:-4}}
+  ]})},
+{id:"pr_treasury",test:()=>{const d=fell("t",3,6); return d?{d}:null;},build:c=>({
+  id:"pr_treasury",from:"AUDITOR GENERAL LIAISON",cls:"PRESSURE",spk:"fin",title:"The Auditor's Letter",
+  text:`The Auditor General's office has requested pre-publication comment on a report titled Fiscal Trajectory, which is never a good sign. Treasury is down ${c.d} points since ${monthOf(Math.max(0,G.turn-3))} and the report says so with charts. Publication is in two weeks whatever we do. <em>We cannot change the numbers, but we can still explain what we are doing about them.</em>`,
+  opts:[
+   {label:"Pre-empt it: announce a consolidation package first.",hint:"Own the story · own the cuts",out:"The package lands three days before the report, so the report confirms a problem already being addressed. Markets notice the sequence.",fx:{t:6,a:-5}},
+   {label:"Open the books completely. Brief every desk.",hint:"Transparency play",out:"Full access, no spin, one long technical briefing. The coverage is dry, which was the entire objective.",fx:{st:4,a:-2,s:2}},
+   {label:"Dispute the methodology.",hint:"Defensible · defensive",out:"The rebuttal is technically sound, but most coverage treats it as damage control. The report's charts still run everywhere.",fx:{st:-4,a:2}}
+  ]})},
+{id:"pr_stability",test:()=>{const d=fell("s",3,6); return d?{d}:null;},build:c=>({
+  id:"pr_stability",from:"NSC ASSESSMENTS",cls:"PRESSURE",spk:"int",title:"The Pattern Report",
+  text:`The weekly situation report has been upgraded to daily. Stability indicators have fallen ${c.d} points since ${monthOf(Math.max(0,G.turn-3))}: strike notices, regional grievances, and a protest calendar that is starting to synchronize. Nothing has broken yet, but the risk is rising. <em>A press statement will not be enough to prevent unrest.</em>`,
+  opts:[
+   {label:"Fund preventive dialogue in the three hottest regions.",hint:"Slow · addresses causes",out:"Grievance tables open in three regions with real budgets attached. Two calm down. One takes the money and marches anyway.",fx:{s:5,t:-3}},
+   {label:"Pre-position security and lower the tolerance.",hint:"Security up · side effects",out:"The security presence is visible by design. Some protests are cancelled, but public trust falls.",fx:{s:3,a:-4,st:-2}},
+   {label:"Ride it out.",hint:"Free · risk grows",out:"The pattern holds for another month, then a local incident triggers wider unrest.",fx:{s:-4,a:-2}}
+  ]})},
+{id:"pr_rupture",test:()=>{let worst=null; Object.entries(G.rel).forEach(([k,v])=>{ if(v<=30&&(!worst||v<worst.v)) worst={k,v}; }); return worst;},build:c=>({
+  id:"pr_rupture",from:"FOREIGN MINISTRY FLASH",cls:"PRESSURE",spk:"for",title:`The ${CAPS[c.k].name} File`,
+  text:`Relations with ${CAPS[c.k].name} have deteriorated to the worst level of your term, and their ministry has begun the procedural steps that often come before a break: recalled consultations, slow visas, and a cancelled ministerial visit described as scheduling. The next move is ours or it is theirs. <em>A diplomatic break is easy to start and hard to repair.</em>`,
+  opts:[
+   {label:"Request an emergency summit at the leader level.",hint:"Swallow pride · reopen a channel",out:"The meeting is granted, which shows they still want a way out. Two hours produce no communique, but one working channel reopens.",fx:{t:-2},rel:{[c.k]:10}},
+   {label:"Write the relationship off. Hedge elsewhere.",hint:"Risk management",out:"The file moves from diplomacy to contingency. Hedging spend is approved and nobody says the old name in meetings.",fx:{m:3,st:-2},rel:{[c.k]:-5}},
+   {label:"Open a quiet backchannel through a third capital.",hint:"Patient · cheap",out:"A retired ambassador takes a discreet trip. The response is not friendly, but it includes terms for reducing the dispute.",fx:{st:1},rel:{[c.k]:5}}
+  ]})},
+{id:"pr_excellence",test:()=>{for(const k of ["t","a","s","m","st"]){ const v=sustained(k,2,85); if(v) return {k,v}; } return null;},build:c=>{
+  const s=STATS.find(x=>x.k===c.k); const spkMap={t:"fin",a:"cos",s:"int",m:"def",st:"for"};
+  return {id:"pr_excellence",from:"COMMS DIRECTORATE",cls:"PRESSURE",spk:spkMap[c.k],title:`The ${s.name} Standard`,
+  text:`Something unusual is happening: our ${s.name.toLowerCase()} numbers are being cited abroad as a benchmark. Two delegations have requested study visits and a wire feature is in draft. Attention like this can help us, but only if we use it while it lasts. <em>The choice is whether to turn good numbers into influence or revenue.</em>`,
+  opts:[
+   {label:"Showcase it: host the delegations, take the feature.",hint:"Standing play",out:"The visits go well and the feature runs with photographs. For one season we are the case study.",fx:{st:6,t:-2}},
+   {label:"Monetize quietly: advisory contracts, no headlines.",hint:"Revenue play",out:"Two governments sign for technical assistance at consulting rates. No coverage, real revenue.",fx:{t:5}},
+   {label:"Decline the attention.",hint:"Low risk · little gained",out:"The delegations are redirected to a ministry white paper. The attention fades without much benefit.",fx:{s:1}}
+  ]};}}
+];
+function pickPressure(){
+  if(G.turn<3||G.turn>10) return null;
+  if(G.turn-(G.lastPressure??-9)<3) return null;
+  for(const p of PRESSURES){
+    if(G.firedP.includes(p.id)) continue;
+    const ctx=p.test();
+    if(ctx) return {p,ctx};
+  }
+  return null;
+}
+function pickReckoning(){
+  const list=RECKONINGS[G.nation.key]||[];
+  for(const r of list){ if(r.when(G)) return r.ev; }
+  return null;
+}
+
+/* ---------- advisor memory ----------
+   Each advisor scores decisions taken on their own files, judged by
+   what their portfolio cares about. Standing is visible, referenced
+   in their next briefing, and can trigger a resignation crisis or a
+   loyalty dividend once per advisor per term. */
+function freshAdv(){
+  const a={};
+  ["fin","for","def","int","cos"].forEach(k=>a[k]={score:0,last:null,resigned:false,loyal:false,briefs:0});
+  return a;
+}
+function advisorLean(spk,fx,relMap){
+  fx=fx||{}; const relSum=Object.values(relMap||{}).reduce((x,y)=>x+y,0);
+  const t=fx.t||0,a=fx.a||0,s=fx.s||0,m=fx.m||0,st=fx.st||0;
+  switch(spk){
+    case "fin": return t>=4?1:(t<=-8?-1:0);
+    case "def": return m>=3?1:(m<=-3?-1:0);
+    case "for": return (relSum>=6||st>=5)?1:((relSum<=-8||st<=-5)?-1:0);
+    case "int": return s>=3?1:(s<=-5?-1:0);
+    case "cos": return a>=4?1:(a<=-5?-1:0);
+  }
+  return 0;
+}
+const advWord=sc=>sc>=4?"Confidant":sc>=2?"Trusted":sc>=-1?"Professional":sc>=-3?"Strained":"Hostile";
+const advTone=sc=>sc>=2?"pos":sc>=-1?"neu":"neg";
+function advisorMemoryLine(adv){
+  if(!adv.last) return null;
+  const t=adv.last.title;
+  if(adv.last.lean>0) return {cls:"pos",txt:`A nod before business. This desk counted your handling of ${t} as a win.`};
+  if(adv.last.lean<0) return {cls:"neg",txt:`The courtesies are brief. This desk has not forgotten ${t}.`};
+  return {cls:"",txt:`Your earlier call on ${t} is noted without comment.`};
+}
+function scoreAdvisor(spk,ev,fx,relMap){
+  const adv=G.adv[spk]; if(!adv) return;
+  const lean=advisorLean(spk,fx,relMap);
+  adv.score=Math.max(-5,Math.min(5,adv.score+lean));
+  adv.last={title:ev.title,lean};
+  adv.briefs++;
+  const who=G.nation.advisors[spk];
+  if(adv.score<=-3&&!adv.resigned){
+    adv.resigned=true; adv.score=-1;
+    G.queue.push({due:G.turn+1,cable:{
+      title:"The Resignation Letter",
+      text:`The ${who.r} tendered a resignation letter this morning, citing a pattern of decisions taken against the desk's written counsel. Talking ${who.n} back took a day the government did not have, and the letter leaked anyway.`,
+      fx:{a:-4,s:-3}}});
+    toast("Filed · a letter is being drafted in "+who.n.split(" ").pop()+"'s office.");
+  } else if(adv.score>=3&&!adv.loyal){
+    adv.loyal=true;
+    G.queue.push({due:G.turn+1,cable:{
+      title:"A Loyal Hand",
+      text:`${who.n} spent personal capital defending the government's record before a hostile committee this week, unprompted and on the record. It landed. Some debts run in your favour.`,
+      fx:{st:3,s:2}}});
+  }
+}
+
+/* ---------- persistence ---------- */
+const SAVE_KEY="statecraft.save.v1";
+const PREF_KEY="statecraft.prefs.v1";
+function saveGame(){
+  if(G.over||!G.nation) return;
+  if(G.turnResolved&&G.turn+1>=TERM){ clearSave(); return; }
+  try{
+    localStorage.setItem(SAVE_KEY,JSON.stringify({
+      nationKey:G.nation.key, stats:G.stats, rel:G.rel, turn:G.turnResolved?G.turn+1:G.turn,
+      deck:G.deck.map(e=>e.id), queue:G.queue, history:G.history, startStats:G.startStats, adv:G.adv, trend:G.trend, firedP:G.firedP, lastPressure:G.lastPressure, reckoningDone:G.reckoningDone,
+      currentBriefing:G.turnResolved?null:G.currentBriefing, turnResolved:false
+    }));
+  }catch(e){}
+}
+function loadSave(){
+  try{ const raw=localStorage.getItem(SAVE_KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; }
+}
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function prefs(){
+  try{ return JSON.parse(localStorage.getItem(PREF_KEY))||{}; }catch(e){ return {}; }
+}
+function setPref(k,v){
+  const p=prefs(); p[k]=v;
+  try{ localStorage.setItem(PREF_KEY,JSON.stringify(p)); }catch(e){}
+}
+
+/* ---------- audio ---------- */
+const AUDIO_SRC="https://archive.org/download/Incompetech/mp3-royaltyfree%2FAmbiment.ogg";
+const audio={el:null,started:false,on:true};
+function initAudio(){
+  audio.el=$("ambient");
+  audio.on=prefs().sound!==false;
+  applySoundToggle();
+}
+function startAudio(){
+  if(audio.started||!audio.on) return;
+  const a=audio.el;
+  if(!a.src) a.src=AUDIO_SRC;
+  a.volume=0;
+  const p=a.play();
+  if(p&&p.catch) p.catch(()=>{});
+  audio.started=true;
+  gsap.to(a,{volume:.34,duration:4,ease:"power1.inOut"});
+}
+function applySoundToggle(){
+  const t=$("sound-toggle");
+  if(audio.on){ t.classList.add("on"); t.setAttribute("aria-checked","true"); }
+  else{ t.classList.remove("on"); t.setAttribute("aria-checked","false"); }
+  if(audio.el){
+    if(audio.on){ if(audio.started) gsap.to(audio.el,{volume:.34,duration:1}); else startAudio(); }
+    else gsap.to(audio.el,{volume:0,duration:.6,onComplete:()=>{ try{audio.el.pause();}catch(e){} audio.started=false; }});
+  }
+}
 
 /* ---------- HUD ---------- */
 function buildHUD(){
@@ -706,7 +1139,7 @@ function setStat(k,v,animate=true){
 function applyFx(fx={}){ Object.entries(fx).forEach(([k,d])=>setStat(k,(G.stats[k]??0)+d)); }
 function setTurnLabel(){
   const m=MONTHS[G.turn%12], y=2027+Math.floor(G.turn/12);
-  $("hud-turn").textContent=`Turn ${String(G.turn+1).padStart(2,"0")} of ${TERM} · ${m} ${y}`;
+  $("hud-turn").textContent=`Turn ${String(G.turn+1).padStart(2,"0")}/${TERM} · Act ${ROMAN[actOf(G.turn)]} · ${m} ${y}`;
 }
 
 /* ---------- relations ---------- */
@@ -738,8 +1171,8 @@ function applyRel(rel={},relKey={}){
 }
 
 /* ---------- toasts ---------- */
-function toast(msg){
-  const t=el("div","toast",msg); $("toasts").appendChild(t);
+function toast(msg,cls){
+  const t=el("div","toast"+(cls?" "+cls:""),msg); $("toasts").appendChild(t);
   gsap.from(t,{x:-24,opacity:0,duration:.45,ease:"power2.out"});
   gsap.to(t,{opacity:0,duration:.5,delay:4,onComplete:()=>t.remove()});
 }
@@ -778,14 +1211,20 @@ function showCable(){ $("cable-wrap").style.display="flex";
   gsap.fromTo("#cable",{x:60,opacity:0},{x:0,opacity:1,duration:.7,ease:"power3.out"}); }
 
 function presentEvent(ev){
+  G.currentBriefing={kind:"event",ev};
+  G.turnResolved=false;
   const c=cableShell({cls:ev.cls,from:ev.from,ref:`SC/${G.nation.key}/${String(G.turn+1).padStart(3,"0")}`});
   const body=el("div","cable-body");
   body.appendChild(el("h3",null,ev.title));
   const adv=G.nation.advisors[ev.spk];
+  const advState=G.adv[ev.spk]||{score:0,last:null};
   const initials=adv.n.split(" ").map(w=>w[0]).join("");
   const sp=el("div","speaker",
-    `<div class="sp-seal">${initials}</div><div><div class="sp-name">${adv.n}</div><div class="sp-role">${adv.r}</div></div>`);
+    `<div class="sp-seal">${initials}</div><div><div class="sp-name">${adv.n}</div><div class="sp-role">${adv.r}</div></div>
+     <div class="sp-standing ${advTone(advState.score)}">${advWord(advState.score)}</div>`);
   body.appendChild(sp);
+  const mem=advisorMemoryLine(advState);
+  if(mem) body.appendChild(el("div","sp-memory "+mem.cls,mem.txt));
   body.appendChild(el("div","dialogue",ev.text));
   c.appendChild(body);
   const ops=el("div","options");
@@ -799,14 +1238,19 @@ function presentEvent(ev){
   gsap.from(ops.children,{y:14,opacity:0,duration:.45,stagger:.08,delay:.35,ease:"power2.out"});
 }
 function resolveOption(ev,o){
+  G.currentBriefing=null;
+  G.turnResolved=true;
   const c=$("cable");
   c.querySelector(".options").remove();
-  applyFx(o.fx||{});
+  const eff=actOf(G.turn)===3?scaleFxObj(o.fx,1.25):(o.fx||{});
+  applyFx(eff);
   const mapped=applyRel(o.rel||{},o.relKey||{});
   if(o.delay){ G.queue.push({due:G.turn+o.delay.turns,cable:o.delay}); }
+  scoreAdvisor(ev.spk,ev,eff,mapped);
+  G.history.push({turn:G.turn+1,title:ev.title,choice:o.label,fx:{...eff},rel:mapped,pending:!!o.delay});
   const oc=el("div","outcome");
   oc.appendChild(el("div","oc-text",o.out));
-  oc.appendChild(chipRow(o.fx||{},mapped,o.delay?"Consequences pending":null));
+  oc.appendChild(chipRow(eff,mapped,o.delay?"Consequences pending":null));
   const nxt=el("button","btn","Next briefing");
   nxt.onclick=endTurn;
   oc.appendChild(nxt);
@@ -814,16 +1258,23 @@ function resolveOption(ev,o){
   gsap.from(oc,{y:12,opacity:0,duration:.5,ease:"power2.out"});
   if(o.delay) toast("Filed · this decision will echo.");
 }
-function presentConsequence(q){
+function presentConsequence(q,apply=true){
+  G.currentBriefing={kind:"consequence",q};
+  G.turnResolved=false;
   const c=cableShell({cls:"CONSEQUENCE",from:"SITUATION DESK",ref:`SC/${G.nation.key}/ECHO`});
   const body=el("div","cable-body");
   body.appendChild(el("h3",null,q.cable.title));
   body.appendChild(el("div","dialogue",q.cable.text));
   c.appendChild(body);
-  applyFx(q.cable.fx||{});
-  const mapped=applyRel(q.cable.rel||{},{});
+  const eff=actOf(G.turn)===3?scaleFxObj(q.cable.fx,1.25):(q.cable.fx||{});
+  const mapped=apply?(applyRel(q.cable.rel||{},{})):(q.mapped||{});
+  if(apply){
+    applyFx(eff);
+    G.history.push({turn:G.turn+1,title:q.cable.title,choice:"Consequence of an earlier decision",fx:{...eff},rel:mapped,echo:true});
+    G.currentBriefing={kind:"consequence",q:{...q,mapped}};
+  }
   const oc=el("div","outcome");
-  oc.appendChild(chipRow(q.cable.fx||{},mapped));
+  oc.appendChild(chipRow(eff,mapped));
   const nxt=el("button","btn","Acknowledged");
   nxt.onclick=endTurn;
   oc.appendChild(nxt);
@@ -833,39 +1284,95 @@ function presentConsequence(q){
 
 /* ---------- turn engine ---------- */
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
+function evIntensity(e){
+  let m=0;
+  e.opts.forEach(o=>{
+    let s=0;
+    Object.values(o.fx||{}).forEach(v=>s+=Math.abs(v));
+    Object.values(o.rel||{}).forEach(v=>s+=Math.abs(v)/2);
+    if(o.relKey) s+=4;
+    if(o.delay) s+=4;
+    m=Math.max(m,s);
+  });
+  return m;
+}
 function buildDeck(key){
-  const own=shuffle(EVENTS.filter(e=>e.nation===key));
-  const gen=shuffle(EVENTS.filter(e=>e.nation==="ANY"));
-  const deck=[own.shift(),own.shift()];
-  const rest=shuffle([...own,...gen]);
-  return deck.concat(rest);
+  /* three-act structure: two calm home files open the term,
+     then intensity climbs act by act toward the reckoning */
+  const own=EVENTS.filter(e=>e.nation===key).sort((a,b)=>evIntensity(a)-evIntensity(b));
+  const openers=own.slice(0,2);
+  const rest=[...own.slice(2),...EVENTS.filter(e=>e.nation==="ANY")].sort((a,b)=>evIntensity(a)-evIntensity(b));
+  const third=Math.ceil(rest.length/3);
+  const a1=shuffle(rest.slice(0,third));
+  const a2=shuffle(rest.slice(third,third*2));
+  const a3=shuffle(rest.slice(third*2));
+  return [...openers,...a1,...a2,...a3];
 }
 function startTurn(){
   if(G.over) return;
+  G.currentBriefing=null;
+  G.turnResolved=false;
   setTurnLabel();
   /* the cost of simply existing as a state */
   if(G.turn>0){ setStat("t",G.stats.t-1); setStat("a",G.stats.a-1); }
+  if(G.turn>0) applyInteractions();
   if(checkCollapse()) return;
+  G.trend.push({...G.stats}); if(G.trend.length>14) G.trend.shift();
+  const act=actOf(G.turn);
+  if(act!==G.lastAct){
+    G.lastAct=act;
+    if(act===2) toast("ACT II · The bills come due");
+    if(act===3) toast("ACT III · The reckoning · stakes now run higher");
+  }
   const dueIdx=G.queue.findIndex(q=>q.due<=G.turn);
+  const conseqDue=dueIdx>-1;
+  const mustReckon=!G.reckoningDone && (G.turn>=TERM-1 || (G.turn>=9 && !conseqDue));
   gsap.delayedCall(.15,()=>{
-    if(dueIdx>-1){ const q=G.queue.splice(dueIdx,1)[0];
+    if(!G.nation||G.over) return;
+    if(mustReckon){
+      const ev=pickReckoning();
+      G.reckoningDone=true;
+      if(ev){
+        G.currentBriefing={kind:"event",ev};
+        const f=eventFocus(ev);
+        flyTo(f.lat,f.lng,Math.max(1.9,f.dist-.4),1.7);
+        gsap.delayedCall(.6,()=>{ if(G.nation&&!G.over) presentEvent(ev); });
+        return;
+      }
+    }
+    if(conseqDue){ const q=G.queue.splice(dueIdx,1)[0];
+      G.currentBriefing={kind:"consequence",q};
       flyTo(G.nation.view.lat,G.nation.view.lng+(Math.random()*20-10),2.6,1.5);
       presentConsequence(q); if(checkCollapse())return;
-    } else {
-      const ev=G.deck.shift();
-      if(!ev){ finishTerm(); return; }
+      return;
+    }
+    const press=pickPressure();
+    if(press){
+      const ev=press.p.build(press.ctx);
+      G.firedP.push(press.p.id); G.lastPressure=G.turn;
+      G.currentBriefing={kind:"event",ev};
       const f=eventFocus(ev);
       flyTo(f.lat,f.lng,f.dist,1.7);
-      gsap.delayedCall(.6,()=>presentEvent(ev));
+      gsap.delayedCall(.6,()=>{ if(G.nation&&!G.over) presentEvent(ev); });
+      return;
     }
+    const ev=G.deck.shift();
+    if(!ev){ finishTerm(); return; }
+    G.currentBriefing={kind:"event",ev};
+    const f=eventFocus(ev);
+    flyTo(f.lat,f.lng,f.dist,1.7);
+    gsap.delayedCall(.6,()=>{ if(G.nation&&!G.over) presentEvent(ev); });
   });
 }
 function endTurn(){
   gsap.to("#cable",{x:40,opacity:0,duration:.4,ease:"power2.in",onComplete:()=>{
     $("cable-wrap").style.display="none";
+    G.currentBriefing=null;
+    G.turnResolved=false;
     if(checkCollapse())return;
     G.turn++;
     if(G.turn>=TERM){ finishTerm(); return; }
+    saveGame();
     startTurn();
   }});
 }
@@ -881,21 +1388,114 @@ function checkCollapse(){
   }
   return false;
 }
+const LEGACY={
+  t:"The public finances are stronger than when you started. That will shape how the term is remembered.",
+  a:"You kept enough public support to govern. The politics were difficult, but the coalition held.",
+  s:"The country is more stable than when you started. That stability is your clearest achievement.",
+  m:"The armed forces are stronger than when you started. The cost was high, but the capacity will last.",
+  st:"The country's standing abroad improved. Future negotiations will start from a stronger position.",
+  none:"History will record a term of management more than transformation. The state survived, but did not clearly improve."
+};
+function legacyLine(){
+  let best=null;
+  STATS.forEach(s=>{
+    const sw=Math.round(G.stats[s.k]-(G.startStats[s.k]??G.stats[s.k]));
+    if(!best||sw>best.sw) best={k:s.k,sw};
+  });
+  return (best&&best.sw>0)?LEGACY[best.k]:LEGACY.none;
+}
+function relationCoda(){
+  let hi=null,lo=null;
+  const the=k=>["USA","UK","EU"].includes(k)?"the "+CAPS[k].name:CAPS[k].name;
+  Object.entries(G.rel).forEach(([k,v])=>{
+    if(!hi||v>hi.v) hi={k,v};
+    if(!lo||v<lo.v) lo={k,v};
+  });
+  const parts=[];
+  if(hi&&hi.v>=72) parts.push(`Relations with ${the(hi.k)} are now unusually strong.`);
+  if(lo&&lo.v<=32) parts.push(`Relations with ${the(lo.k)} are now seriously strained.`);
+  return parts.join(" ");
+}
 function finishTerm(){
   const score=Math.round(G.stats.a*.45+G.stats.s*.35+G.stats.st*.2);
   const win=score>=50, rv=G.nation.review;
-  showVerdict(win,rv.name,win?rv.win:rv.fail,score);
+  let title, tier;
+  if(score>=68){ title="The <em>Landslide</em>"; tier="The margin is larger than your campaign expected."; }
+  else if(score>=50){ title="The Mandate <em>Holds</em>"; tier=""; }
+  else if(score>=38){ title="A <em>Narrow</em> Defeat"; tier="The count is close, but you fall short."; }
+  else { title="The <em>Rout</em>"; tier="The result is a clear defeat."; }
+  const golden=win&&STATS.every(s=>G.stats[s.k]>=60);
+  let body=(tier?tier+" ":"")+(win?rv.win:rv.fail);
+  if(golden) body+=" By every measure, the state is stronger than when you took office.";
+  const epilogue=body+"<br><br>"+legacyLine()+" "+relationCoda();
+  showVerdict(win,rv.name,epilogue,score,title);
 }
-function showVerdict(win,name,text,score){
+function buildReport(){
+  const box=$("report"); box.innerHTML="";
+  const head=el("h4",null,"Term Report");
+  box.appendChild(head);
+  /* per-stat journey: start to end */
+  const journey=el("div","rc-journey");
+  STATS.forEach(s=>{
+    const start=Math.round(G.startStats[s.k]??s.k), end=Math.round(G.stats[s.k]);
+    const swing=end-start;
+    const cls=swing>0?"up":swing<0?"down":"flat";
+    const arrow=swing>0?"▲":swing<0?"▼":"—";
+    const cell=el("div","rc-stat",
+      `<div class="rc-name">${s.name}</div>
+       <div class="rc-nums">${start} <span class="rc-end">${end}</span></div>
+       <div class="rc-swing ${cls}">${arrow} ${swing>0?"+":""}${swing}</div>`);
+    journey.appendChild(cell);
+  });
+  box.appendChild(journey);
+  /* cabinet standing */
+  const ROLE_SHORT={fin:"Finance",for:"Foreign",def:"Defence",int:"Intelligence",cos:"Staff"};
+  box.appendChild(el("h4","sub","Cabinet Standing"));
+  const cab=el("div","rc-journey rc-cab");
+  ["fin","for","def","int","cos"].forEach(k=>{
+    const who=G.nation.advisors[k], st=(G.adv[k]||{score:0});
+    const cls=advTone(st.score)==="pos"?"up":advTone(st.score)==="neg"?"down":"flat";
+    cab.appendChild(el("div","rc-stat",
+      `<div class="rc-name">${ROLE_SHORT[k]}</div>
+       <div class="rc-who">${who.n.split(" ").pop()}</div>
+       <div class="rc-swing ${cls}">${advWord(st.score)}</div>`));
+  });
+  box.appendChild(cab);
+  /* per-turn decision log */
+  box.appendChild(el("h4","sub","Decision Log"));
+  const log=el("div","rc-log");
+  if(!G.history.length){
+    log.appendChild(el("div","rc-verdict-note","No decisions were recorded this term."));
+  } else {
+    G.history.forEach(h=>{
+      const chips=el("div","rc-swing-chips");
+      Object.entries(h.fx||{}).forEach(([k,d])=>{ if(!d)return;
+        const s=STATS.find(x=>x.k===k);
+        chips.appendChild(el("span","rc-mini "+(d>0?"up":"down"),`${s.name.slice(0,3)} ${d>0?"+":""}${d}`)); });
+      const row=el("div","rc-turn",
+        `<div class="rc-t">${String(h.turn).padStart(2,"0")}</div>
+         <div class="rc-choice">${h.echo?"<em>Echo</em> · ":""}${h.choice}<span>${h.title}${h.pending?" · consequences filed":""}</span></div>`);
+      row.appendChild(chips);
+      log.appendChild(row);
+    });
+  }
+  box.appendChild(log);
+}
+function showVerdict(win,name,text,score,titleHtml){
   G.over=true; inputEnabled=false;
+  clearSave();
+  updateResumeBanner();
   $("cable-wrap").style.display="none";
   $("verdict-eyebrow").textContent=name;
-  $("verdict-title").innerHTML=win?"The Mandate <em>Holds</em>":"The <em>Fall</em>";
-  $("verdict-text").textContent=text;
+  $("verdict-title").innerHTML=titleHtml||(win?"The Mandate <em>Holds</em>":"The <em>Fall</em>");
+  if(score==null&&!titleHtml) text=text+"<br><br>"+legacyLine()+" "+relationCoda();
+  $("verdict-text").innerHTML=text;
   const t=$("verdict-tally");
   t.innerHTML=STATS.map(s=>`${s.name} <b>${Math.round(G.stats[s.k])}</b>`).join(" &nbsp;·&nbsp; ")+
-    (score!=null?`<br>Mandate score <b>${score}</b> · threshold <b>50</b> · turns served <b>${Math.min(G.turn+1,TERM)}</b>`:"");
+    (score!=null?`<br>Mandate score <b>${score}</b> · threshold <b>50</b> · turns served <b>${Math.min(G.turn+1,TERM)}</b>`:` · turns served <b>${Math.min(G.turn+1,TERM)}</b>`);
+  buildReport();
   $("verdict").style.display="flex";
+  $("verdict-card").scrollTop=0;
   gsap.fromTo("#verdict-card",{scale:.94,opacity:0},{scale:1,opacity:1,duration:.7,ease:"power3.out"});
   flyTo(20,camState.lng+50,3.4,3); gsap.delayedCall(3,()=>autoRotate=true);
 }
@@ -920,36 +1520,109 @@ function chooseNation(key){
   const n=NATIONS[key];
   G.nation=n; G.turn=0; G.over=false; G.queue=[];
   G.stats={...n.stats}; G.rel={...n.relations};
+  G.startStats={...n.stats}; G.history=[];
+  G.adv=freshAdv();
+  G.trend=[]; G.firedP=[]; G.lastPressure=-9; G.reckoningDone=false; G.lastAct=1; G.currentBriefing=null; G.turnResolved=false;
   G.deck=buildDeck(key);
+  enterGame(()=>flyTo(n.view.lat,n.view.lng,n.view.dist,2).then(()=>startTurn()));
+}
+function restoreBriefing(saved){
+  const briefing=saved&&saved.currentBriefing;
+  if(!briefing) return false;
+  if(briefing.kind==="event"&&briefing.ev){
+    const f=eventFocus(briefing.ev);
+    flyTo(f.lat,f.lng,f.dist,1.2);
+    presentEvent(briefing.ev);
+    return true;
+  }
+  if(briefing.kind==="consequence"&&briefing.q){
+    flyTo(G.nation.view.lat,G.nation.view.lng,2.6,1.2);
+    presentConsequence(briefing.q,false);
+    return true;
+  }
+  return false;
+}
+function resumeGame(save){
+  const n=NATIONS[save.nationKey];
+  if(!n){ clearSave(); return false; }
+  G.nation=n; G.turn=save.turn; G.over=false;
+  G.stats={...save.stats}; G.rel={...save.rel};
+  G.startStats={...(save.startStats||n.stats)};
+  G.history=save.history||[];
+  G.adv=save.adv||freshAdv();
+  G.trend=save.trend||[]; G.firedP=save.firedP||[]; G.lastPressure=save.lastPressure??-9;
+  G.reckoningDone=!!save.reckoningDone; G.lastAct=actOf(save.turn);
+  G.queue=save.queue||[]; G.currentBriefing=save.currentBriefing||null; G.turnResolved=false;
+  /* rebuild deck from stored ids */
+  const byId={}; EVENTS.forEach(e=>byId[e.id]=e);
+  G.deck=(save.deck||[]).map(id=>byId[id]).filter(Boolean);
+  enterGame(()=>flyTo(n.view.lat,n.view.lng,n.view.dist,2).then(()=>{ if(!restoreBriefing(save)) startTurn(); }));
+  return true;
+}
+function enterGame(after){
   gsap.to("#select-screen",{opacity:0,duration:.5,onComplete:()=>{
     $("select-screen").style.display="none"; gsap.set("#select-screen",{opacity:1});
     $("hud").style.display="block"; $("relations").style.display="block"; $("hint").style.display="block";
+    $("gear").style.display="flex"; if(audio.on) $("audio-credit").style.display="block";
     buildHUD(); STATS.forEach(s=>setStat(s.k,G.stats[s.k],false));
-    $("hud-name").textContent=n.name; setTurnLabel();
-    buildRelations(); buildBoard(n);
+    $("hud-name").textContent=G.nation.name; setTurnLabel();
+    buildRelations(); buildBoard(G.nation);
     gsap.from("#hud-bar",{y:-30,opacity:0,duration:.8,ease:"power3.out"});
     gsap.from("#relations",{x:-30,opacity:0,duration:.8,delay:.2,ease:"power3.out"});
+    gsap.from("#gear",{opacity:0,duration:.8,delay:.3});
     inputEnabled=true;
-    flyTo(n.view.lat,n.view.lng,n.view.dist,2).then(()=>startTurn());
+    after&&after();
   }});
 }
 function toSelect(){
-  $("verdict").style.display="none";
-  $("hud").style.display="none"; $("relations").style.display="none"; $("hint").style.display="none";
+  $("verdict").style.display="none"; $("settings").style.display="none";
+  gsap.killTweensOf("#cable");
+  $("cable-wrap").style.display="none"; $("cable").innerHTML="";
+  $("hud").style.display="none"; $("relations").style.display="none";
+  $("hint").style.display="none"; $("gear").style.display="none"; $("audio-credit").style.display="none";
+  $("toasts").innerHTML="";
   clearBoard(); inputEnabled=false; autoRotate=true;
+  G.nation=null; G.over=false; G.currentBriefing=null; G.turnResolved=false;
+  updateResumeBanner();
   $("select-screen").style.display="flex";
   gsap.from("#dossiers .dossier",{y:30,opacity:0,duration:.6,stagger:.1,ease:"power2.out"});
 }
+function updateResumeBanner(){
+  const save=loadSave(), b=$("resume-banner");
+  if(save&&NATIONS[save.nationKey]){
+    const n=NATIONS[save.nationKey];
+    $("rb-detail").innerHTML=`${n.name} · Turn ${String(save.turn+1).padStart(2,"0")} of ${TERM}. Pick up where you left off.`;
+    b.style.display="flex";
+  } else b.style.display="none";
+}
+
+/* ---------- settings + gear ---------- */
+function openSettings(){ $("settings").style.display="flex";
+  gsap.fromTo("#settings-card",{scale:.96,opacity:0},{scale:1,opacity:1,duration:.4,ease:"power2.out"}); }
+function closeSettings(){ $("settings").style.display="none"; }
+$("gear").onclick=openSettings;
+$("settings").onclick=e=>{ if(e.target.id==="settings") closeSettings(); };
+$("btn-resume-settings").onclick=closeSettings;
+$("btn-quit").onclick=()=>{ closeSettings(); saveGame(); toSelect(); };
+$("sound-toggle").onclick=()=>{ audio.on=!audio.on; setPref("sound",audio.on); applySoundToggle();
+  $("audio-credit").style.display=(audio.on&&G.nation)?"block":"none"; };
+$("btn-resume").onclick=()=>{ const s=loadSave(); if(s) resumeGame(s); };
+$("btn-discard").onclick=()=>{ clearSave(); updateResumeBanner(); };
+
 $("btn-begin").onclick=()=>{
+  startAudio();
   gsap.to("#title-screen",{opacity:0,duration:.5,onComplete:()=>{
     $("title-screen").style.display="none";
     toSelect(); flyTo(30,10,3.0,2.2);
   }});
 };
 $("btn-restart").onclick=toSelect;
+/* first user gesture anywhere unlocks audio if it was blocked */
+addEventListener("pointerdown",()=>{ if(audio.on) startAudio(); },{once:true});
 
 initGlobe(()=>{
   buildDossiers();
+  initAudio();
   gsap.to("#loading",{opacity:0,duration:.8,delay:.3,onComplete:()=>$("loading").remove()});
   $("title-screen").style.display="flex";
   gsap.from("#title-screen h1",{y:26,opacity:0,duration:1.1,delay:.5,ease:"power3.out"});
