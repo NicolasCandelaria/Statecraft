@@ -267,6 +267,33 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 #audio-credit{position:fixed;bottom:8px;left:22px;z-index:14;font-family:var(--f-mono);font-size:8px;letter-spacing:.1em;color:rgba(125,140,163,.4);display:none}
 #audio-credit a{color:inherit;text-decoration:underline}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* ---------- past terms archive ---------- */
+#archive-panel{margin:26px auto 0;max-width:640px;width:calc(100% - 48px)}
+#archive-panel h4{font-family:var(--f-mono);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;text-align:center}
+.arch-row{display:grid;grid-template-columns:1.1fr 1.6fr auto auto;gap:12px;align-items:center;padding:7px 12px;border:1px solid var(--line-dim);background:rgba(12,20,32,.5);backdrop-filter:blur(8px);margin-bottom:5px;font-family:var(--f-mono);font-size:10px;letter-spacing:.06em}
+.arch-row .ar-n{color:var(--ink)}
+.arch-row .ar-l{color:var(--brass-lite)}
+.arch-row .ar-s{color:var(--muted)}
+.arch-row .ar-d{color:var(--muted);opacity:.7}
+/* ---------- small monitors: keep the menus inside the viewport ---------- */
+#select-screen{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+@media(max-height:860px){
+  #select-screen{justify-content:flex-start;padding-top:4vh;padding-bottom:4vh}
+  #select-head h2{font-size:clamp(22px,3.6vh,30px);margin-top:6px}
+  #select-head{margin-bottom:2.5vh}
+  .dossier{min-height:0}
+  .dossier p{min-height:0;font-size:12px}
+  #title-screen h1{font-size:clamp(40px,10vh,88px)}
+  #settings-card{max-height:84vh;padding:22px 24px}
+  .slot-list{max-height:30vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent;padding-right:4px}
+  #archive-panel{margin-top:16px}
+}
+@media(max-height:700px){
+  #select-head .eyebrow{display:none}
+  .arch-row{grid-template-columns:1fr 1.4fr auto;gap:8px}
+  .arch-row .ar-d{display:none}
+}
+
 #gear:focus-visible,.toggle:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
 /* ---------- epilogue ---------- */
 .verdict-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
@@ -339,6 +366,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <h2>Choose your portfolio</h2>
   </div>
   <div id="dossiers"></div>
+  <div id="archive-panel" style="display:none">
+    <h4>Past Terms</h4>
+    <div id="archive-list"></div>
+  </div>
 </div>
 
 <!-- HUD -->
@@ -447,7 +478,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   </div>
 </div>
 
-<audio id="ambient" loop preload="none" crossorigin="anonymous"></audio>
+<audio id="ambient" preload="none" crossorigin="anonymous"></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -513,16 +544,112 @@ const NATIONS = {
 const EVENTS = [
 /* ---------------- CANADA ---------------- */
 {id:"can_softwood",nation:"CAN",from:"EMBASSY WASHINGTON",cls:"SECRET",spk:"for",title:"The Softwood File",
- text:"The U.S. just put a 26.4 percent tax on our softwood lumber. Mills in the interior will start shutting down within weeks, and about nine thousand jobs are in ridings we hold. We can fight it two ways: a trade panel under CUSMA, or a challenge at the WTO. We have won both before and we would likely win again. But each one takes about two years. <em>The legal win is certain and slow. The layoffs are certain and fast.</em>",
+ text:"The U.S. just put a 26.4 percent tax on our softwood lumber. Mills in the interior will start shutting down within weeks, and about nine thousand jobs sit in ridings we hold. This is not really about lumber. It is the first test of how this government deals with Washington, and every capital watching will read it that way. <em>The choice made this week sets the posture for the whole term.</em>",
  opts:[
-  {label:"Retaliate with duties on U.S. agricultural imports.",hint:"Approval up · Washington down · consumer prices",out:"The counter-list targets dairy, corn and appliances from swing states. Talk radio approves. The U.S. Trade Representative calls it escalation and suspends two unrelated working groups.",fx:{a:7,t:-4},rel:{USA:-9}},
-  {label:"File the CUSMA panel and negotiate a quota deal.",hint:"Standing up · looks weak at home",out:"The panel is filed and quota talks open in Geneva. The plan is orderly and defensible, but workers facing layoffs will not see help soon.",fx:{a:-5,st:6},rel:{USA:3}},
-  {label:"Fund a transition package for the mill towns.",hint:"Treasury down · communities supported",out:"A $1.2B CAD package covers wage top-ups, retraining and stumpage relief. It is expensive, but it keeps the towns stable while the legal case moves forward.",fx:{t:-8,s:5,a:3}}
+  {label:"Hit back. Duties on U.S. agricultural imports, announced publicly.",hint:"Storyline: Retaliation",out:"The counter-list targets dairy, corn and appliances from swing states. Talk radio approves. The U.S. Trade Representative calls it escalation and suspends two unrelated working groups. Ottawa has just told Washington how this government intends to be treated.",fx:{a:7,t:-4},rel:{USA:-9},set:"story_retaliate"},
+  {label:"File the CUSMA panel and keep the relationship calm.",hint:"Storyline: The Long Game",out:"The panel is filed and quota talks open in Geneva. The plan is orderly and defensible, and it commits this government to years of patient, unglamorous legal work rather than a fight.",fx:{a:-5,st:6},rel:{USA:3},set:"story_longgame"},
+  {label:"Write off the American relationship. Pivot to Europe and Asia.",hint:"Storyline: The Pivot",out:"A $1.2B CAD transition package covers the mill towns, and quietly, the trade file starts moving desks: less energy on Washington, more on Brussels and Tokyo. It is the first visible sign this government is looking elsewhere.",fx:{t:-8,s:5,a:3},set:"story_pivot"}
+ ]},
+
+/* ============ CANADA STORYLINE: RETALIATION ============ */
+{id:"can_ret_2",nation:"CAN",requires:"story_retaliate",from:"EMBASSY WASHINGTON",cls:"CONFIDENTIAL",spk:"for",title:"The Working Groups",
+ text:"Washington has not backed down. The two suspended working groups, on border pre-clearance and on critical minerals, are still frozen three months later, and now a third file, the shared Arctic patrol schedule, is quietly stalling too. The ambassador says the freeze will thaw the moment we blink first. <em>A fight like this does not stay contained to the file that started it.</em>",
+ opts:[
+  {label:"Hold the line. Let all three files stay frozen.",hint:"Storyline: Retaliation continues",out:"Nothing moves on any of the three files. The border lineups get slightly longer and nobody in either capital says why.",fx:{st:-3,a:2},set:"story_ret_hold"},
+  {label:"Offer to unfreeze the Arctic patrol file as a goodwill gesture.",hint:"Storyline: Retaliation, partial thaw",out:"The patrol schedule resumes. It costs nothing to concede and buys a little room, though the trade file itself does not move an inch.",fx:{st:2,m:2},set:"story_ret_thaw"}
+ ]},
+{id:"can_ret_hold_3",nation:"CAN",requires:"story_ret_hold",from:"PRIVY COUNCIL OFFICE",cls:"CONFIDENTIAL",spk:"cos",title:"The Domestic Price",
+ text:"The freeze is now costing us at home. Cross-border manufacturers are delaying investment decisions until the file resolves, and two premiers have written jointly asking Ottawa to find an off-ramp. The mills that started this are stable now. The auto sector that did not start it is not. <em>A fight picked for one industry is being paid for by another.</em>",
+ opts:[
+  {label:"Hold anyway. The principle matters more than the auto sector's quarter.",hint:"Storyline: Retaliation, full spine",out:"The premiers are told, politely, that this government does not negotiate under a deadline it did not set. The auto sector absorbs the delay.",fx:{a:-4,t:-5,st:4},set:"story_ret_spine"},
+  {label:"Quietly signal Washington we would take a face-saving deal.",hint:"Storyline: Retaliation, managed exit",out:"A backchannel opens through the trade attache. Word comes back that a deal is possible if we drop the agricultural duties first. That is the actual negotiation now.",fx:{a:1},set:"story_ret_exit"}
+ ]},
+{id:"can_ret_spine_end",nation:"CAN",requires:"story_ret_spine",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Standoff",
+ text:"A year in, neither side has moved. The duties are still in place, the working groups are still frozen, and this government's entire foreign policy has become defined by a fight over lumber that nobody outside the two capitals still fully understands. Washington has scheduled a leaders' call for next week. Their office has floated, off the record, that a resolution is possible if this government makes the first public gesture. <em>Everyone in the room knows this is the last chance to end it on our terms instead of theirs.</em>",
+ opts:[
+  {label:"Make the gesture. End it, publicly, on our timeline.",hint:"Ends the standoff on our terms",out:"The gesture is timed and worded carefully: a partial rollback framed as a reward for progress, not a concession under pressure. Washington reciprocates within the week. The fight ends looking like a negotiation rather than a retreat.",fx:{st:6,a:-2},rel:{USA:10}},
+  {label:"Wait them out. Let Washington make the first move.",hint:"A longer, colder standoff",out:"The call happens and nothing is resolved. Both sides restate their positions for the cameras. The standoff becomes a fact of the relationship rather than a crisis in it, which is its own kind of ending.",fx:{st:-2,a:3},rel:{USA:-4}}
+ ]},
+{id:"can_ret_exit_end",nation:"CAN",requires:"story_ret_exit",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Handshake",
+ text:"The backchannel produced a real deal: we drop the agricultural duties, they cut the lumber tax to 11 percent and reopen all three working groups. It is a good outcome by any technical measure. It is also, unmistakably, this government backing down first after a year of saying it would not. The signing ceremony is scheduled. Cabinet is split on how to frame it. <em>The deal is the same deal either way. The story about it is not.</em>",
+ opts:[
+  {label:"Frame it as a win. Announce the reopened files loudly.",hint:"Sell the outcome with confidence",out:"The announcement leads with the three reopened files and buries the duty rollback in paragraph four. Most coverage follows the frame. Some does not.",fx:{a:4,st:2},rel:{USA:8}},
+  {label:"Be plain about it. Call it a negotiated de-escalation.",hint:"Honest framing, thinner applause",out:"The statement is accurate and unglamorous: both sides gave ground, the relationship is repaired, nobody won outright. It draws less criticism than a spin job would have, and less credit too.",fx:{a:1,st:4},rel:{USA:6}}
+ ]},
+
+/* ============ CANADA STORYLINE: THE LONG GAME ============ */
+{id:"can_lg_2",nation:"CAN",requires:"story_longgame",from:"TRADE LAW SECRETARIAT",cls:"CONFIDENTIAL",spk:"fin",title:"The Panel Ruling",
+ text:"Eighteen months of CUSMA panel proceedings have produced a ruling, and it is almost entirely in our favour. The panel calls the American duty calculation methodology flawed and orders a recalculation. Washington has ninety days to comply. They will almost certainly appeal, which restarts the clock. The mill towns that were promised this would work are still waiting. <em>Winning slowly still means losing time.</em>",
+ opts:[
+  {label:"Publicize the win loudly. Patience is vindicated.",hint:"Storyline: Long Game, the case for patience",out:"The ruling gets the press conference it deserves. Cabinet points to it as proof that the quiet, legal path was correct all along, even before Washington has actually complied with anything.",fx:{st:5,a:2},set:"story_lg_patient"},
+  {label:"Quietly open a parallel track: direct talks alongside the appeal.",hint:"Storyline: Long Game, hedge the bet",out:"A junior minister opens informal talks with the U.S. Trade Representative's office, kept off the record in case the appeal drags on for years, which everyone privately expects it to.",fx:{t:-2,st:2},set:"story_lg_hedge"}
+ ]},
+{id:"can_lg_patient_3",nation:"CAN",requires:"story_lg_patient",from:"TRADE LAW SECRETARIAT FLASH",cls:"CONFIDENTIAL",spk:"fin",title:"The Appeal",
+ text:"Washington has appealed, exactly as expected, and the case now moves to a body with no enforcement deadline at all. Legal experts put the realistic timeline at three to five more years. The mill towns have had two more closures since the original ruling. The strategy that was correct in principle is now starting to look, in the ridings that voted for this government, like abandonment. <em>Being right and being felt are not the same thing.</em>",
+ opts:[
+  {label:"Stay the course. The law is still on our side.",hint:"Storyline: Long Game, principled patience",out:"The government restates its confidence in the process. It is not a popular thing to say in a mill town with a shuttered plant, and it is said anyway.",fx:{a:-6,st:5},set:"story_lg_course"},
+  {label:"Fund a bridge package while the appeal grinds on.",hint:"Storyline: Long Game, buy time",out:"A $900M CAD bridge fund covers the towns until the legal process resolves, whenever that turns out to be. It is expensive insurance against a timeline this government does not control.",fx:{t:-9,a:4},set:"story_lg_bridge"}
+ ]},
+{id:"can_lg_course_end",nation:"CAN",requires:"story_lg_course",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"fin",title:"The Verdict, Finally",
+ text:"After more than three years, the appellate body has ruled. It is a clean, total win: the American duty is struck down entirely and refunds are ordered retroactive to the original filing. It is also, politically, ancient history. Two elections' worth of mill town anger happened while this was pending. The win is real. Whether anyone still cares is the actual question in front of you now. <em>The law finally caught up. The story had already moved on.</em>",
+ opts:[
+  {label:"Make the vindication the centerpiece of the term's record.",hint:"Claim the win, late as it is",out:"The verdict becomes the closing argument for the whole term's trade strategy: slow, correct, and eventually undeniable. It plays better with historians than it did with the towns that lived through it.",fx:{st:8,a:2}},
+  {label:"Let it pass quietly. The towns needed help years ago, not a headline now.",hint:"Decline the victory lap",out:"No press conference is held. The refunds are processed and the ruling is noted in a filing, not a speech. It is an unusually humble way to win a three-year legal fight.",fx:{a:5,st:3}}
+ ]},
+{id:"can_lg_bridge_end",nation:"CAN",requires:"story_lg_bridge",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"fin",title:"The Bridge Runs Out",
+ text:"The bridge fund is nearly spent and the appeal still has no end date. Finance has two options on the table: extend the fund again, which is now the third extension, or let it lapse and tell the mill towns the wait continues unfunded. The towns that were bridged through the worst of it have mostly stabilized. Ending the program now risks reversing that. Extending it again makes it look permanent, which changes what it actually is. <em>A bridge that never ends is just a program with a temporary name.</em>",
+ opts:[
+  {label:"Extend it again and make it permanent policy.",hint:"The bridge becomes the plan",out:"The fund is folded into ongoing forestry transition policy, with a new name and no expiry date. It is an honest acknowledgment of what it had already become.",fx:{t:-6,a:5,s:2}},
+  {label:"Let it lapse. The towns have had years to adjust.",hint:"End the program on schedule",out:"The fund closes as originally promised. Most towns hold their gains. A few slide back, and the finance ministry notes, correctly, that no program lasts forever without becoming something else.",fx:{t:4,a:-3}}
+ ]},
+
+/* ============ CANADA STORYLINE: THE PIVOT ============ */
+{id:"can_piv_2",nation:"CAN",requires:"story_pivot",from:"GLOBAL AFFAIRS CANADA",cls:"CONFIDENTIAL",spk:"for",title:"The European Overture",
+ text:"Eight months into the pivot, Brussels has answered with a real offer. It is a deeper trade framework covering critical minerals and defence buying, framed openly as an alternative to relying on Washington. It is the clearest sign yet that the pivot is being taken seriously abroad. It also means the American relationship, already cool, gets colder the moment this goes public. <em>Turning toward one capital is impossible without turning away from another.</em>",
+ opts:[
+  {label:"Sign the framework. Commit publicly to the European track.",hint:"Storyline: Pivot, full commitment",out:"The signing is front-page news in three countries. Washington's ambassador requests a meeting within the day. The pivot is no longer a hedge. It is now the declared policy.",fx:{t:-4,st:6},rel:{EU:12,USA:-8},set:"story_piv_commit"},
+  {label:"Negotiate quietly. Keep the American door open a little longer.",hint:"Storyline: Pivot, hedge both ways",out:"The framework talks continue without a signature, which frustrates Brussels and reassures nobody in Washington either. It is the diplomatic equivalent of standing in a doorway.",fx:{st:1},set:"story_piv_hedge"}
+ ]},
+{id:"can_piv_commit_3",nation:"CAN",requires:"story_piv_commit",from:"EMBASSY WASHINGTON",cls:"CONFIDENTIAL",spk:"for",title:"The Cold Shoulder",
+ text:"Washington's response has arrived, and it is not retaliation. It is worse: quiet disengagement. Two joint defence exercises have been cancelled without explanation, a border infrastructure fund we co-manage has stalled, and our ambassador reports being left out of a briefing that Canada has attended for thirty years. Nobody announced a punishment. The absence is the message. <em>A relationship does not need a crisis to end. It can just stop being maintained.</em>",
+ opts:[
+  {label:"Accept the distance. The European track is worth the cost.",hint:"Storyline: Pivot, commit fully",out:"No effort is made to repair the defence relationship. Resources shift entirely toward the European framework, which deepens in response. The old partnership is left to cool on its own schedule.",fx:{m:-4,st:4},rel:{EU:6,USA:-6},set:"story_piv_full"},
+  {label:"Reach out privately to repair the defence relationship.",hint:"Storyline: Pivot, salvage what's left",out:"A junior defence minister makes a quiet trip south. The reception is polite and noncommittal. Something might be salvageable. Nothing is fixed.",fx:{m:2},set:"story_piv_salvage"}
+ ]},
+{id:"can_piv_full_end",nation:"CAN",requires:"story_piv_full",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"Two Doors",
+ text:"The pivot is now complete in every practical sense. European trade and defence integration has deepened for two straight years, and the American relationship has settled into a correct, distant, unremarkable coexistence. This term will be remembered, more than anything else it did, as the one that changed which direction Canada faces. The final European integration summit is next month, and it will formalize what has already happened in practice. <em>The door does not close itself. Someone has to sign the paper.</em>",
+ opts:[
+  {label:"Sign the full integration package. Make the pivot permanent.",hint:"Formalize the new direction",out:"The signature makes years of drift into policy. Future governments will inherit a country facing a different way than it did before this term began, whether or not they wanted to.",fx:{st:8,t:-5},rel:{EU:10}},
+  {label:"Sign a lighter version. Leave room for a future government to reverse course.",hint:"Commit, but leave a door unlocked",out:"The lighter package keeps most of the substance and none of the permanence. It is a pivot that a future government could still undo, which some in cabinet call prudent and others call unfinished.",fx:{st:5},rel:{EU:5}}
+ ]},
+{id:"can_piv_salvage_end",nation:"CAN",requires:"story_piv_salvage",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"Neither Door",
+ text:"Two years of trying to hold both relationships at once have produced a government trusted fully by neither. Brussels has quietly slowed the framework talks, reading the hedge as a lack of commitment. Washington has not forgotten the overture, even the diplomatic one that never became policy. Both files are technically open and functionally stalled. The choice this term avoided at the start has arrived anyway, later and with less goodwill on either side to spend. <em>Some choices do not go away when you decline to make them. They just get harder.</em>",
+ opts:[
+  {label:"Choose Europe now, later than it should have happened.",hint:"Commit late",out:"Brussels accepts, coolly. The framework moves forward at half the pace it would have two years earlier, and everyone in the room knows exactly why.",fx:{st:3,t:-4},rel:{EU:6,USA:-3}},
+  {label:"Choose neither. Formalize the middle position as deliberate strategy.",hint:"Own the hedge",out:"The government declares its dual-track approach a considered strategy rather than an indecision. Few outside the briefing room are convinced. The files stay open, stalled, and now at least officially intentional.",fx:{a:2,st:-3}}
+ ]},
+{id:"can_ret_thaw_end",nation:"CAN",requires:"story_ret_thaw",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Partial Peace",
+ text:"The goodwill gesture on the Arctic file bought a year of quiet, and now Washington has offered to formalize it: they cut the lumber duty in half, we drop half the agricultural list, and both sides call the remaining measures permanent. It is not victory. It is a truce with a price tag, and it is on the table for thirty days. <em>Half a peace is still a peace. It is also still half.</em>",
+ opts:[
+  {label:"Take the truce. Half a win now beats a whole win never.",hint:"Settle the fight for good",out:"The signatures land quietly and the file that defined the term's first year becomes a settled fact. Neither side celebrates. Both sides move on, which was the point.",fx:{st:4,a:2,t:2},rel:{USA:8}},
+  {label:"Refuse. A permanent half-duty rewards the whole scheme.",hint:"Hold out for the full rollback",out:"The offer expires unanswered. The remaining duties stay, the remaining counter-duties stay, and the fight settles into the permanent background of the relationship, like weather.",fx:{a:3,st:-3},rel:{USA:-4}}
+ ]},
+{id:"can_lg_hedge_end",nation:"CAN",requires:"story_lg_hedge",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"fin",title:"The Parallel Deal",
+ text:"The quiet track worked faster than the loud one. The backchannel has produced a full settlement offer while the legal panel is still years from finishing: duties cut to 9 percent, quota certainty for a decade, signatures in thirty days. Taking it means abandoning a legal case we are winning. Refusing it means betting the mill towns on a courtroom timeline nobody controls. <em>The deal on the table is real. So is the case we would have to drop to sign it.</em>",
+ opts:[
+  {label:"Take the deal. Certainty today beats vindication someday.",hint:"Settle, drop the case",out:"The settlement signs and the panel case is withdrawn the same week. The lawyers grumble about the precedent. The mill towns do not.",fx:{t:4,a:5,st:-2},rel:{USA:6}},
+  {label:"Refuse. We do not settle cases we are winning.",hint:"Stay in court, decline the shortcut",out:"The offer is declined with professional courtesy. The panel grinds on. The towns wait on, and the government's patience becomes the term's defining bet, for better or worse.",fx:{st:4,a:-4}}
+ ]},
+{id:"can_piv_hedge_end",nation:"CAN",requires:"story_piv_hedge",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Doorway",
+ text:"Standing in the doorway had a shelf life, and it has expired. Brussels has set a deadline: sign the framework this quarter or the offer lapses and the negotiating capital moves elsewhere. Washington, which noticed the whole flirtation, has quietly attached a price to coming back inside too. Two invoices, one government, thirty days. <em>The hedge was free until both sides sent a bill for it.</em>",
+ opts:[
+  {label:"Sign with Europe before the deadline.",hint:"Commit late, pay the lateness",out:"The signature lands in the final week and Brussels accepts it with the exact warmth a last-minute yes deserves. The framework proceeds at a discount to what an early commitment would have bought.",fx:{st:3,t:-3},rel:{EU:8,USA:-5}},
+  {label:"Let the deadline pass. Repair the American relationship instead.",hint:"Fold the pivot, go home",out:"The framework lapses and the trade desks quietly move back to their old files. Washington accepts the return without gloating publicly, which everyone understands to be the gloating.",fx:{st:-2,a:2},rel:{USA:7,EU:-6}}
  ]},
 {id:"can_pipeline",nation:"CAN",from:"PRIVY COUNCIL OFFICE",cls:"CONFIDENTIAL",spk:"fin",title:"Pipeline West",
  text:"The regulator has approved the western pipeline, as long as we meet 209 conditions. Cabinet sign-off is the last step. It brings in $14B CAD of private money and 34,000 construction jobs. But it crosses 120 kilometres of land where we may not have consulted Indigenous nations properly, and a court could throw the approval out. Two nations on the route say they will block construction. <em>A court will decide later if the consultation was legal. Cabinet has to decide now, before that ruling.</em>",
  opts:[
-  {label:"Approve the project with all 209 conditions.",hint:"Treasury up · unrest risk later",out:"Certificates issue and pre-construction begins in spring. Counsel puts the approval's odds of surviving review at sixty percent. Camps are already forming at two crossings.",fx:{t:10,a:-4},delay:{turns:3,title:"The Blockades",text:"Rail traffic is stopped at four points in sympathy with the corridor camps. CN estimates $205M CAD a week in stalled freight. Enforcement is a provincial call, and the provinces are calling you.",fx:{s:-9,a:-4}}},
+  {label:"Approve the project with all 209 conditions.",hint:"Treasury up · unrest risk later",out:"Certificates issue and pre-construction begins in spring. Counsel puts the approval's odds of surviving review at sixty percent. Camps are already forming at two crossings.",fx:{t:10,a:-4},delay:{turns:3,title:"The Blockades",text:"Rail traffic is stopped at four points in sympathy with the corridor camps. CN estimates $205M CAD a week in stalled freight. Enforcement is a provincial call, and the provinces are calling you.",fx:{s:-9,a:-4},resp:[{label:"Send ministers to the barricades to talk, not police.",hint:"De-escalate \u00b7 slow",out:"Three ministers spend a week at folding tables in cold parking lots. Two blockades open. The photographs are of conversations, which is the point.",fx:{s:3,a:2}},{label:"Court injunctions and enforcement, by the book.",hint:"Lawful \u00b7 tense",out:"The injunctions are granted and served. The blockades end and the resentment that built them relocates somewhere harder to see.",fx:{s:2,a:-4}}]}},
   {label:"Deny the certificate.",hint:"Approval up with some · investment risk",out:"The denial is issued with reasons. Within a week, investors see Canada as a harder place to build major projects, and two unrelated mining projects pause financing.",fx:{t:-7,a:5},rel:{USA:-3}},
   {label:"Order a supplementary consultation round.",hint:"Buys time · pleases no one",out:"The process extends another twelve to eighteen months. The company threatens to walk away, the camps stand down, and cabinet will still face the same decision later.",fx:{a:-3,s:2}}
  ]},
@@ -569,11 +696,11 @@ const EVENTS = [
   {label:"Leave it to the owners' insurers.",hint:"Free · looks passive",out:"The P&I clubs appoint salvors at insurer speed. Nine days of anchored traffic, and a shipping column asks in print who actually runs this strait.",fx:{st:-8,a:-4}}
  ]},
 {id:"sgp_suitors",nation:"SGP",from:"MINDEF SECURE",cls:"TOP SECRET",spk:"def",title:"Two Suitors",
- text:"Washington wants expanded access at Changi: room to berth carriers plus patrol aircraft based here on a regular schedule. This morning Beijing's ambassador called, officially about the business council, and spent most of it warning how much regional trade depends on everyone staying calm. Our 1990 access deal has grown before, but this is a much bigger ask. <em>Both capitals will read our answer as a sign of whose side we are on.</em>",
+ text:"Washington wants expanded access at Changi: room to berth carriers plus patrol aircraft based here on a regular schedule. This morning Beijing's ambassador called, officially about the business council, and spent most of it warning how much regional trade depends on everyone staying calm. Our 1990 access deal has grown before, but this is a much bigger ask. <em>Whatever we answer becomes the term's foreign policy. There is no answer that is not an answer.</em>",
  opts:[
-  {label:"Sign the expanded access addendum.",hint:"Security up · Beijing down hard",out:"The addendum signs without ceremony and fleet planners get their berthing windows. The next Chinese trade delegation arrives two members short and one week late.",fx:{m:8,st:3},rel:{USA:11,CHN:-12}},
-  {label:"Decline, citing berth capacity.",hint:"Beijing warms · alliance cools",out:"The refusal is wrapped in scheduling language and accepted with flat courtesy. Washington records the decision and will remember it.",fx:{},rel:{CHN:8,USA:-8}},
-  {label:"Offer logistics support only. No standing deployments.",hint:"Balanced · limited gains",out:"We offer fuel, supplies, and repairs, but no standing deployments. Both capitals are dissatisfied, but not enough to break with us.",fx:{m:3},rel:{USA:3,CHN:-3}}
+  {label:"Grant the expanded American access.",hint:"Storyline: The Western Anchor",out:"The access memorandum signs quietly and leaks loudly. Washington calls it a natural evolution of an old friendship. Beijing's business council meeting is postponed the same afternoon, officially for scheduling.",fx:{m:4,st:2},rel:{USA:10,CHN:-8},set:"story_sgp_west"},
+  {label:"Decline both pressures. Neutrality, stated plainly.",hint:"Storyline: The Armed Neutral",out:"The statement is short: the harbour serves commerce, existing agreements stand, nothing expands. Both capitals file the answer. Neither respects it yet. Respect, for neutrals, has to be built out of something harder than statements.",fx:{st:3},rel:{USA:-4,CHN:-2},set:"story_sgp_neutral"},
+  {label:"Decline the expansion, citing regional stability, in language Beijing will like.",hint:"Storyline: The Eastern Tilt",out:"The refusal is worded with care and Beijing notices the wording. The postponed business council meeting is suddenly rescheduled, sooner and at a higher level. Washington notices the wording too.",fx:{t:3},rel:{CHN:9,USA:-7},set:"story_sgp_east"}
  ]},
 {id:"sgp_water",nation:"SGP",from:"PMO SECURE",cls:"SECRET",spk:"fin",title:"The Water Clock",
  text:"Malaysia's Johor state wants to renegotiate the price it charges us for raw water. The rate has not changed since the 1962 deal was signed, and the agreement runs to 2061. Their case is fair, and their timing is not an accident: it lands while two other cross-border files are stuck. Desalination and recycling cover a little over half our water needs. <em>Our legal case is strong, but we still import water, so they still have leverage.</em>",
@@ -607,6 +734,126 @@ const EVENTS = [
   {label:"Keep service length. Fund the new service on top.",hint:"Strongest force · heaviest bill",out:"Nobody's service is shortened and the new corps is funded anyway. Readiness improves, but the defence budget rises sharply.",fx:{m:7,t:-8,a:-3}}
  ]},
 /* ---------------- KAZAKHSTAN ---------------- */
+
+/* ============ SGP STORYLINE: THE WESTERN ANCHOR ============ */
+{id:"sgp_west_2",nation:"SGP",requires:"story_sgp_west",from:"MTI ASSESSMENT",cls:"CONFIDENTIAL",spk:"fin",title:"The Invoice from Beijing",
+ text:"Beijing's response to the basing decision has arrived, itemized: customs inspections on our electronics exports have slowed to a crawl, two joint industrial parks are under regulatory review, and a state airline has trimmed its Changi routes. Nothing is called retaliation. Everything is retaliation. The cost so far is about $2.8B CAD a year and climbing. <em>The American access was free. The Chinese response is not.</em>",
+ opts:[
+  {label:"Absorb the cost. The alignment is worth the invoice.",hint:"Storyline: full commitment",out:"No accommodation is offered and none is asked for. The trade numbers sag, the security relationship deepens, and the government stops pretending the two are unrelated.",fx:{t:-6,m:3},set:"story_sgpw_firm"},
+  {label:"Seek quiet economic assurances from Washington to offset it.",hint:"Storyline: alliance with a price tag",out:"The ask is specific: preferential treatment on chips, energy and market access to compensate for what Beijing is charging us. Washington agrees to most of it, and now the alliance has a ledger attached.",fx:{t:3},rel:{USA:4},set:"story_sgpw_priced"}
+ ]},
+{id:"sgp_west_firm_end",nation:"SGP",requires:"story_sgpw_firm",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"def",title:"The Anchor Tenant",
+ text:"Two years in, the harbour hosts more allied tonnage than at any point since independence, and Washington has proposed making it official: a formal defence pact, mutual obligations, the whole architecture. The economic cost from Beijing has stabilized at painful but survivable. The pact would end fifty years of careful ambiguity in a single signature. <em>Ambiguity kept us safe for two generations. The question is whether it still can.</em>",
+ opts:[
+  {label:"Sign the pact. End the ambiguity for good.",hint:"The clearest answer in our history",out:"The signature makes the island the alliance's anchor in the region, formally and forever. The security guarantee is real. So is the target painted by it, and both are now permanent.",fx:{m:8,st:5,t:-4},rel:{USA:12,CHN:-10}},
+  {label:"Stay at the current depth. Access without obligation.",hint:"Deep partnership, no treaty",out:"The pact is declined with warmth and the existing arrangements continue at their considerable current depth. It preserves one last layer of ambiguity, thin as it now is, for a future government to spend.",fx:{m:4,st:3},rel:{USA:4}}
+ ]},
+{id:"sgp_west_priced_end",nation:"SGP",requires:"story_sgpw_priced",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"fin",title:"The Priced Alliance",
+ text:"The compensation arrangement has worked, and that is now the problem. Washington's new trade representative has reviewed the file and called the offsets unsustainable, proposing to phase them out over two years. The security access, naturally, stays. The alliance that came with a ledger is being asked to continue without one. <em>We priced the relationship once. They remember the number.</em>",
+ opts:[
+  {label:"Accept the phase-out. The relationship matters more than the offsets.",hint:"Absorb it gracefully",out:"The offsets wind down on their schedule and the government eats the difference without public complaint. Washington notes the maturity. The finance ministry notes the cost, annually.",fx:{t:-5,st:4},rel:{USA:6}},
+  {label:"Link the two files. Reduced offsets mean reviewed access.",hint:"Make them pay list price",out:"The linkage is stated quietly and understood immediately. Most of the offsets survive the review. Something in the relationship becomes transactional in a way that does not fully wash out.",fx:{t:3,st:-3},rel:{USA:-5}}
+ ]},
+
+/* ============ SGP STORYLINE: THE ARMED NEUTRAL ============ */
+{id:"sgp_neutral_2",nation:"SGP",requires:"story_sgp_neutral",from:"MINDEF SECURE",cls:"CONFIDENTIAL",spk:"def",title:"The Neutral's Bill",
+ text:"Both powers have spent the year testing the neutrality declaration. An American carrier group requested emergency berthing during a typhoon, which was granted and criticized. A Chinese survey ship loitered in our approaches for six days, which was monitored and criticized. The lesson of the year is written in the defence review on your desk: neutrality that cannot enforce itself is a request, not a policy. <em>Switzerland is neutral and armed to the teeth. That is not a coincidence.</em>",
+ opts:[
+  {label:"Fund the deterrent. Submarines, air defence, the full posture.",hint:"Storyline: neutrality with teeth",out:"The procurement program is the largest in the country's history: boats, batteries and the airframes to cover them. Neutrality acquires a price tag and, more usefully, a cost for anyone testing it.",fx:{t:-9,m:8},set:"story_sgpn_armed"},
+  {label:"Anchor the neutrality in law and treaty instead.",hint:"Storyline: neutrality on paper",out:"The government pursues formal recognition: a neutrality act at home, guarantees sought abroad, the model of Austria studied closely. It costs almost nothing, which both capitals notice.",fx:{st:2},set:"story_sgpn_paper"}
+ ]},
+{id:"sgp_neutral_armed_end",nation:"SGP",requires:"story_sgpn_armed",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"def",title:"The Porcupine",
+ text:"The deterrent is real now, and it has been noticed. The survey ships stopped loitering eight months ago. The berthing requests come with more notice and better manners. This week, both powers separately proposed defence dialogues, each carefully framed as not being aimed at the other. The armed neutral, it turns out, is the one everyone wants to talk to. <em>Nobody negotiates with a doormat. Everybody negotiates with a porcupine.</em>",
+ opts:[
+  {label:"Take both dialogues. Talk to everyone, promise no one.",hint:"The full Swiss position",out:"Both dialogues open in the same season, and the government briefs each capital that the other exists. The island becomes the region's one room where everyone shows up, which is its own kind of power.",fx:{st:8,m:2}},
+  {label:"Decline both. The deterrent speaks for itself.",hint:"Silence as policy",out:"Both invitations are declined with identical wording. The posture stays pure and the phone stays quiet. Purity, the foreign ministry notes, is easier to admire than to use.",fx:{m:3,st:2},rel:{USA:-2,CHN:-2}}
+ ]},
+{id:"sgp_neutral_paper_end",nation:"SGP",requires:"story_sgpn_paper",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Paper Shield",
+ text:"The neutrality act passed and the guarantees were sought, and this week the policy met its first real test: a confrontation between two carrier groups forty nautical miles from our waters, close enough that both sides requested our ports for support operations, citing our own published rules. The rules, it turns out, were written for calmer weather. The law is clear. Nobody involved is reading it. <em>Paper neutrality works until the day both sides need the same harbour.</em>",
+ opts:[
+  {label:"Enforce the act to the letter. Both requests denied.",hint:"The law means what it says",out:"Both denials are issued within the hour, citing the act by section number. One capital calls it principled. The other calls it unhelpful. The act survives its first storm intact, though everyone saw how thin it is.",fx:{st:4,s:2},rel:{USA:-3,CHN:-3}},
+  {label:"Grant humanitarian exceptions to both, invoking the act's own clause.",hint:"Bend it to save it",out:"Both fleets get water, fuel and medical berthing under the humanitarian clause, simultaneously, which produces the strangest photograph of the decade. The act bends and does not break. Everyone notes which one it did.",fx:{st:2,t:2},rel:{USA:2,CHN:2}}
+ ]},
+
+/* ============ SGP STORYLINE: THE EASTERN TILT ============ */
+{id:"sgp_east_2",nation:"SGP",requires:"story_sgp_east",from:"MTI ASSESSMENT",cls:"CONFIDENTIAL",spk:"fin",title:"The Western Review",
+ text:"Washington's response to the tilt has taken eight months to arrive and it is bureaucratic, which is worse than angry: a formal review of our access to controlled defence technology, semiconductors included. Nothing revoked yet. Everything suddenly requiring signatures that used to be automatic. The fabs that anchor our economy run on licenses this review now holds. <em>They did not raise their voice. They raised the paperwork.</em>",
+ opts:[
+  {label:"Offer concessions to close the review: transparency on tech transfers to China.",hint:"Storyline: pay to keep both",out:"The inspections regime we offer is intrusive and sufficient. The review closes, the licenses flow, and Beijing reads the whole arrangement with narrowed eyes. Both relationships survive. Neither is what it was.",fx:{st:-2,t:2},rel:{USA:4,CHN:-4},set:"story_sgpe_balance"},
+  {label:"Accept the downgrade. Deepen the regional and Chinese tracks instead.",hint:"Storyline: commit to the turn",out:"The review concludes with restrictions and the government does not fight them. Investment redirects toward regional supply chains and Chinese joint ventures, and the tilt stops being a tilt. It is now the direction.",fx:{t:-4},rel:{CHN:8,USA:-6},set:"story_sgpe_commit"}
+ ]},
+{id:"sgp_east_balance_end",nation:"SGP",requires:"story_sgpe_balance",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Balancer's Price",
+ text:"The arrangement held for a year, and now both sides have presented renewal terms in the same month, each priced higher than before. Washington wants the inspections regime expanded. Beijing wants a state visit and a port investment approved. Neither ask is unreasonable alone. Together they describe a country paying rent to two landlords for the same house. <em>The middle of the road is legal to drive on. The tolls run in both directions.</em>",
+ opts:[
+  {label:"Pay both tolls. The position is worth the rent.",hint:"Keep the balance, keep paying",out:"Both renewals sign in the same quarter, at the new rates. The country keeps its unique position: trusted by neither, useful to both, and increasingly expert at the arithmetic of staying that way.",fx:{t:-5,st:5},rel:{USA:3,CHN:3}},
+  {label:"Refuse both escalations. Current terms or nothing.",hint:"Call the bluff, both of them",out:"Both capitals receive the same answer on the same day, which at least cannot be called favouritism. One accepts. One lets a deadline lapse and watches. The balance holds, barely, and everyone knows it was a coin flip.",fx:{st:3,t:1},rel:{USA:-3,CHN:-3}}
+ ]},
+{id:"sgp_east_commit_end",nation:"SGP",requires:"story_sgpe_commit",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"fin",title:"The Regional Turn",
+ text:"The turn is nearly complete. Chinese and regional capital has replaced most of what the Western review cost, the port throughput numbers recovered eighteen months ago, and this week Beijing proposed the capstone: anchor membership in their regional development framework, with our harbour as its logistics hub. It is the largest economic offer in the country's history. It is also a berth that, once taken, is not easily left. <em>The turn was reversible right up until this document. This document is the point of it.</em>",
+ opts:[
+  {label:"Take the anchor role. Complete the turn.",hint:"The hub of the new architecture",out:"The signing ceremony is the largest Beijing has staged for any partner. The harbour becomes the framework's beating heart, prosperous, indispensable and spoken for. Fifty years of ambiguity end facing east.",fx:{t:8,st:3},rel:{CHN:12,USA:-8}},
+  {label:"Join as an ordinary member. Decline the anchor role.",hint:"In the framework, not of it",out:"Membership signs without the hub designation, which disappoints the hosts and preserves a sliver of distance. The economics arrive at three-quarter strength. The independence survives at the same fraction.",fx:{t:4,st:2},rel:{CHN:5,USA:-3}}
+ ]},
+
+/* ============ KAZ STORYLINE: THE NORTHERN ROAD ============ */
+{id:"kaz_rus_2",nation:"KAZ",requires:"story_kaz_rus",from:"FOREIGN MINISTRY",cls:"CONFIDENTIAL",spk:"for",title:"The Follow-Up Ask",
+ text:"Moscow read the exercise attendance as an opening and has followed up with substance. The proposal: a joint air defence network with integrated command, plus better transit terms for our oil in exchange. The economics are genuinely good. The integrated command means Russian officers in our operations rooms, for good. <em>Every road north starts with a favour and ends with a garrison.</em>",
+ opts:[
+  {label:"Take the deal, integrated command and all.",hint:"Storyline: the junior partner",out:"The network agreement signs in Moscow with full honours. The transit terms save the treasury real money immediately. The officers arrive within the quarter, professionally, permanently.",fx:{t:5,m:3,st:-4},rel:{RUS:10},set:"story_kazr_junior"},
+  {label:"Take the air defence hardware. Refuse the integrated command.",hint:"Storyline: partner, not subordinate",out:"The counter-offer accepts the systems and declines the officers, proposing liaison arrangements instead. Moscow agrees after three months of theatre, which everyone understood was the real negotiation.",fx:{m:4,t:-3},rel:{RUS:4},set:"story_kazr_partner"}
+ ]},
+{id:"kaz_rus_junior_end",nation:"KAZ",requires:"story_kazr_junior",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"cos",title:"The Junior Partner",
+ text:"The relationship has deepened exactly as designed, and the design's final clause has arrived. Moscow proposes a formal union-state treaty: full economic and defence integration. Our sovereignty is preserved in every paragraph and diluted in every annex. The transit terms, the air network, the officers: all of it was scaffolding for this document. Refusing it now unwinds two years of built-up dependence. <em>The road north was never free. This is the toll booth.</em>",
+ opts:[
+  {label:"Sign the framework. The direction was chosen long ago.",hint:"Complete the integration",out:"The treaty signs and the country's sovereignty becomes a matter of annexes. The economy stabilizes inside the larger one. The flag stays on the buildings, which is what the paragraph said and what the annexes permit.",fx:{t:6,s:4,st:-9},rel:{RUS:14,USA:-8,EU:-8}},
+  {label:"Refuse the treaty. Accept the unwinding.",hint:"Stop at the toll booth",out:"The refusal is delivered in person, respectfully, and the unwinding begins the same season: transit terms lapse, the network cools, the officers rotate home without replacement. The dependence reverses at the price it always charges.",fx:{t:-7,m:-2,st:6,a:3},rel:{RUS:-10}}
+ ]},
+{id:"kaz_rus_partner_end",nation:"KAZ",requires:"story_kazr_partner",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Measured Distance",
+ text:"The liaison arrangement has held for two years, and it has become a model: close enough to keep the north quiet, distinct enough to keep the capitals guessing. This week Moscow tested the boundary, requesting use of our airfields for an exercise pointed unmistakably at a third country. The request cites the network agreement. The agreement, read carefully, neither permits nor forbids it. <em>Ambiguity was the achievement. Now someone is asking it a direct question.</em>",
+ opts:[
+  {label:"Refuse the airfields. The network defends us, it does not project them.",hint:"Draw the line in public",out:"The refusal cites the agreement's defensive purpose, in writing, published. Moscow absorbs it with cold professionalism. The line, once drawn in public, becomes real in a way no negotiation could have made it.",fx:{st:7,s:-3},rel:{RUS:-7,USA:4,EU:4}},
+  {label:"Grant limited access with restrictions and observers.",hint:"Bend, do not break",out:"The access is granted, hedged, monitored and time-boxed. Moscow gets most of what it asked and a lesson in fine print. The measured distance survives, measurably smaller.",fx:{s:2,st:-4},rel:{RUS:5}}
+ ]},
+
+/* ============ KAZ STORYLINE: THE WESTERN WINDOW ============ */
+{id:"kaz_west_2",nation:"KAZ",requires:"story_kaz_west",from:"NSC ASSESSMENTS",cls:"CONFIDENTIAL",spk:"int",title:"The Northern Response",
+ text:"Moscow's answer to the summit chair has arrived in pieces: pipeline maintenance windows that keep multiplying, a snap military exercise on the northern border, and state television discovering a sudden interest in the treatment of Russian speakers in our north. None of it is deniable. All of it is designed to be. The Western partners who applauded the summit are watching what we do under pressure. <em>The window west is open. The draft coming through it is real.</em>",
+ opts:[
+  {label:"Stand firm and formalize the Western track: partnership roadmap, signed.",hint:"Storyline: through the window",out:"The roadmap signs while the exercise is still running on the border, which is precisely the timing the signature was chosen to demonstrate. The pressure continues. So does the direction.",fx:{st:6,s:-3},rel:{USA:8,EU:8,RUS:-8},set:"story_kazw_firm"},
+  {label:"Quietly rebalance: keep the Western track, resume bloc consultations too.",hint:"Storyline: window and door both",out:"A deputy minister attends the next bloc consultation, unannounced, and the pipeline maintenance windows stop multiplying within the month. The Western partners notice the attendance. Nobody says anything yet.",fx:{s:3,t:2},rel:{RUS:5,USA:-3},set:"story_kazw_hedge"}
+ ]},
+{id:"kaz_west_firm_end",nation:"KAZ",requires:"story_kazw_firm",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Break",
+ text:"Two years of pressure did not reverse the direction, and Moscow has moved to the final page of its playbook: a formal ultimatum to suspend the Western roadmap, delivered alongside a total halt of our pipeline transit, indefinite, effective now. Four fifths of our oil has no route to market as of this morning. The Western partners have offered emergency financing and a Caspian corridor that takes three years to build. The ultimatum expires in two weeks. <em>Everything the term built comes down to whether we can survive the years between the halt and the corridor.</em>",
+ opts:[
+  {label:"Refuse the ultimatum. Take the emergency package. Build the corridor.",hint:"The full break, survived or not",out:"The refusal is one paragraph. The emergency financing lands within days and the corridor breaks ground within the season. The years ahead are lean by design and free by choice, and the country learns which of those it values more.",fx:{t:-10,st:10,a:-4,s:-3},rel:{USA:10,EU:10,RUS:-14}},
+  {label:"Suspend the roadmap. The oil has to flow.",hint:"The direction yields to the pipeline",out:"The suspension is announced as a pause and understood as a surrender. Transit resumes in seventy-two hours. The Western partners are gracious about it in public, which is somehow the worst part.",fx:{t:5,st:-9,a:-3},rel:{RUS:8,USA:-6,EU:-6}}
+ ]},
+{id:"kaz_west_hedge_end",nation:"KAZ",requires:"story_kazw_hedge",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"cos",title:"The Two Ledgers",
+ text:"The double game has run for two years and both audiences have finally compared notes. A leaked Western cable describes us as a partner of convenience. A leaked Russian assessment uses the phrase temporary deviation. Both documents landed in the same week, which was not a coincidence, and both capitals are now asking, through channels, the same question: which ledger is real. <em>A hedge works only while nobody makes you choose. Both of them just did, simultaneously.</em>",
+ opts:[
+  {label:"Answer with the Western ledger. The consultations were the hedge.",hint:"Choose, late, westward",out:"The clarification is delivered to both capitals in the same language. Moscow's response arrives through the pipeline schedule, as always. The Western partners accept the answer at a discount, as latecomers always pay.",fx:{st:4,t:-4},rel:{USA:6,EU:5,RUS:-7}},
+  {label:"Answer with neither. The two ledgers are the policy.",hint:"Own the double game",out:"The government's answer is that a country between two fires keeps two buckets, and it says so publicly, which no one expected. The honesty buys a strange new kind of respect and exactly no trust from anyone.",fx:{a:4,st:-2},rel:{RUS:-2,USA:-2}}
+ ]},
+
+/* ============ KAZ STORYLINE: THE BALANCING ACT ============ */
+{id:"kaz_multi_2",nation:"KAZ",requires:"story_kaz_multi",from:"DEFENCE PROCUREMENT",cls:"CONFIDENTIAL",spk:"def",title:"The Tender",
+ text:"The balancing act's first concrete test has arrived as a procurement file: the air force needs new drones, the tender is worth $1.9B CAD, and both blocs have submitted bids with political weight attached. Moscow's bid comes with transit favours. The Western bid comes with technology transfer. Splitting the buy doubles the maintenance chain and halves the leverage of each supplier, which is either wasteful or the entire point. <em>Multi-vector was a speech until this file. Now it is a purchase order.</em>",
+ opts:[
+  {label:"Split the tender between both blocs, publicly.",hint:"Storyline: the balance, made concrete",out:"The split award is announced at a defence expo with both suppliers' flags on the same stage, a photograph that costs $300M CAD in duplicate logistics and buys something no single-source contract could.",fx:{t:-6,m:4,st:3},set:"story_kazm_split"},
+  {label:"Award it to neither. Launch a domestic drone program with Turkish partnership.",hint:"Storyline: the third way",out:"The tender is cancelled and reborn as a joint venture with Ankara: their designs, our assembly, shared exports. Both blocs lose the sale to a third door nobody had counted, which is a message all by itself.",fx:{t:-8,m:2},rel:{TUR:8},set:"story_kazm_third"}
+ ]},
+{id:"kaz_multi_split_end",nation:"KAZ",requires:"story_kazm_split",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"cos",title:"The Balancer",
+ text:"The balancing act has become the country's brand. The split fleets fly joint patrols, the transit terms hold, the Western investment keeps arriving, and this year the strangest confirmation of all: both blocs proposed hosting their next regional dialogue here, in our capital, on the grounds that we are the one venue both can enter. The bill for all this balance is on your desk too: duplicate systems, double diplomacy, a foreign ministry running at twice the tempo of any neighbour's. <em>We became the table everyone sits at. Tables get leaned on.</em>",
+ opts:[
+  {label:"Host the dialogue. Make the capital the region's Geneva.",hint:"The balance becomes the identity",out:"The dialogue convenes under our flag with both blocs at the table and our president holding the gavel. The multi-vector policy completes its journey from survival tactic to national identity, expensive, exhausting and, this week at least, indispensable.",fx:{st:9,t:-4,a:3}},
+  {label:"Decline to host. Balance quietly, not theatrically.",hint:"Keep the posture, skip the stage",out:"The dialogue convenes elsewhere and the government returns to balancing without an audience. The posture holds at lower cost and lower profile, which the foreign ministry calls sustainable and the president's office calls a missed photograph.",fx:{t:2,st:3}}
+ ]},
+{id:"kaz_multi_third_end",nation:"KAZ",requires:"story_kazm_third",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"def",title:"The Third Door",
+ text:"The domestic program worked. The first joint-built drones entered service last spring, two neighbours have placed export orders, and the assembly plant employs four thousand people in a city that needed them. Both blocs have responded to being bypassed the same way: with better offers, cheaper terms and sudden flexibility on files that were frozen for years. The third door, it turns out, unlocked the other two. <em>The best negotiating position is a factory of your own.</em>",
+ opts:[
+  {label:"Expand the program: missiles and air defence next, same model.",hint:"Double down on the third way",out:"The expansion turns a drone plant into the seed of a defence industry, with Ankara deepening its stake and both blocs' offers improving in proportion to everything we no longer need from them.",fx:{t:-7,m:6,st:5},rel:{TUR:6}},
+  {label:"Bank the leverage: use the improved bloc offers instead of expanding.",hint:"Cash the position in",out:"The improved offers are accepted where they are best: Western avionics here, Russian transit terms there, all priced against the standing threat of the factory. The leverage converts to savings, which is what leverage is for.",fx:{t:6,m:2}}
+ ]},
 {id:"kaz_pipeline",nation:"KAZ",from:"ENERGY MINISTRY SECURE",cls:"TOP SECRET",spk:"fin",title:"Pipeline North",
  text:"The Black Sea terminal has stopped our pipeline loadings again, blaming storm damage for the third time this year. This is the route that carries four fifths of our oil to market. Each stoppage costs about $120M CAD a day, and each one happens right after a decision Moscow did not like. Our backup route across the Caspian moves only a tenth as much. <em>Moscow calls it maintenance, but the timing looks political.</em>",
  opts:[
@@ -617,7 +864,7 @@ const EVENTS = [
  text:"Fuel prices doubled overnight in the western oil towns after a subsidy expired, and by evening the squares are filling with people. Four years ago this same thing spread to our biggest city in five days and ended with foreign troops on our streets. The interior ministry wants a curfew. The oil unions just want a phone call. <em>Everyone in this room remembers which choices made it worse last time.</em>",
  opts:[
   {label:"Restore the price cap tonight. Dismiss the energy board.",hint:"Treasury down · pressure eases",out:"The cap is announced before midnight and the resignations are read on morning television. The squares empty, but protesters learn that pressure can force a quick reversal.",fx:{t:-8,s:7,a:5}},
-  {label:"Clear the squares by force.",hint:"Order tonight · backlash later",out:"The squares are cleared in four hours with mass detentions. State channels show calm streets, but foreign outlets and phone videos show the violence.",fx:{s:5,a:-8,st:-9},delay:{turns:3,title:"The Debt Collects",text:"Footage of the crackdown has resurfaced and is being shared widely. Rolling strikes hit two refineries, sympathy walkouts spread in the capital, and diaspora groups are organizing a stronger campaign.",fx:{s:-12,a:-5}},risk:{p:.6,useM:true,fail:{out:"The first push is met with locked arms and cameras. The second is called off before it starts. The squares hold, the footage travels, and every garrison commander watched the state blink.",fx:{s:-6,a:-4,st:-4}}}},
+  {label:"Clear the squares by force.",hint:"Order tonight · backlash later",out:"The squares are cleared in four hours with mass detentions. State channels show calm streets, but foreign outlets and phone videos show the violence.",fx:{s:5,a:-8,st:-9},delay:{turns:3,title:"The Debt Collects",text:"Footage of the crackdown has resurfaced and is being shared widely. Rolling strikes hit two refineries, sympathy walkouts spread in the capital, and diaspora groups are organizing a stronger campaign.",fx:{s:-12,a:-5},resp:[{label:"Refinance publicly: name the cost and the plan together.",hint:"Honest \u00b7 dry pain",out:"The refinancing statement is a spreadsheet read aloud. It lands badly for a day and holds up under every question afterward.",fx:{st:2,a:-2}},{label:"Quietly stretch the maturities and hope rates fall.",hint:"Invisible now \u00b7 fragile later",out:"The maturities stretch and the payment falls, for now. The bet on future rates is unhedged and unannounced, which is two different problems.",fx:{t:2,st:-2}}]},risk:{p:.6,useM:true,fail:{out:"The first push is met with locked arms and cameras. The second is called off before it starts. The squares hold, the footage travels, and every garrison commander watched the state blink.",fx:{s:-6,a:-4,st:-4}}}},
   {label:"Fly west and take the microphone in the square.",hint:"Slow · unusual · maybe durable",out:"No president has stood in that square before. The crowd does not cheer, but it gives you a list of demands and listens to the reply.",fx:{a:-2},delay:{turns:2,title:"The Listening",text:"The wage and pricing councils created after the square meeting have produced a fuel formula with union signatures on it. It is holding, and other towns are asking for the same model.",fx:{s:9,a:8}}}
  ]},
 {id:"kaz_uranium",nation:"KAZ",from:"FOREIGN MINISTRY SECURE",cls:"SECRET",spk:"for",title:"The Uranium Card",
@@ -633,11 +880,11 @@ const EVENTS = [
   {label:"Honour the contracts. Import the shortfall at spot.",hint:"Treasury pays · reputation rises",out:"The commitments ship in full and the import bill is ugly. Regional buyers notice that we delivered even during a drought.",fx:{t:-9,st:8}}
  ]},
 {id:"kaz_vector",nation:"KAZ",from:"PRESIDENTIAL ADMIN",cls:"SECRET",spk:"cos",title:"The Two Invitations",
- text:"The Russian-led security bloc's yearly exercise and the NATO partnership summit fall in the same week, which took someone real effort to arrange. We belong to one and partner with the other. Six capitals will read our attendance list as a sign of alignment, and we have used scheduling as an excuse to dodge this twice already. <em>Saying we balance both sides is easy. It gets hard when both demand a public choice.</em>",
+ text:"The Russian-led security bloc's yearly exercise and the NATO partnership summit fall in the same week, which took someone real effort to arrange. We belong to one and partner with the other. Six capitals will read our attendance list as a sign of alignment, and we have used scheduling as an excuse to dodge this twice already. <em>The third dodge is not available. This week decides the term's direction.</em>",
  opts:[
-  {label:"Attend the bloc exercise personally.",hint:"Moscow reassured · West notes it",out:"The exercise photographs are exactly what Moscow wanted. The NATO summit proceeds without us, and its Central Asia language is drafted without our input.",fx:{m:3},rel:{RUS:8,EU:-5,USA:-5}},
-  {label:"Send deputies to both. Attend neither.",hint:"Balanced but obvious",out:"Two capable deputies deliver two careful speeches on the same day, three time zones apart. Everyone recognizes the balancing act, but it avoids a direct break with either side.",fx:{st:3},rel:{RUS:-3}},
-  {label:"Attend the NATO summit personally.",hint:"Clear signal · Moscow reacts",out:"Your entrance in Brussels gets immediate attention. The communique names us twice as a partner. Within the week, customs processing at the northern crossings develops unexplained delays.",fx:{st:6},rel:{EU:9,USA:8,RUS:-13}}
+  {label:"Attend the bloc exercise. Send regrets to the summit.",hint:"Storyline: The Northern Road",out:"Our units exercise alongside Russian ones under full cameras and the summit chair receives a polite letter. Moscow calls it a natural choice. That word, natural, does a lot of work.",fx:{m:2,s:2},rel:{RUS:9,USA:-5,EU:-4},set:"story_kaz_rus"},
+  {label:"Attend the NATO summit. Send observers, not troops, to the exercise.",hint:"Storyline: The Western Window",out:"The president's chair at the partnership summit does not go unnoticed, and neither does the observer-only delegation at the exercise. Moscow's foreign ministry issues a statement about the obligations of allies. It is one sentence long, which is the alarming length.",fx:{st:5},rel:{USA:7,EU:6,RUS:-9},set:"story_kaz_west"},
+  {label:"Attend both, publicly, and dare anyone to object.",hint:"Storyline: The Balancing Act",out:"The president spends Monday at the exercise and Thursday at the summit, photographed warmly at both. The multi-vector policy is no longer a diplomatic phrase. It is now a public performance with two audiences keeping score.",fx:{st:3,a:2},set:"story_kaz_multi"}
  ]},
 {id:"kaz_graft",nation:"KAZ",from:"NSC EYES ONLY",cls:"TOP SECRET",spk:"int",title:"The Capital File",
  text:"The audit of the new capital district found that 24 percent of the construction budget was funneled through shell companies tied to two sitting ministers, one from each of the families that keep the government stable. The file on your desk is the only full copy, and the auditor who wrote it has asked to be posted abroad. <em>Prosecuting them could shake the government. Burying it teaches powerful people they can steal and keep their jobs.</em>",
@@ -682,7 +929,7 @@ const EVENTS = [
  opts:[
   {label:"Grant asylum. Begin the debriefing.",hint:"Capability up · rival enraged",out:"The debriefings will run for a year and could save a decade of research. The rival's foreign ministry summons our ambassador in anger.",fx:{m:9,st:3},relKey:{rival:-12},risk:{p:.75,useM:false,fail:{out:"Three weeks into the debriefing, the documents stop matching each other. He is either a plant or a fraud, and either way we granted asylum on camera to a man selling fiction.",fx:{s:-3,st:-5},relKey:{rival:-6}}}},
   {label:"Transfer him quietly to an allied service.",hint:"Value banked · lower exposure",out:"The handover happens at a refuelling stop that appears in no log. The ally owes us a major favour, and the rival focuses its anger elsewhere.",fx:{st:5},relKey:{ally:9,rival:-3}},
-  {label:"Return him discreetly, with assurances.",hint:"Safe now · moral risk",out:"He is returned through a third country with written assurances about his treatment. Those assurances hold for eleven days.",fx:{},relKey:{rival:6},delay:{turns:2,title:"The Eleven Days",text:"His fate leaked, and then photographs did too. The story is that we sent him back despite knowing the risk. Editorials at home and abroad condemn the decision.",fx:{a:-9,st:-8}}}
+  {label:"Return him discreetly, with assurances.",hint:"Safe now · moral risk",out:"He is returned through a third country with written assurances about his treatment. Those assurances hold for eleven days.",fx:{},relKey:{rival:6},delay:{turns:2,title:"The Eleven Days",text:"His fate leaked, and then photographs did too. The story is that we sent him back despite knowing the risk. Editorials at home and abroad condemn the decision.",fx:{a:-9,st:-8},resp:[{label:"Meet the strike committee on camera.",hint:"Respect shown \u00b7 demands aired",out:"The meeting runs four hours and both sides call it frank, which is diplomatic for loud. The next march is smaller.",fx:{s:3,a:2}},{label:"Wait them out. Strike funds run dry.",hint:"Cheap \u00b7 cold",out:"The arithmetic favours the government and everyone knows it. The strike thins by the week and leaves behind exactly what waiting always leaves behind.",fx:{t:1,a:-3}}]}}
  ]},
 {id:"gen_strike",nation:"ANY",from:"LABOUR MINISTRY",cls:"CONFIDENTIAL",spk:"cos",title:"The Strike Wave",
  text:"Ports, rail and the capital's transit all walk off the job at midnight Friday, the first time they have coordinated like this in a generation. They want a 14 percent raise against 9 percent inflation. The offer on the table is 4. Employers say settle, the finance ministry says hold, and the strike fund is reported good for six weeks. <em>Either way, the country's transport starts shutting down this weekend.</em>",
@@ -771,6 +1018,48 @@ const EVENTS = [
   {label:"Run a state inquiry and blame natural causes.",hint:"Contained · nobody believes it",out:"The inquiry reports a virus within three weeks, which is faster than science usually moves. The photographs keep circulating with a different caption.",fx:{st:-4,a:-3}},
   {label:"Fund a cleanup and a protected zone, quietly.",hint:"Practical · answers nothing",out:"Crews clear the beaches and a marine protected zone is drawn around the main haul-out sites. The cause stays officially unknown, and the zone is real.",fx:{t:-5,s:2,st:2}}
  ]},
+{id:"can_grid",nation:"CAN",from:"ENERGY SECRETARIAT",cls:"CONFIDENTIAL",spk:"fin",title:"The Grid Intertie",
+ text:"Two American states want a 20-year contract for our hydro power, priced well above what we charge at home. The export lines exist and the money is real: about $2.1B CAD a year. The catch is written into every long contract: once their grid depends on our power, cutting it off becomes an act with consequences. <em>Selling power is easy. Selling dependence runs both ways.</em>",
+ opts:[
+  {label:"Sign the 20-year export contract.",hint:"Steady money \u00b7 locked in",out:"The signing photo has four premiers in it. The revenue line begins immediately, and so does the dependence, in both directions.",fx:{t:6},rel:{USA:6},set:"can_grid"},
+  {label:"Keep the power home: price it for industry instead.",hint:"Cheaper factories \u00b7 no export cash",out:"The discounted industrial rate is announced within the month. Two aluminum expansions confirm on the strength of it. The export offer expires quietly.",fx:{t:-2,a:4}},
+  {label:"Sell short-term only, at spot prices.",hint:"Flexible \u00b7 smaller money",out:"The spot sales bring decent revenue with no strings. Decent, everyone notes, is less than the contract offered.",fx:{t:3}}
+ ]},
+{id:"can_cold_snap",nation:"CAN",requires:"can_grid",from:"ENERGY SECRETARIAT FLASH",cls:"CONFIDENTIAL",spk:"fin",title:"The Cold Snap",
+ text:"A continental cold snap has both grids at record demand at the same time. The export contract obliges us to deliver full volume south while our own utilities are asking people to lower their thermostats. The contract has an emergency clause. Invoking it on the first hard winter would tell every future buyer what our signature is worth. <em>The contract was designed for exactly this week. So was the anger.</em>",
+ opts:[
+  {label:"Honour the contract. Full delivery south.",hint:"Reputation kept \u00b7 cold voters",out:"The power flows south on schedule while our own cities shave demand. The contract's value is proven in the worst possible way to explain on television.",fx:{a:-7,st:5},rel:{USA:5}},
+  {label:"Invoke the emergency clause. Keep the power home.",hint:"Warm homes \u00b7 our word takes the hit",out:"The clause is invoked on day two. Homes stay warm, the American operators file for damages, and every trading desk notes what happened to the firm contract.",fx:{a:6,st:-4},rel:{USA:-8}},
+  {label:"Split the load and pay households to conserve.",hint:"Expensive \u00b7 nobody freezes, nobody sues",out:"Deliveries run at 70 percent under a negotiated waiver, and a conservation rebate covers the gap at home. It costs real money and produces no lawsuits and no frozen pensioners.",fx:{t:-6,a:2},rel:{USA:-2}}
+ ]},
+{id:"sgp_port_auto",nation:"SGP",from:"TRANSPORT MINISTRY",cls:"CONFIDENTIAL",spk:"fin",title:"The Port Automation",
+ text:"The next-generation terminal plan is on your desk: automated cranes and yard vehicles that would keep us ahead of every rival port for a decade. It cuts terminal costs by a third. It also cuts about five thousand jobs, and the port union has read the same study we have. <em>The port made this country. The question is what the port does to its own people.</em>",
+ opts:[
+  {label:"Approve full automation on the fast schedule.",hint:"Stay ahead \u00b7 union fight",out:"The order is placed and the union's response arrives within the hour. The cranes will be the best in the world. The negotiations will not be.",fx:{t:-8},set:"sgp_auto",delay:{turns:3,title:"The Terminal Opens",text:"The automated terminal moves its first million containers ahead of schedule and under cost. Rival ports send delegations. The picket outside has its own tent now.",fx:{t:8,st:3}}},
+  {label:"Phase it over ten years with retraining guarantees.",hint:"Slower \u00b7 carries the workforce",out:"The phased plan pairs every automated berth with a retraining cohort. It costs more and moves slower, and nobody's father loses a job to a robot overnight.",fx:{t:-5,a:3}},
+  {label:"Defer. The port is profitable as it is.",hint:"Free now \u00b7 rivals invest",out:"The plan returns to its shelf. Two rival ports announce their own automation programs the same quarter.",fx:{st:-2}}
+ ]},
+{id:"sgp_union_vote",nation:"SGP",requires:"sgp_auto",from:"MANPOWER MINISTRY FLASH",cls:"CONFIDENTIAL",spk:"cos",title:"The Union Ballot",
+ text:"The port union has called a strike ballot over the automation order, the first in a generation. The count is in nine days. A port strike here is not a local story: a fifth of the world's shipping passes this harbour, and every hour of stoppage prices itself in headlines. <em>They know exactly what the harbour is worth. That is the point of the ballot.</em>",
+ opts:[
+  {label:"Settle before the count: jobs guarantee for current workers.",hint:"Peace bought \u00b7 precedent set",out:"The guarantee covers every current badge for ten years. The ballot is withdrawn, the cranes proceed, and every future negotiation starts from this one.",fx:{t:-5,a:4,s:2}},
+  {label:"Let the ballot run and automate through it.",hint:"Hold the line \u00b7 the world watches",out:"The ballot passes and the strike lasts four days before the injunction holds. The cranes keep their schedule. The photographs of an empty harbour travel further than the injunction did.",fx:{t:3,s:2},risk:{p:.55,useM:false,fail:{out:"The injunction stalls in court and the strike runs eleven days. Forty ships divert to rival ports and some of their cargo contracts do not come back.",fx:{t:-7,st:-5,a:-4}}}},
+  {label:"Pause the rollout and reopen the study, jointly.",hint:"De-escalate \u00b7 momentum lost",out:"The joint review buys calm and costs a year. The union co-signs the eventual plan, which is worth something. The rivals' cranes arrive first, which costs something.",fx:{a:2,st:-2}}
+ ]},
+{id:"kaz_water",nation:"KAZ",from:"WATER COMMISSION",cls:"CONFIDENTIAL",spk:"int",title:"The Water Ledger",
+ text:"The rivers that feed our southern farmland rise in other countries, and this year they are keeping more of the water. Flows are down 20 percent and the irrigation season is short. We can build storage, buy guarantees, or hope. The commission notes that hope has been our policy for a decade. <em>Whoever controls the headwaters controls the harvest. That has never been us.</em>",
+ opts:[
+  {label:"Build the reservoir network. Three years, real storage.",hint:"Own the buffer \u00b7 own the bill",out:"The reservoir program breaks ground at four sites. It is the largest water project in the country's history and the first one aimed at independence rather than volume.",fx:{t:-7,s:3},set:"kaz_water"},
+  {label:"Negotiate flow guarantees with the upstream capitals.",hint:"Cheaper \u00b7 depends on their word",out:"The guarantees are signed with appropriate ceremony. They hold exactly as long as the upstream reservoirs are full, which is the clause nobody reads aloud.",fx:{t:-3,st:2}},
+  {label:"Compensate the farmers and wait for a wetter year.",hint:"A payment, not a policy",out:"The compensation lands before the harvest fails, which helps. The next dry year is already in the climate models, which does not.",fx:{t:-4,a:2}}
+ ]},
+{id:"kaz_reservoir",nation:"KAZ",requires:"kaz_water",from:"WATER COMMISSION FLASH",cls:"CONFIDENTIAL",spk:"cos",title:"The Valley Behind the Dam",
+ text:"The second reservoir will flood a valley with eleven villages in it. The engineering is sound and the law is on our side, and neither fact is helping: the villages have been there for two hundred years and their delegation is outside with cameras. The project needs the valley. The valley does not need the project. <em>Every big build drowns something. The question is how we treat what it drowns.</em>",
+ opts:[
+  {label:"Compensate generously and rebuild the villages above the waterline.",hint:"Expensive \u00b7 defensible forever",out:"The resettlement package is triple the legal minimum and the new villages are built before the water rises. Twenty years from now this is the part of the project people point to.",fx:{t:-5,a:4,s:2}},
+  {label:"Pay the legal minimum and proceed by decree.",hint:"On budget \u00b7 on the news",out:"The relocations proceed on schedule and the footage of them proceeds further. The reservoir will hold water. The story will hold longer.",fx:{a:-6,s:-2,st:-3}},
+  {label:"Redesign the dam smaller and spare the valley.",hint:"Less storage \u00b7 no victims",out:"The engineers grumble and deliver a design that stores 60 percent of the water and displaces no one. The villages stay. So does a fifth of the shortfall.",fx:{t:-3,s:2},delay:{turns:2,title:"The Spared Valley",text:"The redesigned dam tops out early and the villages hold a festival under it. The photographs do more for the government than the extra water would have.",fx:{a:5,st:3}}}
+ ]},
 {id:"gen_airline",nation:"ANY",from:"TRANSPORT MINISTRY",cls:"CONFIDENTIAL",spk:"fin",title:"The Grounded Flag",
  text:"The national airline is three weeks from running out of cash. It employs nine thousand people, connects every region to the capital, and has lost money for six straight years. A foreign carrier has offered to buy it. The unions want a bailout. The finance ministry wants neither. <em>Every option keeps the planes flying. They differ on whose planes they become.</em>",
  opts:[
@@ -783,7 +1072,7 @@ const EVENTS = [
  opts:[
   {label:"Rerun the exam nationwide.",hint:"Clean slate · huge disruption",out:"The rerun is scheduled for next month. Students are furious, then resigned. The new paper is guarded like a state secret, because now it is one.",fx:{t:-2,a:-3,s:2},delay:{turns:2,title:"The Clean Result",text:"The rerun goes off without a leak, and the score pattern shows the first exam was more compromised than anyone admitted. The disruption bought a result people trust.",fx:{a:5,s:3}}},
   {label:"Void only the results tied to proven access.",hint:"Targeted · leaves doubt",out:"Investigators trace the leak and void eleven hundred results. Every other score stands, under a cloud that a targeted fix cannot fully clear.",fx:{a:2,s:-2}},
-  {label:"Let all the results stand.",hint:"No disruption · the doubt stays",out:"Admissions proceed on schedule. The leak becomes a story every rejected student tells, and some of them are right.",fx:{},delay:{turns:3,title:"The Asterisk",text:"A journalism unit matches leaked-forum users to admitted students at the top two universities. The year's whole admissions class now carries an asterisk, and so does the ministry.",fx:{a:-6,s:-3,st:-2}}}
+  {label:"Let all the results stand.",hint:"No disruption · the doubt stays",out:"Admissions proceed on schedule. The leak becomes a story every rejected student tells, and some of them are right.",fx:{},delay:{turns:3,title:"The Asterisk",text:"A journalism unit matches leaked-forum users to admitted students at the top two universities. The year's whole admissions class now carries an asterisk, and so does the ministry.",fx:{a:-6,s:-3,st:-2},resp:[{label:"Own it: order an independent audit of the admissions year.",hint:"Painful \u00b7 credible",out:"The audit is external, public, and slow. It costs another news cycle and buys back a piece of the ministry\u2019s name.",fx:{a:2,st:2}},{label:"Ride it out. The news cycle moves on.",hint:"Free \u00b7 the asterisk stays",out:"No response is issued. The story fades on schedule and settles into the background, where it waits for the next education headline.",fx:{a:-2}}]}}
  ]}
 ];
 
@@ -792,7 +1081,7 @@ const EVENTS = [
    chosen by how the term actually went. First matching test wins. */
 const RECKONINGS={
 CAN:[
-{when:g=>g.rel.USA<55,ev:{id:"rk_can_usa",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Continental Question",
+{when:g=>g.rel.USA<55||(g.flags.includes("can_lease")&&g.rel.USA<62)||(g.flags.includes("can_grid")&&g.rel.USA<60),ev:{id:"rk_can_usa",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Continental Question",
  text:"Eleven months in, Washington has rolled every open dispute into one document: the border, defence spending, digital taxes and softwood, all bundled together with a deadline to sign. Sign it and the relationship resets on their terms. Refuse and the list of retaliation in Annex C starts in thirty days. <em>They are cashing in all the leverage they built up over the year.</em>",
  opts:[
   {label:"Sign the package.",hint:"Peace on their terms",out:"The signing is warm and the coverage at home is not. The relationship resets. So does the precedent about how to move us.",fx:{a:-8,st:-5},rel:{USA:14}},
@@ -822,7 +1111,7 @@ CAN:[
  ]}}
 ],
 SGP:[
-{when:g=>g.rel.CHN<45||g.rel.USA<45,ev:{id:"rk_sgp_strait",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"def",title:"The Strait Standoff",
+{when:g=>g.rel.CHN<45||g.rel.USA<45||(g.flags.includes("sgp_auto")&&(g.rel.CHN<52||g.rel.USA<52)),ev:{id:"rk_sgp_strait",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"def",title:"The Strait Standoff",
  text:"Two carrier groups are running exercises within a day's sail of the strait, and both capitals have asked to use our port the same week, in writing, each copied to the other. The harbour cannot take both. Whichever one we turn down will read it as us picking the other side. <em>Both powers are testing whether we can still be useful to everyone.</em>",
  opts:[
   {label:"Grant the American request. Decline the other.",hint:"Clear U.S. tilt",out:"The berthing is professional and photographed. China cancels two trade delegations by month's end.",fx:{m:5,st:3},rel:{USA:12,CHN:-12}},
@@ -852,7 +1141,7 @@ SGP:[
  ]}}
 ],
 KAZ:[
-{when:g=>g.rel.RUS<45,ev:{id:"rk_kaz_ultimatum",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Northern Ultimatum",
+{when:g=>g.rel.RUS<45||(g.flags.includes("kaz_refinery_deal")&&g.rel.RUS<55),ev:{id:"rk_kaz_ultimatum",from:"PRINCIPAL'S EYES ONLY",cls:"RECKONING",spk:"for",title:"The Northern Ultimatum",
  text:"Moscow's ambassador delivered it in person. It is a draft integration deal: transit rights, military bases, and language protections, with thirty days to answer. One line stands out. It talks about protecting Russian speakers here, and our northern governors read that line as a threat. <em>This is the exact choice our balancing policy was built to avoid.</em>",
  opts:[
   {label:"Refuse publicly. At a podium. In Kazakh.",hint:"Clear public refusal",out:"The refusal is eleven minutes long and quotes the friendship treaty back at its authors. The northern crossings close for inspections the same week. Other neighbours watch with new respect.",fx:{st:9,s:-6,m:4},rel:{RUS:-12,TUR:6}},
@@ -1061,7 +1350,7 @@ function addMarker(key,hex,isHome){
   dot.position.copy(p); markerGroup.add(dot);
   const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTexture(hex),transparent:true,depthWrite:false}));
   glow.position.copy(llToV(cap.lat,cap.lng,R*1.012));
-  glow.userData={pulse:true,t:Math.random()*6,base:isHome?.085:.06};
+  glow.userData={pulse:true,t:Math.random()*6,base:isHome?.085:.06,home:!!isHome};
   glow.scale.setScalar(glow.userData.base); markerGroup.add(glow);
   const off=cap.off||[8,0];
   const llat=cap.lat+off[0], llng=cap.lng+off[1];
@@ -1083,7 +1372,7 @@ function addArc(fromKey,toKey,relVal){
   const pts=curve.getPoints(72);
   const geo=new THREE.BufferGeometry().setFromPoints(pts);
   const col=relColor(relVal);
-  const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:.55}));
+  const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:arcOpacity(relVal)}));
   line.userData.toKey=toKey; arcGroup.add(line);
   return line;
 }
@@ -1097,9 +1386,19 @@ function buildBoard(nation){
     const s=m.scale.clone(); m.scale.setScalar(.001);
     gsap.to(m.scale,{x:s.x,y:s.y,z:s.z,duration:.7,delay:.35+i*.05,ease:"back.out(2)"}); });
 }
+function arcOpacity(v){ return v<=25 ? .08 : .14+v*.0052; } /* broken ties fade to ghosts */
 function tintArc(toKey,relVal){
   const line=arcGroup.children.find(l=>l.userData.toKey===toKey);
-  if(line) gsap.to(line.material.color,{...relColor(relVal),duration:.9});
+  if(!line) return;
+  gsap.to(line.material.color,{...relColor(relVal),duration:.9});
+  gsap.to(line.material,{opacity:arcOpacity(relVal),duration:.9});
+}
+function pulseHome(){
+  if(REDUCED_MOTION) return;
+  const home=markerGroup.children.find(m=>m.userData&&m.userData.home);
+  if(!home) return;
+  const b=home.userData.base;
+  gsap.to(home.userData,{base:b*2.1,duration:.5,yoyo:true,repeat:5,ease:"sine.inOut",onComplete:()=>{home.userData.base=b;}});
 }
 </script>
 <script>
@@ -1115,13 +1414,19 @@ const STATS=[
 ];
 const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const TERM=12;
-const G={nation:null,stats:{},rel:{},turn:0,deck:[],queue:[],over:false,history:[],startStats:{},adv:{},trend:[],firedP:[],lastPressure:-9,reckoningDone:false,lastAct:1,currentBriefing:null,turnResolved:false,flags:[],doc:{west:0,order:0,hawk:0},docNoted:[]};
+const G={nation:null,stats:{},rel:{},turn:0,deck:[],queue:[],over:false,history:[],startStats:{},adv:{},trend:[],firedP:[],lastPressure:-9,reckoningDone:false,lastAct:1,currentBriefing:null,turnResolved:false,flags:[],doc:{west:0,order:0,hawk:0},docNoted:[],driftNoted:[],archived:false,scheduled:[]};
 const $=id=>document.getElementById(id);
 const el=(t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
 const REDUCED_MOTION=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
 if(REDUCED_MOTION&&window.gsap) gsap.globalTimeline.timeScale(25); /* animations become near-instant */
 function announce(msg){ const a=$("announcer"); if(a){ a.textContent=""; setTimeout(()=>a.textContent=msg,50); } }
 function focusCableTitle(){ const h=document.querySelector(".cable-body h3"); if(h){ h.tabIndex=-1; try{h.focus({preventScroll:true});}catch(e){} } }
+function driftNote(payroll,drift){
+  const say=(k,msg)=>{ if(!G.driftNoted.includes(k)){ G.driftNoted.push(k); toast("SYSTEM \u00b7 "+msg,"sys"); } };
+  if(G.turn===1) say("base","Governing has running costs: payroll ticks the treasury down and approval drifts each month");
+  if(payroll>1) say("payroll","The enlarged forces are now a payroll line the treasury feels every month");
+  if(drift===0) say("calm","A calm country: approval has stopped drifting while stability holds above 70");
+}
 function esc(v){
   const map={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"};
   return String(v??"").replace(/[&<>"']/g,ch=>map[ch]);
@@ -1386,7 +1691,7 @@ function makeSaveSnapshot(){
   return {
     slot:getActiveSlot(), savedAt:Date.now(),
     nationKey:G.nation.key, stats:G.stats, rel:G.rel, turn:G.turnResolved?G.turn+1:G.turn,
-    deck:G.deck.map(e=>e.id), queue:G.queue, history:G.history, startStats:G.startStats, adv:G.adv, trend:G.trend, firedP:G.firedP, lastPressure:G.lastPressure, reckoningDone:G.reckoningDone, flags:G.flags, doc:G.doc, docNoted:G.docNoted,
+    deck:G.deck.map(e=>e.id), queue:G.queue, history:G.history, startStats:G.startStats, adv:G.adv, trend:G.trend, firedP:G.firedP, lastPressure:G.lastPressure, reckoningDone:G.reckoningDone, flags:G.flags, doc:G.doc, docNoted:G.docNoted, driftNoted:G.driftNoted, scheduled:G.scheduled,
     currentBriefing:G.turnResolved?null:G.currentBriefing, turnResolved:false
   };
 }
@@ -1422,22 +1727,55 @@ function setPref(k,v){
 }
 
 /* ---------- audio ---------- */
-const AUDIO_SRC="https://archive.org/download/Incompetech/mp3-royaltyfree%2FAmbiment.ogg";
-const audio={el:null,started:false,on:true};
+const TRACKS=[
+  {n:"Ambiment",f:"Ambiment"},
+  {n:"Atlantean Twilight",f:"Atlantean%20Twilight"},
+  {n:"Aftermath",f:"Aftermath"},
+  {n:"Arcane",f:"Arcane"}
+];
+const trackUrl=t=>`https://archive.org/download/Incompetech/mp3-royaltyfree%2F${t.f}.ogg`;
+const audio={el:null,started:false,on:true,idx:0};
+function setCredit(){ const c=$("audio-credit"); if(c) c.textContent=`${TRACKS[audio.idx].n} by Kevin MacLeod \u00b7 CC BY 4.0`; }
 function initAudio(){
   audio.el=$("ambient");
   audio.on=prefs().sound!==false;
+  audio.idx=Math.floor(Math.random()*TRACKS.length);
+  audio.el.onended=()=>{ audio.idx=(audio.idx+1)%TRACKS.length; audio.el.src=trackUrl(TRACKS[audio.idx]); setCredit();
+    const p=audio.el.play(); if(p&&p.catch)p.catch(()=>{}); };
   applySoundToggle();
 }
 function startAudio(){
   if(audio.started||!audio.on) return;
   const a=audio.el;
-  if(!a.src) a.src=AUDIO_SRC;
+  if(!a.src){ a.src=trackUrl(TRACKS[audio.idx]); setCredit(); }
   a.volume=0;
   const p=a.play();
   if(p&&p.catch) p.catch(()=>{});
   audio.started=true;
   gsap.to(a,{volume:.34,duration:4,ease:"power1.inOut"});
+}
+/* light synthesized SFX: no files, gated by the same sound preference */
+let AC=null;
+function sfx(type){
+  if(!audio.on) return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const t=AC.currentTime, g=AC.createGain(), o=AC.createOscillator();
+    o.connect(g); g.connect(AC.destination);
+    if(type==="cable"){
+      o.type="sine"; o.frequency.setValueAtTime(392,t); o.frequency.setValueAtTime(523,t+.09);
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.05,t+.03); g.gain.exponentialRampToValueAtTime(.0001,t+.4);
+      o.start(t); o.stop(t+.45);
+    } else if(type==="click"){
+      o.type="triangle"; o.frequency.setValueAtTime(840,t);
+      g.gain.setValueAtTime(.045,t); g.gain.exponentialRampToValueAtTime(.0001,t+.07);
+      o.start(t); o.stop(t+.08);
+    } else if(type==="stamp"){
+      o.type="sine"; o.frequency.setValueAtTime(196,t); o.frequency.exponentialRampToValueAtTime(130,t+.25);
+      g.gain.setValueAtTime(.08,t); g.gain.exponentialRampToValueAtTime(.0001,t+.35);
+      o.start(t); o.stop(t+.4);
+    }
+  }catch(e){}
 }
 function applySoundToggle(){
   const t=$("sound-toggle");
@@ -1631,12 +1969,13 @@ function cableShell(meta){
      <div class="ch-row">REF &nbsp;&nbsp;&nbsp;· <b>${meta.ref}</b></div>`));
   return c;
 }
-function showCable(){ $("cable-wrap").style.display="flex";
+function showCable(){ sfx("cable"); $("cable-wrap").style.display="flex";
   gsap.fromTo("#cable",{x:60,opacity:0},{x:0,opacity:1,duration:.7,ease:"power3.out"}); }
 
 function presentEvent(ev){
   G.currentBriefing={kind:"event",ev};
   G.turnResolved=false;
+  if(ev.cls==="RECKONING") G.reckoningDone=true;
   const c=cableShell({cls:ev.cls,from:ev.from,ref:`SC/${G.nation.key}/${String(G.turn+1).padStart(3,"0")}`});
   const body=el("div","cable-body");
   body.appendChild(el("h3",null,ev.title));
@@ -1702,9 +2041,26 @@ function trackDoctrine(eff,mapped){
 function applyChains(o){
   if(o.set&&!G.flags.includes(o.set)){
     G.flags.push(o.set);
-    const follow=EVENTS.filter(e=>e.requires===o.set&&!G.deck.some(d=>d.id===e.id)&&!G.history.some(h=>h.id===e.id));
-    follow.forEach(e=>G.deck.splice(Math.min(2,G.deck.length),0,e));
-    if(follow.length) toast("Filed · this opens a follow-up file.");
+    const gates=STORYLINE_GATES[G.nation.key]||[];
+    if(gates.includes(o.set)){
+      pruneDeckForStoryline(G.nation.key,o.set);
+      toast("The term's course is set. Everything from here follows from this.");
+    }
+    const follow=EVENTS.filter(e=>e.requires===o.set&&!G.deck.some(d=>d.id===e.id)&&!G.history.some(h=>h.id===e.id)&&!G.scheduled.some(s=>s.id===e.id));
+    const isStory=String(o.set).startsWith("story_");
+    follow.forEach(e=>{
+      if(isStory){
+        /* storyline beats land on a schedule: mid beats about three turns out,
+           the ending beat locked into the act-three window as the climax */
+        const at=e.cls==="RECKONING"
+          ? Math.min(Math.max(G.turn+2,10),TERM-1)
+          : Math.min(G.turn+3,8);
+        G.scheduled.push({at,id:e.id});
+      } else {
+        G.deck.splice(Math.min(2,G.deck.length),0,e);
+      }
+    });
+    if(follow.length&&!gates.includes(o.set)&&!isStory) toast("Filed \u00b7 this opens a follow-up file.");
   }
   if(o.block){ G.deck=G.deck.filter(e=>e.id!==o.block); }
 }
@@ -1714,6 +2070,7 @@ function riskChance(o){
   return p;
 }
 function resolveOption(ev,o){
+  sfx("click");
   G.currentBriefing=null;
   G.turnResolved=true;
   const c=$("cable");
@@ -1740,15 +2097,16 @@ function resolveOption(ev,o){
   oc.appendChild(el("div","oc-text",outText));
   oc.appendChild(chipRow(eff,mapped,o.delay?"Consequences pending":null));
   const nxt=el("button","btn","Next briefing");
-  nxt.onclick=endTurn;
+  nxt.onclick=()=>{ nxt.disabled=true; endTurn(); };
   oc.appendChild(nxt);
   c.appendChild(oc);
   gsap.from(oc,{y:12,opacity:0,duration:.5,ease:"power2.out"});
   if(o.delay) toast("Filed · this decision will echo.");
 }
-function presentConsequence(q,apply=true){
+function presentConsequence(q,apply=true,onContinue){
   G.currentBriefing={kind:"consequence",q};
   G.turnResolved=false;
+  const cont=onContinue||(()=>{ if(!checkCollapse()) drainConsequences(); });
   const c=cableShell({cls:"CONSEQUENCE",from:"SITUATION DESK",ref:`SC/${G.nation.key}/ECHO`});
   const body=el("div","cable-body");
   body.appendChild(el("h3",null,q.cable.title));
@@ -1766,16 +2124,49 @@ function presentConsequence(q,apply=true){
   }
   const oc=el("div","outcome");
   oc.appendChild(chipRow(eff,mapped));
-  const nxt=el("button","btn","Acknowledged");
-  nxt.onclick=endTurn;
-  oc.appendChild(nxt);
+  const goOn=label=>{
+    const nxt=el("button","btn",label);
+    nxt.onclick=()=>{ if(nxt.disabled) return; nxt.disabled=true;
+      gsap.to("#cable",{x:40,opacity:0,duration:.35,ease:"power2.in",onComplete:()=>{ $("cable-wrap").style.display="none"; cont(); }}); };
+    return nxt;
+  };
+  const renderResponded=r=>{
+    oc.appendChild(el("div","oc-text",r.out));
+    oc.appendChild(chipRow(r.eff||{},{}));
+    oc.appendChild(goOn("Continue"));
+  };
+  if(q.responded){
+    renderResponded(q.responded);
+  } else if(q.cable.resp&&q.cable.resp.length){
+    /* the echo asks for a response: same stakes, real agency, still no turn cost */
+    const ops=el("div","options");
+    q.cable.resp.forEach(r=>{
+      const b=el("button","opt",`<div class="o-label">${esc(r.label)}</div><div class="o-hint">Response: ${esc(r.hint||"")}</div>`);
+      b.onclick=()=>{
+        sfx("click");
+        const rEff=actOf(G.turn)===3?scaleFxObj(r.fx,1.25):(r.fx||{});
+        applyFx(rEff);
+        const h=G.history[G.history.length-1];
+        if(h&&h.echo){ Object.entries(rEff).forEach(([k,v])=>h.fx[k]=(h.fx[k]||0)+v); h.choice+=` \u00b7 response: ${r.label}`; }
+        q.responded={label:r.label,out:r.out,eff:rEff};
+        G.currentBriefing={kind:"consequence",q};
+        saveGame();
+        ops.remove();
+        renderResponded(q.responded);
+        buildTermLog();
+      };
+      ops.appendChild(b);
+    });
+    oc.appendChild(ops);
+  } else {
+    oc.appendChild(goOn("Acknowledged"));
+  }
   c.appendChild(oc);
   showCable();
   saveGame();
   announce("Consequence: "+q.cable.title);
   gsap.delayedCall(.2,focusCableTitle);
 }
-
 /* ---------- turn engine ---------- */
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
 function evIntensity(e){
@@ -1790,26 +2181,44 @@ function evIntensity(e){
   });
   return m;
 }
+const STORYLINE_GATES={CAN:["story_retaliate","story_longgame","story_pivot"],SGP:["story_sgp_west","story_sgp_neutral","story_sgp_east"],KAZ:["story_kaz_rus","story_kaz_west","story_kaz_multi"]};
+const GATE_EVENTS={CAN:"can_softwood",SGP:"sgp_suitors",KAZ:"kaz_vector"};
 function buildDeck(key){
-  /* three-act structure: two calm home files open the term,
-     then intensity climbs act by act toward the reckoning */
+  /* the storyline gate opens the term, then intensity climbs act by act */
   const pool=EVENTS.filter(e=>!e.requires);
-  const own=pool.filter(e=>e.nation===key).sort((a,b)=>evIntensity(a)-evIntensity(b));
-  const openers=own.slice(0,2);
-  const rest=[...own.slice(2),...pool.filter(e=>e.nation==="ANY")].sort((a,b)=>evIntensity(a)-evIntensity(b));
+  const gateId=GATE_EVENTS[key];
+  const own=pool.filter(e=>e.nation===key&&e.id!==gateId).sort((a,b)=>evIntensity(a)-evIntensity(b));
+  const gate=pool.find(e=>e.id===gateId);
+  const openers=[gate,own[0]].filter(Boolean);
+  own.splice(0,1);
+  const rest=[...own,...pool.filter(e=>e.nation==="ANY")].sort((a,b)=>evIntensity(a)-evIntensity(b));
   const third=Math.ceil(rest.length/3);
   const a1=shuffle(rest.slice(0,third));
   const a2=shuffle(rest.slice(third,third*2));
   const a3=shuffle(rest.slice(third*2));
   return [...openers,...a1,...a2,...a3];
 }
+/* once a storyline gate has been chosen, drop unrelated home-nation filler from the
+   remaining deck so the term follows one throughline instead of a shuffled grab bag */
+function pruneDeckForStoryline(nationKey,gateFlag){
+  const gates=STORYLINE_GATES[nationKey];
+  if(!gates||!gates.includes(gateFlag)) return;
+  G.deck=G.deck.filter(e=>e.nation!==nationKey||e.requires);
+}
 function startTurn(){
   if(G.over) return;
+  G.beat=(G.beat||0)+1; G.ending=false; /* one pipeline per turn: stale callbacks check the token */
   G.currentBriefing=null;
   G.turnResolved=false;
   setTurnLabel();
-  /* the cost of simply existing as a state */
-  if(G.turn>0){ setStat("t",G.stats.t-1); setStat("a",G.stats.a-1); }
+  /* the cost of governing: payroll drains the treasury; approval drifts unless the country is calm */
+  if(G.turn>0){
+    const payroll=1+(G.stats.m>=65?1:0);
+    const drift=(G.stats.s>=70?0:1);
+    setStat("t",G.stats.t-payroll);
+    if(drift) setStat("a",G.stats.a-drift);
+    driftNote(payroll,drift);
+  }
   if(G.turn>0) applyInteractions();
   if(checkCollapse()) return;
   G.trend.push({...G.stats}); if(G.trend.length>14) G.trend.shift();
@@ -1819,47 +2228,72 @@ function startTurn(){
     if(act===2) toast("ACT II · The bills come due");
     if(act===3) toast("ACT III · The reckoning · stakes now run higher");
   }
+  const tok=G.beat;
+  gsap.delayedCall(.15,()=>{ if(tok!==G.beat||!G.nation||G.over) return; drainConsequences(); });
+}
+/* consequences are preludes now: they play before the turn's real briefing and no longer consume the turn */
+function drainConsequences(){
   const dueIdx=G.queue.findIndex(q=>q.due<=G.turn);
-  const conseqDue=dueIdx>-1;
-  const mustReckon=!G.reckoningDone && (G.turn>=10 || (G.turn>=9 && !conseqDue));
-  gsap.delayedCall(.15,()=>{
-    if(!G.nation||G.over) return;
-    if(mustReckon){
-      const ev=pickReckoning();
-      G.reckoningDone=true;
-      if(ev){
-        G.currentBriefing={kind:"event",ev};
-        const f=eventFocus(ev);
-        flyTo(f.lat,f.lng,Math.max(1.9,f.dist-.4),1.7);
-        gsap.delayedCall(.6,()=>{ if(G.nation&&!G.over) presentEvent(ev); });
-        return;
-      }
-    }
-    if(conseqDue){ const q=G.queue.splice(dueIdx,1)[0];
-      G.currentBriefing={kind:"consequence",q};
-      flyTo(G.nation.view.lat,G.nation.view.lng+(Math.random()*20-10),2.6,1.5);
-      presentConsequence(q); if(checkCollapse())return;
-      return;
-    }
-    const press=pickPressure();
-    if(press){
-      const ev=press.p.build(press.ctx);
-      G.firedP.push(press.p.id); G.lastPressure=G.turn;
+  if(dueIdx>-1){
+    const q=G.queue.splice(dueIdx,1)[0];
+    G.currentBriefing={kind:"consequence",q};
+    flyTo(G.nation.view.lat,G.nation.view.lng+(Math.random()*20-10),2.6,1.5);
+    presentConsequence(q,true,()=>{ if(checkCollapse())return; drainConsequences(); });
+    return;
+  }
+  mainBeat();
+}
+function mainBeat(){
+  if(!G.nation||G.over) return;
+  const schedIdx=G.scheduled.findIndex(s=>s.at<=G.turn);
+  if(schedIdx>-1){
+    const sc=G.scheduled.splice(schedIdx,1)[0];
+    const ev=EVENTS.find(e=>e.id===sc.id);
+    if(ev){
       G.currentBriefing={kind:"event",ev};
+      if(ev.cls==="RECKONING") pulseHome();
+      const tok=G.beat;
       const f=eventFocus(ev);
-      flyTo(f.lat,f.lng,f.dist,1.7);
-      gsap.delayedCall(.6,()=>{ if(G.nation&&!G.over) presentEvent(ev); });
+      flyTo(f.lat,f.lng,Math.max(1.9,f.dist-.4),1.7);
+      gsap.delayedCall(.6,()=>{ if(tok===G.beat&&G.nation&&!G.over) presentEvent(ev); });
       return;
     }
-    const ev=G.deck.shift();
-    if(!ev){ finishTerm(); return; }
+  }
+  if(!G.reckoningDone && G.turn>=10 && G.scheduled.length===0){
+    const ev=pickReckoning();
+    G.reckoningDone=true;
+    if(ev){
+      G.currentBriefing={kind:"event",ev};
+      pulseHome();
+      const tok=G.beat;
+      const f=eventFocus(ev);
+      flyTo(f.lat,f.lng,Math.max(1.9,f.dist-.4),1.7);
+      gsap.delayedCall(.6,()=>{ if(tok===G.beat&&G.nation&&!G.over) presentEvent(ev); });
+      return;
+    }
+  }
+  const press=pickPressure();
+  if(press){
+    const ev=press.p.build(press.ctx);
+    G.firedP.push(press.p.id); G.lastPressure=G.turn;
     G.currentBriefing={kind:"event",ev};
+    const tok=G.beat;
     const f=eventFocus(ev);
     flyTo(f.lat,f.lng,f.dist,1.7);
-    gsap.delayedCall(.6,()=>{ if(G.nation&&!G.over) presentEvent(ev); });
-  });
+    gsap.delayedCall(.6,()=>{ if(tok===G.beat&&G.nation&&!G.over) presentEvent(ev); });
+    return;
+  }
+  const ev=G.deck.shift();
+  if(!ev){ finishTerm(); return; }
+  G.currentBriefing={kind:"event",ev};
+  const tok=G.beat;
+  const f=eventFocus(ev);
+  flyTo(f.lat,f.lng,f.dist,1.7);
+  gsap.delayedCall(.6,()=>{ if(tok===G.beat&&G.nation&&!G.over) presentEvent(ev); });
 }
 function endTurn(){
+  if(G.ending||G.over) return; /* the outcome button stays visible during the fade: never advance twice */
+  G.ending=true;
   gsap.to("#cable",{x:40,opacity:0,duration:.4,ease:"power2.in",onComplete:()=>{
     $("cable-wrap").style.display="none";
     G.currentBriefing=null;
@@ -2061,7 +2495,19 @@ const FLAG_NOTES={
   can_yards:"The icebreakers ordered that winter took years to launch. They are in the north now, and the program still carries this government's name.",
   can_lease:"The leased icebreakers kept the north open on someone else's terms. The argument about owning our own never went away.",
   sgp_sand:"The reclamation project outlived the government that approved it. So did the arguments about the sand.",
-  kaz_refinery_deal:"The refinery rose on Chinese financing, and every debate about it afterward was really a debate about that signature."
+  kaz_refinery_deal:"The refinery rose on Chinese financing, and every debate about it afterward was really a debate about that signature.",
+  can_grid:"The 20-year power contract outlived every argument about it. The revenue was real, and so was the dependence, in both directions.",
+  sgp_auto:"The automated terminal kept the port ahead of its rivals. The negotiations it forced changed how the country talks to its workers.",
+  kaz_water:"The reservoirs were the first water policy aimed at independence instead of hope. The south farms differently because of them.",
+  story_retaliate:"The softwood fight, picked in the term's first weeks, set the posture for everything that followed.",
+  story_longgame:"The decision to fight Washington in courtrooms instead of headlines defined the term's whole temperament.",
+  story_pivot:"The quiet turn away from Washington, begun over lumber of all things, became the term's largest single fact.",
+  story_sgp_west:"The Changi access decision ended fifty years of ambiguity in an afternoon, and the rest of the term lived inside that choice.",
+  story_sgp_neutral:"The neutrality declaration looked like caution the day it was made. Everything after was the work of making it true.",
+  story_sgp_east:"The carefully worded refusal that pleased Beijing was read correctly in every capital, and the term followed the reading.",
+  story_kaz_rus:"Attending the bloc exercise looked routine that week. It was the first step on the northern road, and the road had its own momentum.",
+  story_kaz_west:"The chair at the partnership summit was the term's real declaration, and Moscow's pressure spent two years confirming it.",
+  story_kaz_multi:"Attending both gatherings in one week turned a diplomatic phrase into a public tightrope, and the term walked it."
 };
 function hWeight(h){
   return Object.values(h.fx||{}).reduce((a,b)=>a+Math.abs(b),0)+Object.values(h.rel||{}).reduce((a,b)=>a+Math.abs(b)/2,0);
@@ -2172,6 +2618,30 @@ function showEpilogue(){
   $("verdict-card").scrollTop=0;
   gsap.from("#verdict-epilogue > *",{y:14,opacity:0,duration:.5,stagger:.06,ease:"power2.out"});
 }
+const ARCHIVE_KEY="statecraft.archive.v1";
+function readArchive(){ try{ return JSON.parse(localStorage.getItem(ARCHIVE_KEY))||[]; }catch(e){ return []; } }
+function writeArchiveEntry(){
+  if(G.archived||!G.nation) return;
+  G.archived=true;
+  const id=identityLabel(), end=G.endInfo||{};
+  const entry={d:Date.now(),n:G.nation.key,label:id.label,score:end.score??null,win:!!end.win,collapse:end.collapse||null,turns:Math.min(G.turn+1,TERM)};
+  try{ const a=readArchive(); a.unshift(entry); localStorage.setItem(ARCHIVE_KEY,JSON.stringify(a.slice(0,24))); }catch(e){}
+  updateArchivePanel();
+}
+function updateArchivePanel(){
+  const box=$("archive-list"), wrap=$("archive-panel");
+  if(!box||!wrap) return;
+  const a=readArchive();
+  if(!a.length){ wrap.style.display="none"; return; }
+  wrap.style.display="block";
+  box.innerHTML="";
+  a.slice(0,5).forEach(e=>{
+    const nm=(NATIONS[e.n]||{}).name||e.n;
+    const when=new Date(e.d).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+    const res=e.collapse?"Collapsed":(e.score!=null?`Score ${e.score}`:"");
+    box.appendChild(el("div","arch-row",`<span class="ar-n">${nm}</span><span class="ar-l">${e.label}</span><span class="ar-s">${res}</span><span class="ar-d">${when}</span>`));
+  });
+}
 function showVerdict(win,name,text,score,titleHtml){
   G.over=true; inputEnabled=false;
   clearSave();
@@ -2185,6 +2655,8 @@ function showVerdict(win,name,text,score,titleHtml){
   t.innerHTML=STATS.map(s=>`${s.name} <b>${Math.round(G.stats[s.k])}</b>`).join(" &nbsp;·&nbsp; ")+
     (score!=null?`<br>Mandate score <b>${score}</b> · threshold <b>50</b> · turns served <b>${Math.min(G.turn+1,TERM)}</b>`:` · turns served <b>${Math.min(G.turn+1,TERM)}</b>`);
   buildReport();
+  writeArchiveEntry();
+  sfx("stamp");
   $("verdict-main").style.display="block";
   $("verdict-epilogue").style.display="none";
   $("verdict").style.display="flex";
@@ -2234,6 +2706,7 @@ function buildSlotList(targetId,compact=false){
 }
 function updateSlotPanels(){
   updateResumeBanner();
+  updateArchivePanel();
   buildSlotList("settings-slot-list",true);
 }
 function buildDossiers(){
@@ -2258,7 +2731,7 @@ function setupTermState(key){
   G.startStats={...n.stats}; G.history=[];
   G.adv=freshAdv();
   G.trend=[]; G.firedP=[]; G.lastPressure=-9; G.reckoningDone=false; G.lastAct=1; G.currentBriefing=null; G.turnResolved=false;
-  G.flags=[]; G.doc={west:0,order:0,hawk:0}; G.docNoted=[];
+  G.flags=[]; G.doc={west:0,order:0,hawk:0}; G.docNoted=[]; G.driftNoted=[]; G.archived=false; G.scheduled=[];
   G.deck=buildDeck(key);
   return n;
 }
@@ -2305,7 +2778,7 @@ function restoreBriefing(saved){
   }
   if(briefing.kind==="consequence"&&briefing.q){
     flyTo(G.nation.view.lat,G.nation.view.lng,2.6,1.2);
-    presentConsequence(briefing.q,false);
+    presentConsequence(briefing.q,false,()=>{ if(!checkCollapse()) drainConsequences(); });
     return true;
   }
   return false;
@@ -2323,7 +2796,7 @@ function resumeGame(save,slot=getActiveSlot()){
   G.adv=save.adv||freshAdv();
   G.trend=save.trend||[]; G.firedP=save.firedP||[]; G.lastPressure=save.lastPressure??-9;
   G.reckoningDone=!!save.reckoningDone; G.lastAct=actOf(save.turn);
-  G.flags=save.flags||[]; G.doc=save.doc||{west:0,order:0,hawk:0}; G.docNoted=save.docNoted||[];
+  G.flags=save.flags||[]; G.doc=save.doc||{west:0,order:0,hawk:0}; G.docNoted=save.docNoted||[]; G.driftNoted=save.driftNoted||[]; G.archived=false; G.scheduled=save.scheduled||[];
   G.queue=save.queue||[]; G.currentBriefing=save.currentBriefing||null; G.turnResolved=false;
   /* rebuild deck from stored ids */
   const byId={}; EVENTS.forEach(e=>byId[e.id]=e);
