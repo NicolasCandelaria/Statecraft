@@ -465,8 +465,8 @@ body.act-3 #cable{border-color:rgba(194,110,80,.4)}
     <h3 id="settings-h">Settings</h3>
     <div class="set-sub">Cabinet Office</div>
     <div class="set-row">
-      <div><div class="set-label">Ambient sound</div><div class="set-desc">Situation room atmosphere</div></div>
-      <div class="toggle on" id="sound-toggle" role="switch" aria-checked="true" tabindex="0" aria-label="Ambient sound"></div>
+      <div><div class="set-label">Ambient music</div><div class="set-desc">Situation room atmosphere · toggle to mute</div></div>
+      <div class="toggle on" id="sound-toggle" role="switch" aria-checked="true" tabindex="0" aria-label="Ambient music on"></div>
     </div>
     <div class="set-section-title" id="settings-save-title">Save slots</div>
     <div class="slot-list compact" id="settings-slot-list"></div>
@@ -568,7 +568,7 @@ body.act-3 #cable{border-color:rgba(194,110,80,.4)}
   </div>
 </div>
 
-<audio id="ambient" preload="none" crossorigin="anonymous"></audio>
+<audio id="ambient" preload="none" crossorigin="anonymous" loop></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -1958,23 +1958,46 @@ const TRACKS=[
 const trackUrl=t=>`https://archive.org/download/Incompetech/mp3-royaltyfree%2F${t.f}.ogg`;
 const audio={el:null,started:false,on:true,idx:0};
 function setCredit(){ const c=$("audio-credit"); if(c) c.textContent=`${TRACKS[audio.idx].n} by Kevin MacLeod \u00b7 CC BY 4.0`; }
+function updateAudioCredit(){ const c=$("audio-credit"); if(c) c.style.display=audio.on?"block":"none"; }
+function showMenuChrome(){
+  $("gear").style.display="flex";
+  updateAudioCredit();
+}
 function initAudio(){
   audio.el=$("ambient");
   audio.on=prefs().sound!==false;
   audio.idx=Math.floor(Math.random()*TRACKS.length);
-  audio.el.onended=()=>{ audio.idx=(audio.idx+1)%TRACKS.length; audio.el.src=trackUrl(TRACKS[audio.idx]); setCredit();
-    const p=audio.el.play(); if(p&&p.catch)p.catch(()=>{}); };
+  audio.el.loop=false;
+  audio.el.onended=()=>{
+    if(!audio.on) return;
+    audio.idx=(audio.idx+1)%TRACKS.length;
+    audio.el.src=trackUrl(TRACKS[audio.idx]);
+    setCredit();
+    const p=audio.el.play();
+    if(p&&p.catch) p.catch(()=>{});
+  };
   applySoundToggle();
 }
 function startAudio(){
-  if(audio.started||!audio.on) return;
-  const a=audio.el;
-  if(!a.src){ a.src=trackUrl(TRACKS[audio.idx]); setCredit(); }
-  a.volume=0;
-  const p=a.play();
-  if(p&&p.catch) p.catch(()=>{});
-  audio.started=true;
-  gsap.to(a,{volume:.34,duration:4,ease:"power1.inOut"});
+  if(!audio.on) return;
+  if(!audio.el) audio.el=$("ambient");
+  if(!audio.el) return;
+  if(audio.started){
+    if(audio.el.paused){
+      audio.el.volume=0;
+      const p=audio.el.play();
+      const up=()=>gsap.to(audio.el,{volume:.34,duration:1,ease:"power1.inOut"});
+      if(p&&p.then) p.then(up).catch(()=>{});
+      else up();
+    }
+    return;
+  }
+  if(!audio.el.src){ audio.el.src=trackUrl(TRACKS[audio.idx]); setCredit(); }
+  audio.el.volume=0;
+  const p=audio.el.play();
+  const fade=()=>gsap.to(audio.el,{volume:.34,duration:4,ease:"power1.inOut"});
+  if(p&&p.then) p.then(()=>{ audio.started=true; fade(); }).catch(()=>{});
+  else { audio.started=true; fade(); }
 }
 /* light synthesized SFX: no files, gated by the same sound preference */
 let AC=null;
@@ -2005,8 +2028,16 @@ function sfx(type){
 }
 function applySoundToggle(){
   const t=$("sound-toggle");
-  if(audio.on){ t.classList.add("on"); t.setAttribute("aria-checked","true"); }
-  else{ t.classList.remove("on"); t.setAttribute("aria-checked","false"); }
+  if(audio.on){
+    t.classList.add("on");
+    t.setAttribute("aria-checked","true");
+    t.setAttribute("aria-label","Ambient music on");
+  } else {
+    t.classList.remove("on");
+    t.setAttribute("aria-checked","false");
+    t.setAttribute("aria-label","Ambient music muted");
+  }
+  updateAudioCredit();
   if(audio.el){
     if(audio.on){ if(audio.started) gsap.to(audio.el,{volume:.34,duration:1}); else startAudio(); }
     else gsap.to(audio.el,{volume:0,duration:.6,onComplete:()=>{ try{audio.el.pause();}catch(e){} audio.started=false; }});
@@ -3559,7 +3590,7 @@ function setupTermState(key){
 function showGameChrome(){
   if(!G.nation) return;
   $("hud").style.display="block"; $("relations").style.display="block"; $("term-log").style.display="block"; $("hint").style.display="block";
-  $("gear").style.display="flex"; if(audio.on) $("audio-credit").style.display="block";
+  $("gear").style.display="flex"; updateAudioCredit();
   buildHUD(); STATS.forEach(s=>setStat(s.k,G.stats[s.k],false));
   $("hud-name").textContent=G.nation.name; setTurnLabel();
   buildRelations(); buildTermLog(); buildBoard(G.nation);
@@ -3662,7 +3693,8 @@ function toSelect(){
   $("cable-wrap").style.display="none"; $("cable").innerHTML="";
   $("hud").style.display="none"; $("relations").style.display="none"; $("term-log").style.display="none";
   $("mandate").style.display="none"; $("mandate").classList.remove("campaigning");
-  $("hint").style.display="none"; $("gear").style.display="none"; $("audio-credit").style.display="none";
+  $("hint").style.display="none";
+  showMenuChrome();
   $("toasts").innerHTML="";
   clearBoard(); inputEnabled=false; autoRotate=true;
   G.nation=null; G.over=false; G.currentBriefing=null; G.turnResolved=false;
@@ -3797,8 +3829,8 @@ $("btn-restart-term").onclick=()=>{
     : `${name} will restart at Turn 01 in Slot ${getActiveSlot()}. The current run in that slot will be replaced.`,"Restart",()=>launchNewTerm(key,false));
 };
 $("btn-quit").onclick=()=>{ const inCampaign=campaignInProgress(); closeSettings(); if(!inCampaign)saveGame(); toSelect(); };
-$("sound-toggle").onclick=()=>{ audio.on=!audio.on; setPref("sound",audio.on); applySoundToggle();
-  $("audio-credit").style.display=(audio.on&&G.nation)?"block":"none"; };
+$("sound-toggle").onclick=()=>{ audio.on=!audio.on; setPref("sound",audio.on); applySoundToggle(); };
+$("sound-toggle").onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("sound-toggle").click(); } };
 
 $("btn-begin").onclick=()=>{
   startAudio();
@@ -3809,17 +3841,17 @@ $("btn-begin").onclick=()=>{
 };
 $("btn-restart").onclick=toSelect;
 $("btn-epilogue").onclick=showEpilogue;
-/* first user gesture anywhere unlocks audio if it was blocked */
-addEventListener("pointerdown",()=>{ if(audio.on) startAudio(); },{once:true});
 
 initGlobe(()=>{
   buildDossiers();
   initAudio();
   gsap.to("#loading",{opacity:0,duration:.8,delay:.3,onComplete:()=>$("loading").remove()});
   $("title-screen").style.display="flex";
+  showMenuChrome();
   gsap.from("#title-screen h1",{y:26,opacity:0,duration:1.1,delay:.5,ease:"power3.out"});
   gsap.from("#title-screen .eyebrow, #title-sub, #btn-begin",{opacity:0,duration:.9,delay:.9,stagger:.15});
   flyTo(24,-30,2.9,3).then(()=>autoRotate=true);
+  addEventListener("pointerdown",()=>{ if(audio.on) startAudio(); },{once:true});
 });
 </script>
 </body>
