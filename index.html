@@ -196,7 +196,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 #toasts{position:fixed;bottom:26px;left:22px;z-index:30;display:flex;flex-direction:column;gap:8px}
 .toast{background:var(--glass);border:1px solid var(--line-dim);border-left:2px solid var(--brass);padding:10px 16px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);max-width:320px}
 .toast.sys{border-left-color:#5FA8D3;color:#9FB6CB}
-#verdict{background:rgba(4,8,15,.55);backdrop-filter:blur(3px);display:none}
+#verdict{background:rgba(4,8,15,.55);backdrop-filter:blur(3px);display:none;z-index:47}
+body.term-ending #hud,
+body.term-ending #mandate,
+body.term-ending #relations,
+body.term-ending #term-log,
+body.term-ending #open-files,
+body.term-ending #hint{display:none!important}
 #verdict-card{max-width:620px;width:92%;max-height:88vh;overflow-y:auto;background:var(--glass);border:1px solid var(--line);padding:44px 48px;text-align:center;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 #verdict-card::-webkit-scrollbar{width:4px}
 #verdict-card::-webkit-scrollbar-thumb{background:var(--line)}
@@ -2287,11 +2293,15 @@ function applyPromiseImpacts(ev,o){
   const cost=Object.values(o.fx||{}).filter(v=>v<0).reduce((n,v)=>n+Math.abs(v),0)+Object.values(o.rel||{}).filter(v=>v<0).reduce((n,v)=>n+Math.abs(v)/2,0);
   optionPromiseImpacts(ev,o).forEach(x=>directPromiseImpact(x.id,x.status,ev.title,cost));
 }
+function hideGameplayChrome(){
+  ["hud","relations","term-log","mandate","hint","open-files"].forEach(id=>{ const n=$(id); if(n) n.style.display="none"; });
+  $("mandate")?.classList.remove("campaigning");
+}
 function buildMandate(campaigning=false){
   const wrap=$("mandate"), list=$("mandate-list"), score=$("mandate-score");
   if(!wrap||!list)return;
   wrap.classList.toggle("campaigning",!!campaigning);
-  wrap.style.display=G.nation?"block":"none";
+  wrap.style.display=(G.nation&&!G.over&&!document.body.classList.contains("term-ending"))?"block":"none";
   score.textContent=campaigning&&G.campaign?`Projected vote ${Math.round(G.campaign.votes)}%`:"Coalition trust";
   list.innerHTML="";
   if(!(G.planks||[]).length){ list.appendChild(el("div","mandate-empty",campaigning?"Promises will appear here as you make them.":"No elected promises on file.")); return; }
@@ -3481,7 +3491,8 @@ function finishEndingSequence(){
 }
 function startEndingSequence(){
   G.over=true; inputEnabled=false;
-  const of=$("open-files"); if(of) of.style.display="none";
+  document.body.classList.add("term-ending");
+  hideGameplayChrome();
   $("cable-wrap").style.display="none";
   document.body.classList.remove("act-1","act-2","act-3");
   ES_STATE={beats:buildEndingBeats(),i:0};
@@ -3496,6 +3507,8 @@ function startEndingSequence(){
 }
 function showVerdictCard(win,name,text,score,titleHtml){
   G.over=true; inputEnabled=false;
+  document.body.classList.add("term-ending");
+  hideGameplayChrome();
   clearSave();
   updateSlotPanels();
   $("cable-wrap").style.display="none";
@@ -3688,6 +3701,7 @@ function enterGame(after,withChrome=true){
   gsap.delayedCall(.65,proceed);
 }
 function toSelect(){
+  document.body.classList.remove("term-ending");
   $("verdict").style.display="none"; $("settings").style.display="none";
   gsap.killTweensOf("#cable");
   $("cable-wrap").style.display="none"; $("cable").innerHTML="";
