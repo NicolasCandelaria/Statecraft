@@ -196,13 +196,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 #toasts{position:fixed;bottom:26px;left:22px;z-index:30;display:flex;flex-direction:column;gap:8px}
 .toast{background:var(--glass);border:1px solid var(--line-dim);border-left:2px solid var(--brass);padding:10px 16px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);max-width:320px}
 .toast.sys{border-left-color:#5FA8D3;color:#9FB6CB}
-#verdict{background:rgba(4,8,15,.55);backdrop-filter:blur(3px);display:none;z-index:47}
-body.term-ending #hud,
-body.term-ending #mandate,
-body.term-ending #relations,
-body.term-ending #term-log,
-body.term-ending #open-files,
-body.term-ending #hint{display:none!important}
+#verdict{background:rgba(4,8,15,.55);backdrop-filter:blur(3px);display:none}
 #verdict-card{max-width:620px;width:92%;max-height:88vh;overflow-y:auto;background:var(--glass);border:1px solid var(--line);padding:44px 48px;text-align:center;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 #verdict-card::-webkit-scrollbar{width:4px}
 #verdict-card::-webkit-scrollbar-thumb{background:var(--line)}
@@ -471,8 +465,8 @@ body.act-3 #cable{border-color:rgba(194,110,80,.4)}
     <h3 id="settings-h">Settings</h3>
     <div class="set-sub">Cabinet Office</div>
     <div class="set-row">
-      <div><div class="set-label">Ambient music</div><div class="set-desc">Situation room atmosphere · toggle to mute</div></div>
-      <div class="toggle on" id="sound-toggle" role="switch" aria-checked="true" tabindex="0" aria-label="Ambient music on"></div>
+      <div><div class="set-label">Ambient sound</div><div class="set-desc">Situation room atmosphere</div></div>
+      <div class="toggle on" id="sound-toggle" role="switch" aria-checked="true" tabindex="0" aria-label="Ambient sound"></div>
     </div>
     <div class="set-section-title" id="settings-save-title">Save slots</div>
     <div class="slot-list compact" id="settings-slot-list"></div>
@@ -574,7 +568,7 @@ body.act-3 #cable{border-color:rgba(194,110,80,.4)}
   </div>
 </div>
 
-<audio id="ambient" preload="none" crossorigin="anonymous" loop></audio>
+<audio id="ambient" preload="none" crossorigin="anonymous"></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -1491,6 +1485,18 @@ function flyTo(lat,lng,dist,dur=1.9){
   while(target-camState.lng<-180)target+=360;
   return gsap.to(camState,{lat,lng:target,dist,duration:dur,ease:"power3.inOut"});
 }
+/* wrap a callback so it runs exactly once no matter how many sources fire it */
+function once(fn){ let done=false; return (...a)=>{ if(done)return; done=true; return fn(...a); }; }
+/* run `cb` when the fly-in finishes, but never depend on the tween's promise alone:
+   a killed or frame-throttled GSAP tween never resolves .then(), which would strand
+   the next game state forever (the campaign->government freeze). a timed backstop
+   guarantees the transition on any browser. */
+function afterFly(tween,dur,cb){
+  const go=once(cb);
+  if(tween&&tween.then) tween.then(go); else go();
+  const ms=(REDUCED_MOTION?0:(dur||1.9))*1000+400;
+  setTimeout(go,ms);
+}
 
 /* ---------- markers & arcs ---------- */
 function glowTexture(hex){
@@ -1964,46 +1970,23 @@ const TRACKS=[
 const trackUrl=t=>`https://archive.org/download/Incompetech/mp3-royaltyfree%2F${t.f}.ogg`;
 const audio={el:null,started:false,on:true,idx:0};
 function setCredit(){ const c=$("audio-credit"); if(c) c.textContent=`${TRACKS[audio.idx].n} by Kevin MacLeod \u00b7 CC BY 4.0`; }
-function updateAudioCredit(){ const c=$("audio-credit"); if(c) c.style.display=audio.on?"block":"none"; }
-function showMenuChrome(){
-  $("gear").style.display="flex";
-  updateAudioCredit();
-}
 function initAudio(){
   audio.el=$("ambient");
   audio.on=prefs().sound!==false;
   audio.idx=Math.floor(Math.random()*TRACKS.length);
-  audio.el.loop=false;
-  audio.el.onended=()=>{
-    if(!audio.on) return;
-    audio.idx=(audio.idx+1)%TRACKS.length;
-    audio.el.src=trackUrl(TRACKS[audio.idx]);
-    setCredit();
-    const p=audio.el.play();
-    if(p&&p.catch) p.catch(()=>{});
-  };
+  audio.el.onended=()=>{ audio.idx=(audio.idx+1)%TRACKS.length; audio.el.src=trackUrl(TRACKS[audio.idx]); setCredit();
+    const p=audio.el.play(); if(p&&p.catch)p.catch(()=>{}); };
   applySoundToggle();
 }
 function startAudio(){
-  if(!audio.on) return;
-  if(!audio.el) audio.el=$("ambient");
-  if(!audio.el) return;
-  if(audio.started){
-    if(audio.el.paused){
-      audio.el.volume=0;
-      const p=audio.el.play();
-      const up=()=>gsap.to(audio.el,{volume:.34,duration:1,ease:"power1.inOut"});
-      if(p&&p.then) p.then(up).catch(()=>{});
-      else up();
-    }
-    return;
-  }
-  if(!audio.el.src){ audio.el.src=trackUrl(TRACKS[audio.idx]); setCredit(); }
-  audio.el.volume=0;
-  const p=audio.el.play();
-  const fade=()=>gsap.to(audio.el,{volume:.34,duration:4,ease:"power1.inOut"});
-  if(p&&p.then) p.then(()=>{ audio.started=true; fade(); }).catch(()=>{});
-  else { audio.started=true; fade(); }
+  if(audio.started||!audio.on) return;
+  const a=audio.el;
+  if(!a.src){ a.src=trackUrl(TRACKS[audio.idx]); setCredit(); }
+  a.volume=0;
+  const p=a.play();
+  if(p&&p.catch) p.catch(()=>{});
+  audio.started=true;
+  gsap.to(a,{volume:.34,duration:4,ease:"power1.inOut"});
 }
 /* light synthesized SFX: no files, gated by the same sound preference */
 let AC=null;
@@ -2034,16 +2017,8 @@ function sfx(type){
 }
 function applySoundToggle(){
   const t=$("sound-toggle");
-  if(audio.on){
-    t.classList.add("on");
-    t.setAttribute("aria-checked","true");
-    t.setAttribute("aria-label","Ambient music on");
-  } else {
-    t.classList.remove("on");
-    t.setAttribute("aria-checked","false");
-    t.setAttribute("aria-label","Ambient music muted");
-  }
-  updateAudioCredit();
+  if(audio.on){ t.classList.add("on"); t.setAttribute("aria-checked","true"); }
+  else{ t.classList.remove("on"); t.setAttribute("aria-checked","false"); }
   if(audio.el){
     if(audio.on){ if(audio.started) gsap.to(audio.el,{volume:.34,duration:1}); else startAudio(); }
     else gsap.to(audio.el,{volume:0,duration:.6,onComplete:()=>{ try{audio.el.pause();}catch(e){} audio.started=false; }});
@@ -2293,15 +2268,11 @@ function applyPromiseImpacts(ev,o){
   const cost=Object.values(o.fx||{}).filter(v=>v<0).reduce((n,v)=>n+Math.abs(v),0)+Object.values(o.rel||{}).filter(v=>v<0).reduce((n,v)=>n+Math.abs(v)/2,0);
   optionPromiseImpacts(ev,o).forEach(x=>directPromiseImpact(x.id,x.status,ev.title,cost));
 }
-function hideGameplayChrome(){
-  ["hud","relations","term-log","mandate","hint","open-files"].forEach(id=>{ const n=$(id); if(n) n.style.display="none"; });
-  $("mandate")?.classList.remove("campaigning");
-}
 function buildMandate(campaigning=false){
   const wrap=$("mandate"), list=$("mandate-list"), score=$("mandate-score");
   if(!wrap||!list)return;
   wrap.classList.toggle("campaigning",!!campaigning);
-  wrap.style.display=(G.nation&&!G.over&&!document.body.classList.contains("term-ending"))?"block":"none";
+  wrap.style.display=G.nation?"block":"none";
   score.textContent=campaigning&&G.campaign?`Projected vote ${Math.round(G.campaign.votes)}%`:"Coalition trust";
   list.innerHTML="";
   if(!(G.planks||[]).length){ list.appendChild(el("div","mandate-empty",campaigning?"Promises will appear here as you make them.":"No elected promises on file.")); return; }
@@ -2407,7 +2378,7 @@ function finishCampaign(){
     if(!won){ toSelect(); return; }
     G.campaign.complete=true; G.startStats={...G.stats}; scheduleCampaignBills(); reorderPromiseTests();
     $("mandate").classList.remove("campaigning"); $("cable-wrap").style.display="none"; showGameChrome(); buildMandate(false);
-    flyTo(20,G.nation.view.lng+22,3.05,2.2).then(()=>CAMPAIGN_DONE&&CAMPAIGN_DONE());
+    afterFly(flyTo(20,G.nation.view.lng+22,3.05,2.2),2.2,()=>CAMPAIGN_DONE&&CAMPAIGN_DONE());
   };
   oc.appendChild(b); c.appendChild(oc); showCable(); buildMandate(true); announce(won?"The mandate is won":"The campaign is lost");
 }
@@ -2646,12 +2617,15 @@ function presentEvent(ev){
   saveGame();
   announce("New briefing: "+ev.title);
   gsap.delayedCall(.2,focusCableTitle);
-  gsap.delayedCall(.45,()=>typeText(dlg,ev.text,()=>{
+  const revealOps=once(()=>{
     if(xtBox) gsap.to(xtBox,{opacity:1,duration:.5});
     ops.style.pointerEvents="";
-    gsap.to(ops,{opacity:1,duration:.3});
+    gsap.set(ops,{opacity:1});
     gsap.from(ops.children,{y:14,opacity:0,duration:.45,stagger:.08,ease:"power2.out"});
-  }));
+  });
+  setTimeout(()=>typeText(dlg,ev.text,revealOps),REDUCED_MOTION?0:450);
+  /* backstop: options appear even if the typewriter callback is dropped by the browser */
+  setTimeout(revealOps,REDUCED_MOTION?60:2600);
 }
 /* the storyline reaches a person; the person writes back */
 const PERSON_LETTERS={
@@ -3491,8 +3465,7 @@ function finishEndingSequence(){
 }
 function startEndingSequence(){
   G.over=true; inputEnabled=false;
-  document.body.classList.add("term-ending");
-  hideGameplayChrome();
+  const of=$("open-files"); if(of) of.style.display="none";
   $("cable-wrap").style.display="none";
   document.body.classList.remove("act-1","act-2","act-3");
   ES_STATE={beats:buildEndingBeats(),i:0};
@@ -3507,8 +3480,6 @@ function startEndingSequence(){
 }
 function showVerdictCard(win,name,text,score,titleHtml){
   G.over=true; inputEnabled=false;
-  document.body.classList.add("term-ending");
-  hideGameplayChrome();
   clearSave();
   updateSlotPanels();
   $("cable-wrap").style.display="none";
@@ -3603,7 +3574,7 @@ function setupTermState(key){
 function showGameChrome(){
   if(!G.nation) return;
   $("hud").style.display="block"; $("relations").style.display="block"; $("term-log").style.display="block"; $("hint").style.display="block";
-  $("gear").style.display="flex"; updateAudioCredit();
+  $("gear").style.display="flex"; if(audio.on) $("audio-credit").style.display="block";
   buildHUD(); STATS.forEach(s=>setStat(s.k,G.stats[s.k],false));
   $("hud-name").textContent=G.nation.name; setTurnLabel();
   buildRelations(); buildTermLog(); buildBoard(G.nation);
@@ -3667,7 +3638,7 @@ function resumeGame(save,slot=getActiveSlot()){
   /* rebuild deck from stored ids */
   const byId={}; EVENTS.forEach(e=>byId[e.id]=e);
   G.deck=(save.deck||[]).map(id=>byId[id]).filter(Boolean);
-  const launch=()=>flyTo(n.view.lat,n.view.lng,n.view.dist,2).then(()=>{ if(!restoreBriefing(save)) startTurn(); });
+  const launch=()=>afterFly(flyTo(n.view.lat,n.view.lng,n.view.dist,2),2,()=>{ if(!restoreBriefing(save)) startTurn(); });
   if($("select-screen").style.display!=="none") enterGame(launch);
   else{
     $("settings").style.display="none"; $("verdict").style.display="none";
@@ -3701,14 +3672,12 @@ function enterGame(after,withChrome=true){
   gsap.delayedCall(.65,proceed);
 }
 function toSelect(){
-  document.body.classList.remove("term-ending");
   $("verdict").style.display="none"; $("settings").style.display="none";
   gsap.killTweensOf("#cable");
   $("cable-wrap").style.display="none"; $("cable").innerHTML="";
   $("hud").style.display="none"; $("relations").style.display="none"; $("term-log").style.display="none";
   $("mandate").style.display="none"; $("mandate").classList.remove("campaigning");
-  $("hint").style.display="none";
-  showMenuChrome();
+  $("hint").style.display="none"; $("gear").style.display="none"; $("audio-credit").style.display="none";
   $("toasts").innerHTML="";
   clearBoard(); inputEnabled=false; autoRotate=true;
   G.nation=null; G.over=false; G.currentBriefing=null; G.turnResolved=false;
@@ -3843,8 +3812,8 @@ $("btn-restart-term").onclick=()=>{
     : `${name} will restart at Turn 01 in Slot ${getActiveSlot()}. The current run in that slot will be replaced.`,"Restart",()=>launchNewTerm(key,false));
 };
 $("btn-quit").onclick=()=>{ const inCampaign=campaignInProgress(); closeSettings(); if(!inCampaign)saveGame(); toSelect(); };
-$("sound-toggle").onclick=()=>{ audio.on=!audio.on; setPref("sound",audio.on); applySoundToggle(); };
-$("sound-toggle").onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("sound-toggle").click(); } };
+$("sound-toggle").onclick=()=>{ audio.on=!audio.on; setPref("sound",audio.on); applySoundToggle();
+  $("audio-credit").style.display=(audio.on&&G.nation)?"block":"none"; };
 
 $("btn-begin").onclick=()=>{
   startAudio();
@@ -3855,17 +3824,17 @@ $("btn-begin").onclick=()=>{
 };
 $("btn-restart").onclick=toSelect;
 $("btn-epilogue").onclick=showEpilogue;
+/* first user gesture anywhere unlocks audio if it was blocked */
+addEventListener("pointerdown",()=>{ if(audio.on) startAudio(); },{once:true});
 
 initGlobe(()=>{
   buildDossiers();
   initAudio();
   gsap.to("#loading",{opacity:0,duration:.8,delay:.3,onComplete:()=>$("loading").remove()});
   $("title-screen").style.display="flex";
-  showMenuChrome();
   gsap.from("#title-screen h1",{y:26,opacity:0,duration:1.1,delay:.5,ease:"power3.out"});
   gsap.from("#title-screen .eyebrow, #title-sub, #btn-begin",{opacity:0,duration:.9,delay:.9,stagger:.15});
   flyTo(24,-30,2.9,3).then(()=>autoRotate=true);
-  addEventListener("pointerdown",()=>{ if(audio.on) startAudio(); },{once:true});
 });
 </script>
 </body>
