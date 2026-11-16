@@ -21,7 +21,7 @@ test("random play loses most terms in every nation", () => {
   assert.ok(total <= 43, `random won ${total}/108 overall`);
 });
 
-test("reading the stat chips wins more often than clicking at random", () => {
+test("reading the visible chips beats guessing, and does not solve the term", () => {
   const random = sample("random", 24);
   const chips = sample("chips", 24);
   for (const key of NATIONS) {
@@ -30,5 +30,7 @@ test("reading the stat chips wins more often than clicking at random", () => {
     assert.ok(cw > rw, `${key} chips ${cw}/24, random ${rw}/24`);
   }
   const canada = wins(chips.CAN);
-  assert.ok(canada >= 16, `a chip-reading Canada won ${canada}/24`);
+  const singapore = wins(chips.SGP);
+  assert.ok(canada >= 8 && canada <= 20, `Canada chip play was ${canada}/24`);
+  assert.ok(singapore < canada, `Singapore ${singapore}/24 was not harder than Canada ${canada}/24`);
 });

@@ -95,7 +95,7 @@ function loadGame(random) {
     }
     markerGroup=__group();
     arcGroup=__group();
-    globalThis.__game={ G, NATIONS, TERM, launchNewTerm, audio };
+    globalThis.__game={ G, NATIONS, TERM, launchNewTerm, audio, EVENTS, buildDeck, externalizeEffects, GATE_EVENTS, reorderPromiseTests };
   `;
   const elements = new Map();
   const store = new Map();
@@ -244,17 +244,68 @@ function play(kind, key, seed) {
   };
 }
 
+function wordMag(d) {
+  const a = Math.abs(d);
+  if (a >= 15) return 4;
+  if (a >= 8) return 3;
+  if (a >= 4) return 2;
+  return 1;
+}
+function relMag(d) {
+  const a = Math.abs(d);
+  if (a >= 20) return 4;
+  if (a >= 12) return 3;
+  if (a >= 6) return 2;
+  return 1;
+}
+/* The cable does not show the integer. It shows a band: slight, real, strong, sweeping. */
 function fxValue(fx) {
   fx = fx || {};
-  return (fx.a || 0) * .35 + (fx.s || 0) * .30 + (fx.t || 0) * .20 + (fx.m || 0) * .15;
+  const w = { a: .35, s: .30, t: .20, m: .15 };
+  let n = 0;
+  for (const [k, v] of Object.entries(fx)) {
+    if (!v || !w[k]) continue;
+    n += Math.sign(v) * wordMag(v) * w[k];
+  }
+  return n;
+}
+function relValue(rel) {
+  return Object.values(rel || {}).reduce((n, v) => n + (v ? Math.sign(v) * relMag(v) * .12 : 0), 0);
+}
+/* Score only what the cable shows: the four stats, named capitals, and a
+   delayed bill at half weight. Hidden standing is not a stat and is ignored.
+   A thin treasury or a collapsing approval makes that cost count twice, the
+   way a player reading the chips would refuse the option that finishes them. */
+function visibleValue(o, stats) {
+  o = o || {};
+  const fx = { ...(o.fx || {}) };
+  delete fx.st;
+  let v = fxValue(fx) + relValue(o.rel) + relValue(o.relKey);
+  if (o.delay) {
+    const dfx = { ...(o.delay.fx || {}) };
+    delete dfx.st;
+    v += .5 * (fxValue(dfx) + relValue(o.delay.rel));
+  }
+  if (stats) {
+    if (stats.t < 40 && (fx.t || 0) < 0) v -= wordMag(fx.t) * .22;
+    if (stats.a < 36 && (fx.a || 0) < 0) v -= wordMag(fx.a) * .2;
+    if (stats.s < 36 && (fx.s || 0) < 0) v -= wordMag(fx.s) * .2;
+    if (stats.m < 30 && (fx.m || 0) < 0) v -= wordMag(fx.m) * .15;
+  }
+  if (o.risk && o.risk.fail) {
+    const p = o.risk.p == null ? .5 : o.risk.p;
+    const fail = visibleValue(o.risk.fail, stats);
+    v = p * v + (1 - p) * fail;
+  }
+  return v;
 }
 function smartIndex(G, opts) {
   const brief = G.currentBriefing;
   let values = null;
   if (brief && brief.kind === "event" && brief.ev && brief.ev.opts && brief.ev.opts.length === opts.length) {
-    values = brief.ev.opts.map(o => fxValue(o.fx));
+    values = brief.ev.opts.map(o => visibleValue(o, G.stats));
   } else if (brief && brief.kind === "consequence" && brief.q && brief.q.cable.resp && brief.q.cable.resp.length === opts.length) {
-    values = brief.q.cable.resp.map(o => fxValue(o.fx));
+    values = brief.q.cable.resp.map(o => visibleValue(o, G.stats));
   }
   if (!values) {
     values = opts.map(btn => {
@@ -266,6 +317,10 @@ function smartIndex(G, opts) {
   let best = 0;
   values.forEach((v, i) => { if (v > values[best]) best = i; });
   return best;
+}
+
+export function load(random = Math.random) {
+  return loadGame(random);
 }
 
 export function sample(kind, games) {
