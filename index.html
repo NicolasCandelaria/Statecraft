@@ -672,20 +672,31 @@ body.act-3 #cable{border-color:rgba(194,110,80,.4)}
 .arch-row .ar-l{color:var(--brass-lite)}
 .arch-row .ar-s{color:var(--muted)}
 .arch-row .ar-d{color:var(--muted);opacity:.7}
-/* On a laptop the choices sit side by side, so a three-way decision is on screen at once.
-   The briefing text scrolls above them. The mandate becomes a single readable column. */
-@media(max-height:900px){
-  #cable-wrap{top:96px;width:min(680px,54vw)}
-  #mandate{right:calc(min(680px, 54vw) + 48px)}
-  #mandate.campaigning{width:min(520px, calc(100vw - min(680px, 54vw) - 80px))}
-  .cable-head{padding:8px 16px}
-  .cable-body{padding:12px 16px 8px}
-  .cable-body h3{font-size:20px;margin-bottom:8px}
-  .cable-body .dialogue{font-size:14.5px;line-height:1.55}
-  .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));max-height:78%;gap:8px;padding:8px 12px 12px}
-  .opt{padding:10px 12px;min-width:0}
-  .o-preview{margin-top:6px;padding-top:6px}
-  .promise-impact{margin-top:6px;padding:6px 8px}
+/* Short desktop windows cannot stack three full choices under the briefing.
+   Put the choices in one row, and keep a real block of briefing text above them.
+   The cable stays narrow enough that the globe remains visible beside it. */
+@media(max-height:1100px) and (min-width:1000px){
+  #cable-wrap{top:64px;bottom:6px;width:min(640px,calc(100vw - 520px))}
+  #mandate{top:64px;right:calc(min(640px, calc(100vw - 520px)) + 28px);max-height:min(320px,44vh);overflow:auto}
+  #mandate.campaigning{width:min(420px, calc(100vw - min(640px, calc(100vw - 520px)) - 80px))}
+  .cable-head{padding:3px 12px;font-size:11px;line-height:1.3}
+  .cable-class{padding:3px 12px;font-size:11px}
+  .speaker{margin-bottom:6px;gap:8px}
+  .speaker .sp-seal{width:26px;height:26px}
+  .cable-body{flex:1 1 auto;min-height:160px;padding:8px 12px 4px}
+  .cable-body h3{font-size:18px;margin-bottom:6px}
+  .cable-body .dialogue{font-size:14px;line-height:1.45}
+  .options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-height:none;gap:6px;padding:4px 8px 8px;overflow:visible;align-items:stretch}
+  .opt{padding:6px 7px;min-width:0}
+  .opt .o-label{font-size:13.5px;line-height:1.25}
+  .opt .o-hint{font-size:12px;line-height:1.3;margin-top:2px}
+  .o-preview{margin-top:4px;padding-top:4px;gap:3px}
+  .o-preview-label{font-size:10px}
+  .o-chip{font-size:10.5px;line-height:1.25;padding:2px 4px}
+  .promise-impact{margin-top:4px;padding:3px 5px;font-size:11.5px;line-height:1.3}
+}
+@media(max-height:1100px) and (min-width:1000px) and (min-height:700px){
+  .cable-body{min-height:200px}
 }
 /* ---------- small monitors: keep the menus inside the viewport ---------- */
 #select-screen{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
@@ -730,13 +741,18 @@ body.act-3 #cable{border-color:rgba(194,110,80,.4)}
   #hud-stats{grid-template-columns:repeat(3,1fr);gap:10px}
   #relations{display:none!important}
   #term-log{display:none!important}
-  #mandate{left:12px;right:12px;top:78px;width:auto;transform:none}
-  #mandate-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #mandate,#mandate.campaigning{left:8px;right:8px;top:76px;width:auto;max-height:108px;overflow:hidden;padding:8px 10px;transform:none}
+  #mandate-head{margin-bottom:4px}
+  #mandate-list{display:flex;flex-wrap:nowrap;grid-template-columns:none;gap:6px;overflow-x:auto;max-height:64px}
+  .plank{flex:0 0 auto;max-width:70vw;padding:4px 8px}
+  .plank-promise,.plank-trust span:first-child{display:none}
+  .plank-trust{margin-top:2px}
   .campaign-result{grid-template-columns:repeat(3,minmax(0,1fr))}
-  #cable-wrap{left:12px;right:12px;width:auto;top:auto;height:62vh;max-height:62vh;bottom:12px;overflow:hidden}
-  .options{display:flex;flex-direction:column;grid-template-columns:none}
-  #hud{padding:10px 12px 0}
-  #gear{top:auto;bottom:14px;right:14px}
+  #cable-wrap{left:8px;right:8px;width:auto;top:192px;bottom:8px;height:auto;max-height:none}
+  .cable-body{flex:1 1 auto;min-height:140px}
+  .options{display:flex;flex-direction:column;grid-template-columns:none;max-height:46%;overflow-y:auto}
+  #hud{padding:8px 52px 0 8px}
+  #gear{top:8px;bottom:auto;right:8px}
   #verdict-card{padding:32px 24px}
   .rc-journey{grid-template-columns:repeat(4,1fr);gap:5px}
   .rc-journey.rc-cab{grid-template-columns:repeat(5,1fr)}
@@ -919,6 +935,7 @@ body.act-3 #cable{border-color:rgba(194,110,80,.4)}
 
 <script src="vendor/three.min.js"></script>
 <script src="vendor/gsap.min.js"></script>
+<script src="vendor/earth-data.js"></script>
 <script>
 /* =====================================================
    STATECRAFT · data
@@ -1729,7 +1746,32 @@ function llToV(lat,lng,r){
   return new THREE.Vector3(-r*Math.sin(phi)*Math.cos(th), r*Math.cos(phi), r*Math.sin(phi)*Math.sin(th));
 }
 
+let globeFailed=false;
+function earthTextureUrls(){
+  const paths={day:TEX.day,bump:TEX.bump,night:TEX.night,water:TEX.water};
+  if(location.protocol!=="file:") return paths;
+  const packed=window.EARTH_DATA||{};
+  const urls={};
+  for(const key of Object.keys(paths)){
+    const data=packed[paths[key]];
+    if(!data){ failUplink("The globe images did not load. Keep the vendor folder next to this page."); return null; }
+    urls[key]=data;
+  }
+  return urls;
+}
+function textureImageUsable(img){
+  if(!img||!img.width) return false;
+  try{
+    const c=document.createElement("canvas");
+    c.width=c.height=1;
+    const g=c.getContext("2d");
+    g.drawImage(img,0,0,1,1);
+    g.getImageData(0,0,1,1);
+    return true;
+  }catch(e){ return false; }
+}
 function failUplink(msg){
+  globeFailed=true;
   const load=document.getElementById("loading");
   if(!load) return;
   const eye=load.querySelector(".eyebrow");
@@ -1773,18 +1815,28 @@ function initGlobe(onReady){
   starGeo.setAttribute("position",new THREE.BufferAttribute(pos,3));
   scene.add(new THREE.Points(starGeo,new THREE.PointsMaterial({color:0x9FB3CF,size:.055,sizeAttenuation:true,transparent:true,opacity:.75})));
 
-  /* earth */
+  /* A file:// image loads on screen and is then rejected as cross-origin by WebGL,
+     which is why opening index.html used to leave a black globe and no error.
+     vendor/earth-data.js holds the same pictures as data URLs for that case.
+     An http page uses the files directly. Either way, a picture the globe cannot
+     sample keeps this screen up instead of continuing. */
+  const urls=earthTextureUrls();
+  if(!urls) return;
   const mgr=new THREE.LoadingManager();
   const loadFill=document.getElementById("load-fill");
-  mgr.onProgress=(u,l,t)=>{ gsap.to(loadFill,{width:(l/t*100)+"%",duration:.3,ease:"power1.out"}); };
+  mgr.onProgress=(u,l,t)=>{ if(loadFill) gsap.to(loadFill,{width:(l/t*100)+"%",duration:.3,ease:"power1.out"}); };
   mgr.onError=()=>failUplink("The globe images did not load. Keep the vendor folder next to this page.");
-  mgr.onLoad=()=>onReady();
-  const tl=new THREE.TextureLoader(mgr); tl.crossOrigin="anonymous";
+  let pending=4, globeReady=false;
+  const finishTex=tex=>{
+    if(!textureImageUsable(tex&&tex.image)) failUplink("The globe images did not load. Keep the vendor folder next to this page.");
+    if(--pending===0 && !globeFailed && !globeReady){ globeReady=true; onReady(); }
+  };
+  const tl=new THREE.TextureLoader(mgr);
   const mat=new THREE.MeshPhongMaterial({
-    map:tl.load(TEX.day),
-    bumpMap:tl.load(TEX.bump), bumpScale:.045,
-    specularMap:tl.load(TEX.water), specular:new THREE.Color(0x2a3a55), shininess:14,
-    emissiveMap:tl.load(TEX.night), emissive:new THREE.Color(0xffe9b8), emissiveIntensity:.28
+    map:tl.load(urls.day, finishTex),
+    bumpMap:tl.load(urls.bump, finishTex), bumpScale:.045,
+    specularMap:tl.load(urls.water, finishTex), specular:new THREE.Color(0x2a3a55), shininess:14,
+    emissiveMap:tl.load(urls.night, finishTex), emissive:new THREE.Color(0xffe9b8), emissiveIntensity:.28
   });
   earth=new THREE.Mesh(new THREE.SphereGeometry(R,96,96),mat);
   scene.add(earth);
@@ -2924,7 +2976,8 @@ function cableShell(meta){
   return c;
 }
 function showCable(){ sfx("cable"); $("cable-wrap").style.display="flex";
-  gsap.fromTo("#cable",{x:60,opacity:0},{x:0,opacity:1,duration:.7,ease:"power3.out"}); }
+  gsap.killTweensOf("#cable");
+  gsap.fromTo("#cable",{x:60,opacity:0},{x:0,opacity:1,duration:.7,ease:"power3.out",clearProps:"transform"}); }
 
 /* two ministers rarely read the same file the same way; the room says so */
 const CROSSTALK={
