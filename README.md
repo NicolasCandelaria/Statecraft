@@ -6,6 +6,8 @@ A one-screen game about governing. You run a campaign, then answer twelve briefi
 
 Open `index.html` in a current desktop browser. The page does not load anything from the network. Keep this folder intact, including `vendor/`.
 
+The earth pictures in `vendor/earth/` are also stored in `vendor/earth-data.js`. A browser will show those pictures from disk, then refuse to paint them on the globe; the encoded copy is what the globe draws when the page is opened as a file. A normal web address uses the picture files themselves.
+
 Drag the globe to turn it, and scroll to move closer. The gear in the corner holds sound, the three save slots, and a short guide. Saves stay in this browser.
 
 A term is won at a score of 50 or higher. The score weighs approval, stability, treasury, and military, then adjusts for promises kept and broken. If any of the four numbers reaches zero, the government falls before the term ends.
@@ -32,7 +34,7 @@ These files used to be requested from five other sites. They now live in `vendor
 
 The game credits the music on screen while sound is on.
 
-If the globe library or its images are missing, the opening line says so instead of waiting. The globe also needs WebGL.
+If the globe library or its images are missing, or the browser will not let the globe use them, the opening line stays on screen and says so. The globe also needs WebGL.
 
 ## Checks
 
