@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, symlinkSync } from "node:fs";
+import { existsSync, mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -50,10 +50,20 @@ class Cdp {
   }
 }
 
+function chromeBin() {
+  const candidates = [
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium",
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+  ];
+  return candidates.find(p => existsSync(p)) || "google-chrome";
+}
+
 async function launchChrome(startUrl) {
   const dir = mkdtempSync(path.join(tmpdir(), "statecraft-chrome-"));
   const port = 9400 + Math.floor(Math.random() * 400);
-  const proc = spawn("/usr/bin/google-chrome", [
+  const proc = spawn(chromeBin(), [
     "--headless=new",
     "--no-sandbox",
     "--disable-dev-shm-usage",
@@ -107,9 +117,9 @@ async function launchChrome(startUrl) {
     async close() {
       try { ws.close(); } catch { /* already gone */ }
       try { browser.close(); } catch { /* already gone */ }
-      proc.kill("SIGKILL");
-      await sleep(50);
-      rmSync(dir, { recursive: true, force: true });
+      try { proc.kill("SIGKILL"); } catch { /* already gone */ }
+      await sleep(200);
+      try { rmSync(dir, { recursive: true, force: true }); } catch { /* Windows keeps the profile locked for a moment */ }
     }
   };
 }
