@@ -13,3 +13,6 @@ jobs:
         with:
           node-version: 22
       - run: node --test
+        env:
+          # The runner image has a Chrome build that does not open a debugging port.
+          STATECRAFT_SKIP_BROWSER: "1"

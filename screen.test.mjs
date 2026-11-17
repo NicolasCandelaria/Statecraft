@@ -27,12 +27,21 @@ export function findChrome(env = process.env, exists = existsSync) {
   return candidates.find(p => p && exists(p)) || null;
 }
 
+export function browserSkip(env = process.env, chrome = findChrome(env)) {
+  if (env.STATECRAFT_SKIP_BROWSER) return "browser checks are off for this run";
+  if (!chrome) return "set CHROME to a Chrome or Chromium binary";
+  return false;
+}
+
 const CHROME = findChrome();
-const needsChrome = CHROME ? false : "set CHROME to a Chrome or Chromium binary";
+const needsChrome = browserSkip();
 
 test("the browser path follows CHROME, then the usual install locations", () => {
   assert.equal(findChrome({ CHROME: "/opt/custom-chrome" }, p => p === "/opt/custom-chrome"), "/opt/custom-chrome");
   assert.equal(findChrome({ CHROME: "/missing", GOOGLE_CHROME_BIN: "" }, () => false), null);
+  assert.equal(browserSkip({ STATECRAFT_SKIP_BROWSER: "1" }, "/usr/bin/google-chrome"), "browser checks are off for this run");
+  assert.equal(typeof browserSkip({}, null), "string");
+  assert.equal(browserSkip({}, "/opt/chrome"), false);
   if (CHROME) assert.equal(existsSync(CHROME), true);
 });
 
@@ -100,7 +109,7 @@ async function launchChrome(startUrl) {
     "about:blank"
   ], { stdio: "ignore" });
   let version = null;
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 150; i++) {
     try {
       version = await fetch(`http://127.0.0.1:${port}/json/version`).then(r => r.json());
       break;
@@ -139,8 +148,8 @@ async function launchChrome(startUrl) {
       try { ws.close(); } catch { /* already gone */ }
       try { browser.close(); } catch { /* already gone */ }
       proc.kill("SIGKILL");
-      await sleep(50);
-      rmSync(dir, { recursive: true, force: true });
+      await sleep(200);
+      rmSync(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
     }
   };
 }
