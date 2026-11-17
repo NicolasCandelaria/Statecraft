@@ -3577,7 +3577,7 @@ function finishTerm(){
   const promiseAdj=(G.planks||[]).reduce((n,p)=>n+(p.status==="kept"?2:p.status==="broken"?-4:0),0);
   const score=Math.max(0,Math.min(100,Math.round(base+promiseAdj)));
   const win=score>=50, rv=G.nation.review;
-  G.endInfo={win,score,collapse:null,title};
+  G.endInfo={win,score,collapse:null};
   const ending=termEnding(score,win);
   let title, tier;
   if(ending){ title=ending.title; tier=ending.note; }
