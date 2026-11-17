@@ -20,6 +20,7 @@ test("every local file the page names is present", () => {
   }
   for (const match of html.matchAll(/url\("([^"]+)"\)/g)) refs.add(match[1]);
   for (const match of html.matchAll(/vendor\/(?:earth|music)\/[A-Za-z0-9._-]+/g)) refs.add(match[0]);
+  if (html.includes("vendor/earth-data.js")) refs.add("vendor/earth-data.js");
   assert.ok(refs.size >= 20, `found ${refs.size} local assets`);
   const missing = [...refs].filter(ref => !fs.existsSync(path.join(root, ref)));
   assert.deepEqual(missing, []);

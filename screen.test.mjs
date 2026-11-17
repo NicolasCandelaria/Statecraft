@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, symlinkSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync, symlinkSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,10 +9,39 @@ import { fileURLToPath } from "node:url";
 const root = path.dirname(fileURLToPath(import.meta.url));
 const html = readFileSync(path.join(root, "index.html"), "utf8");
 
+export function findChrome(env = process.env, exists = existsSync) {
+  const local = env.LOCALAPPDATA && path.join(env.LOCALAPPDATA, "Google", "Chrome", "Application", "chrome.exe");
+  const candidates = [
+    env.CHROME,
+    env.GOOGLE_CHROME_BIN,
+    "/usr/bin/google-chrome",
+    "/usr/bin/google-chrome-stable",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
+    "/usr/local/bin/google-chrome",
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+    local,
+  ];
+  return candidates.find(p => p && exists(p)) || null;
+}
+
+const CHROME = findChrome();
+const needsChrome = CHROME ? false : "set CHROME to a Chrome or Chromium binary";
+
+test("the browser path follows CHROME, then the usual install locations", () => {
+  assert.equal(findChrome({ CHROME: "/opt/custom-chrome" }, p => p === "/opt/custom-chrome"), "/opt/custom-chrome");
+  assert.equal(findChrome({ CHROME: "/missing", GOOGLE_CHROME_BIN: "" }, () => false), null);
+  if (CHROME) assert.equal(existsSync(CHROME), true);
+});
+
 test("the globe loader does not mark same-folder images as cross-origin", () => {
   assert.equal(html.includes('crossOrigin="anonymous"'), false);
   assert.match(html, /EARTH_DATA/);
   assert.match(html, /vendor\/earth-data\.js/);
+  assert.equal(/<script[^>]*src="vendor\/earth-data\.js"/.test(html), false);
+  assert.match(html, /location\.protocol==="file:"/);
 });
 
 function sleep(ms) {
@@ -51,9 +80,11 @@ class Cdp {
 }
 
 async function launchChrome(startUrl) {
+  const bin = findChrome();
+  if (!bin) throw new Error("set CHROME to a Chrome or Chromium binary");
   const dir = mkdtempSync(path.join(tmpdir(), "statecraft-chrome-"));
   const port = 9400 + Math.floor(Math.random() * 400);
-  const proc = spawn("/usr/bin/google-chrome", [
+  const proc = spawn(bin, [
     "--headless=new",
     "--no-sandbox",
     "--disable-dev-shm-usage",
@@ -257,7 +288,7 @@ async function openGoverningBriefing(cdp) {
   await sleep(120);
 }
 
-test("opening index.html from disk draws the earth and keeps a failure on screen", async () => {
+test("opening index.html from disk draws the earth and keeps a failure on screen", { skip: needsChrome }, async () => {
   const live = await launchChrome("file://" + path.join(root, "index.html"));
   try {
     await waitFor(live.cdp, `document.querySelector("#title-screen") && getComputedStyle(document.querySelector("#title-screen")).display === "flex" && !document.getElementById("loading")`, 15000);
@@ -275,9 +306,13 @@ test("opening index.html from disk draws the earth and keeps a failure on screen
 
   const fixture = mkdtempSync(path.join(tmpdir(), "statecraft-missing-"));
   try {
-    const stripped = html.replace(/\s*<script src="vendor\/earth-data\.js"><\/script>/, "");
-    writeFileSync(path.join(fixture, "index.html"), stripped);
-    symlinkSync(path.join(root, "vendor"), path.join(fixture, "vendor"));
+    writeFileSync(path.join(fixture, "index.html"), html);
+    const vendor = path.join(fixture, "vendor");
+    mkdirSync(vendor);
+    for (const name of readdirSync(path.join(root, "vendor"))) {
+      if (name === "earth-data.js") continue;
+      symlinkSync(path.join(root, "vendor", name), path.join(vendor, name));
+    }
     const broken = await launchChrome("file://" + path.join(fixture, "index.html"));
     try {
       await waitFor(broken.cdp, `document.getElementById("load-note") && document.getElementById("loading")`, 10000);
@@ -297,7 +332,7 @@ test("opening index.html from disk draws the earth and keeps a failure on screen
   }
 });
 
-test("the briefing, options, and mandate follow the space on screen", async () => {
+test("the briefing, options, and mandate follow the space on screen", { skip: needsChrome }, async () => {
   const session = await launchChrome("file://" + path.join(root, "index.html"));
   try {
     await waitFor(session.cdp, `document.querySelector("#btn-begin") && getComputedStyle(document.querySelector("#title-screen")).display !== "none"`, 15000);
